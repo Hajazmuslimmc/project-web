@@ -1,0 +1,259 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
+import { Play, Users, Trophy, Zap, ArrowRight, Gamepad2, Star, TrendingUp } from 'lucide-react'
+import Link from 'next/link'
+
+export default function Home() {
+  const [isLoaded, setIsLoaded] = useState(false)
+
+  useEffect(() => {
+    setIsLoaded(true)
+  }, [])
+
+  const features = [
+    {
+      icon: <Gamepad2 className="w-8 h-8" />,
+      title: "Premium Games",
+      description: "Access to the latest and greatest web games with stunning graphics and immersive gameplay."
+    },
+    {
+      icon: <Users className="w-8 h-8" />,
+      title: "Multiplayer Experience",
+      description: "Connect with players worldwide and compete in real-time multiplayer matches."
+    },
+    {
+      icon: <Trophy className="w-8 h-8" />,
+      title: "Achievements & Leaderboards",
+      description: "Track your progress, earn achievements, and climb the global leaderboards."
+    },
+    {
+      icon: <Zap className="w-8 h-8" />,
+      title: "Instant Play",
+      description: "No downloads required. Jump into games instantly with just a click."
+    }
+  ]
+
+  const upcomingGames = [
+    { name: "Snake Game", genre: "Arcade", rating: 4.9, link: "/snake" },
+    { name: "Cyber Quest", genre: "RPG", rating: 4.8 },
+    { name: "Pixel Warriors", genre: "Action", rating: 4.6 },
+    { name: "Brain Teasers", genre: "Puzzle", rating: 4.9 }
+  ]
+
+  return (
+    <div className="min-h-screen">
+      {/* Navigation */}
+      <nav className="fixed top-0 w-full z-50 bg-dark-900/80 backdrop-blur-md border-b border-dark-700">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: isLoaded ? 1 : 0, x: isLoaded ? 0 : -20 }}
+              transition={{ duration: 0.5 }}
+              className="flex items-center space-x-2"
+            >
+              <div className="w-8 h-8 bg-gradient-to-r from-primary-500 to-purple-500 rounded-lg flex items-center justify-center">
+                <Gamepad2 className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-xl font-bold gradient-text">NewServer Games</span>
+            </motion.div>
+            
+            <motion.div 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: isLoaded ? 1 : 0, x: isLoaded ? 0 : 20 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="hidden md:flex space-x-8"
+            >
+              <a href="#games" className="text-gray-300 hover:text-primary-400 transition-colors">Games</a>
+              <a href="#features" className="text-gray-300 hover:text-primary-400 transition-colors">Features</a>
+              <a href="#about" className="text-gray-300 hover:text-primary-400 transition-colors">About</a>
+              <a href="#contact" className="text-gray-300 hover:text-primary-400 transition-colors">Contact</a>
+            </motion.div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 30 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            <h1 className="text-5xl md:text-7xl font-bold mb-6">
+              Welcome to{' '}
+              <span className="gradient-text">NewServer Games</span>
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
+              Experience the future of web gaming with our premium collection of games. 
+              From action-packed adventures to brain-teasing puzzles, we've got it all.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/snake">
+                <button className="btn-primary flex items-center justify-center space-x-2">
+                  <Play className="w-5 h-5" />
+                  <span>Start Playing Now</span>
+                </button>
+              </Link>
+              <button className="btn-secondary flex items-center justify-center space-x-2">
+                <span>Explore Games</span>
+                <ArrowRight className="w-5 h-5" />
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section id="features" className="py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 30 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-4xl font-bold mb-4">Why Choose NewServer Games?</h2>
+            <p className="text-xl text-gray-300">Discover what makes us the ultimate gaming destination</p>
+          </motion.div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {features.map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 30 }}
+                transition={{ duration: 0.6, delay: 0.6 + index * 0.1 }}
+                className="card text-center group"
+              >
+                <div className="w-16 h-16 bg-gradient-to-r from-primary-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                  {feature.icon}
+                </div>
+                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                <p className="text-gray-400">{feature.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Upcoming Games Section */}
+      <section id="games" className="py-16 px-4 sm:px-6 lg:px-8 bg-dark-800/30">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 30 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-4xl font-bold mb-4">Upcoming Games</h2>
+            <p className="text-xl text-gray-300">Get ready for these exciting new releases</p>
+          </motion.div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {upcomingGames.map((game, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: isLoaded ? 1 : 0, scale: isLoaded ? 1 : 0.9 }}
+                transition={{ duration: 0.6, delay: 0.8 + index * 0.1 }}
+                className="card group cursor-pointer"
+              >
+                {game.link ? (
+                  <Link href={game.link}>
+                    <div className="w-full h-48 bg-gradient-to-br from-primary-600 to-purple-600 rounded-lg mb-4 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                      <Gamepad2 className="w-16 h-16 text-white/80" />
+                    </div>
+                    <h3 className="text-xl font-semibold mb-2">{game.name}</h3>
+                    <p className="text-gray-400 mb-3">{game.genre}</p>
+                    <div className="flex items-center space-x-1">
+                      <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                      <span className="text-sm text-gray-300">{game.rating}</span>
+                    </div>
+                  </Link>
+                ) : (
+                  <>
+                    <div className="w-full h-48 bg-gradient-to-br from-primary-600 to-purple-600 rounded-lg mb-4 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                      <Gamepad2 className="w-16 h-16 text-white/80" />
+                    </div>
+                    <h3 className="text-xl font-semibold mb-2">{game.name}</h3>
+                    <p className="text-gray-400 mb-3">{game.genre}</p>
+                    <div className="flex items-center space-x-1">
+                      <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                      <span className="text-sm text-gray-300">{game.rating}</span>
+                    </div>
+                  </>
+                )}
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 30 }}
+            transition={{ duration: 0.8, delay: 1.0 }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center"
+          >
+            <div className="card">
+              <div className="text-4xl font-bold gradient-text mb-2">50+</div>
+              <div className="text-gray-400">Premium Games</div>
+            </div>
+            <div className="card">
+              <div className="text-4xl font-bold gradient-text mb-2">10K+</div>
+              <div className="text-gray-400">Active Players</div>
+            </div>
+            <div className="card">
+              <div className="text-4xl font-bold gradient-text mb-2">24/7</div>
+              <div className="text-gray-400">Server Uptime</div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-primary-600/20 to-purple-600/20">
+        <div className="max-w-4xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 30 }}
+            transition={{ duration: 0.8, delay: 1.2 }}
+          >
+            <h2 className="text-4xl font-bold mb-4">Ready to Start Gaming?</h2>
+            <p className="text-xl text-gray-300 mb-8">
+              Join thousands of players and experience the best web games available
+            </p>
+            <Link href="/snake">
+              <button className="btn-primary text-lg px-8 py-4 flex items-center space-x-2 mx-auto">
+                <Play className="w-6 h-6" />
+                <span>Get Started Now</span>
+              </button>
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-8 px-4 sm:px-6 lg:px-8 border-t border-dark-700">
+        <div className="max-w-7xl mx-auto text-center">
+          <div className="flex items-center justify-center space-x-2 mb-4">
+            <div className="w-6 h-6 bg-gradient-to-r from-primary-500 to-purple-500 rounded flex items-center justify-center">
+              <Gamepad2 className="w-4 h-4 text-white" />
+            </div>
+            <span className="text-lg font-bold gradient-text">NewServer Games</span>
+          </div>
+          <p className="text-gray-400">
+            © 2024 NewServer Games. All rights reserved. | Premium Web Gaming Experience
+          </p>
+        </div>
+      </footer>
+    </div>
+  )
+}
