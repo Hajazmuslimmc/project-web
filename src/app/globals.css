@@ -1,4 +1,4 @@
-@tailwind base;
+c@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -27,5 +27,32 @@
   
   .gradient-text {
     @apply bg-gradient-to-r from-primary-400 to-purple-400 bg-clip-text text-transparent;
+  }
+  
+  .slider {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ffffff;
+    cursor: pointer;
+    border: 2px solid #1f2937;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+  
+  .slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ffffff;
+    cursor: pointer;
+    border: 2px solid #1f2937;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   }
 }
