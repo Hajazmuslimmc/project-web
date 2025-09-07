@@ -1,0 +1,25 @@
+{
+  "name": "NetworkAK - Premium Web Gaming Experience",
+  "short_name": "NetworkAK",
+  "description": "Discover and play the best web games on NetworkAK. From action-packed adventures to brain-teasing puzzles, we bring you the ultimate gaming experience.",
+  "icons": [
+    {
+      "src": "/favicon_io/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon_io/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#1a1a1a",
+  "background_color": "#1a1a1a",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "start_url": "/",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["games", "entertainment"]
+}

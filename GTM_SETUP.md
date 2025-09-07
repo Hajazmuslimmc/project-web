@@ -1,14 +1,15 @@
 # Google Tag Manager Setup
 
 ## Overview
-Google Tag Manager (GTM) has been successfully integrated into your Next.js application.
+Google Tag Manager (GTM) has been successfully integrated into your Next.js application for NetworkAK.
 
 ## Configuration
 
 ### Environment Variables
-The GTM container ID is stored in `.env.local`:
+The GTM container ID and site URL are stored in `.env.local`:
 ```
 NEXT_PUBLIC_GTM_ID=GTM-J7GBN6QH
+NEXT_PUBLIC_SITE_URL=https://networkak.com
 ```
 
 ### Files Modified/Created
@@ -35,6 +36,11 @@ To verify GTM is working:
 ## Google Tag Manager Dashboard
 
 You can manage your tags, triggers, and variables through the [Google Tag Manager dashboard](https://tagmanager.google.com/) using container ID: `GTM-J7GBN6QH`
+
+## Website Information
+- **Domain**: networkak.com
+- **GTM Container**: GTM-J7GBN6QH
+- **Environment**: Production ready
 
 ## Next Steps
 
