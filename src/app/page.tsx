@@ -37,7 +37,7 @@ export default function Home() {
 
   const upcomingGames = [
     { name: "Snake Game", genre: "Arcade", rating: 4.9, link: "/snake" },
-    { name: "Cyber Quest", genre: "RPG", rating: 4.8 },
+    { name: "chemmail Quesets", genre: "RPG", rating: 4.8, link: "/chemmail-quesets" },
     { name: "Pixel Warriors", genre: "Action", rating: 4.6 },
     { name: "Brain Teasers", genre: "Puzzle", rating: 4.9 }
   ]
