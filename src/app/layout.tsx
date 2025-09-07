@@ -105,7 +105,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const gtmId = process.env.NEXT_PUBLIC_GTM_ID || 'GTM-J7GBN6QH'
+  const gtmId = process.env.NEXT_PUBLIC_GTM_ID || 'G-WBCSXY8M1R'
 
   return (
     <html lang="en">
