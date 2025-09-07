@@ -89,7 +89,7 @@ export default function Home() {
             </h1>
             <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
               Experience the future of web gaming with our premium collection of games. 
-              From action-packed adventures to brain-teasing puzzles, we've got it all.
+              From action-packed adventures to brain-teasing puzzles, we&apos;ve got it all.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/snake">
