@@ -1,4 +1,4 @@
-# NewServer Games 🎮
+# networkak 🎮
 
 A premium web gaming platform built with Next.js, TypeScript, and Tailwind CSS. Experience the future of web gaming with stunning graphics, smooth animations, and immersive gameplay.
 
@@ -121,10 +121,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Contact
 
-- **Website**: [NewServer Games](https://newserver-games.vercel.app)
-- **Email**: contact@newservergames.com
+- **Website**: [networkak](https://networkak.com)
+- **Email**: contact@networkak.com
 - **GitHub**: [@Hajazmuslimmc](https://github.com/Hajazmuslimmc)
 
 ---
 
-Made with ❤️ by the NewServer Games Team
+Made with ❤️ by the networkak Team

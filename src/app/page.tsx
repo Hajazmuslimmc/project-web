@@ -57,7 +57,7 @@ export default function Home() {
               <div className="w-8 h-8 bg-gradient-to-r from-primary-500 to-purple-500 rounded-lg flex items-center justify-center">
                 <Gamepad2 className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold gradient-text">NewServer Games</span>
+              <span className="text-xl font-bold gradient-text">networkak</span>
             </motion.div>
             
             <motion.div 
@@ -85,7 +85,7 @@ export default function Home() {
           >
             <h1 className="text-5xl md:text-7xl font-bold mb-6">
               Welcome to{' '}
-              <span className="gradient-text">NewServer Games</span>
+              <span className="gradient-text">networkak</span>
             </h1>
             <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
               Experience the future of web gaming with our premium collection of games. 
@@ -116,7 +116,7 @@ export default function Home() {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="text-center mb-12"
           >
-            <h2 className="text-4xl font-bold mb-4">Why Choose NewServer Games?</h2>
+            <h2 className="text-4xl font-bold mb-4">Why Choose networkak?</h2>
             <p className="text-xl text-gray-300">Discover what makes us the ultimate gaming destination</p>
           </motion.div>
           
@@ -247,10 +247,10 @@ export default function Home() {
             <div className="w-6 h-6 bg-gradient-to-r from-primary-500 to-purple-500 rounded flex items-center justify-center">
               <Gamepad2 className="w-4 h-4 text-white" />
             </div>
-            <span className="text-lg font-bold gradient-text">NewServer Games</span>
+            <span className="text-lg font-bold gradient-text">networkak</span>
           </div>
           <p className="text-gray-400">
-            © 2024 NewServer Games. All rights reserved. | Premium Web Gaming Experience
+            © 2024 networkak. All rights reserved. | Premium Web Gaming Experience
           </p>
         </div>
       </footer>

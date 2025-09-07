@@ -21,7 +21,7 @@ export default function SnakePage() {
               <div className="w-8 h-8 bg-gradient-to-r from-primary-500 to-purple-500 rounded-lg flex items-center justify-center">
                 <Gamepad2 className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold gradient-text">NewServer Games</span>
+              <span className="text-xl font-bold gradient-text">networkak</span>
             </div>
           </div>
         </div>
