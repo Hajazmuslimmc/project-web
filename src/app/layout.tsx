@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import GoogleTagManager from '@/components/GoogleTagManager'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -18,9 +19,12 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const gtmId = process.env.NEXT_PUBLIC_GTM_ID || 'GTM-J7GBN6QH'
+
   return (
     <html lang="en">
       <body className={inter.className}>
+        <GoogleTagManager gtmId={gtmId} />
         <div className="min-h-screen bg-gradient-to-br from-dark-900 via-dark-800 to-dark-900">
           {children}
         </div>
