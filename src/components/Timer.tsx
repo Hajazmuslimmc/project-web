@@ -155,7 +155,7 @@ export default function Timer({ initialTime = 60, onTimeUp, className = '' }: Ti
       {/* Status */}
       <div className="text-sm text-gray-400">
         {timeLeft === 0 ? (
-          <span className="text-red-400">Time's up!</span>
+          <span className="text-red-400">Time&apos;s up!</span>
         ) : isRunning && !isPaused ? (
           <span className="text-green-400">Running</span>
         ) : isPaused ? (
