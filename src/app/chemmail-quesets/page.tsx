@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Play, Pause, RotateCcw, Trophy, Star, Zap, Palette, Eye } from 'lucide-react'
+ import { ArrowLeft, Play, Pause, RotateCcw, Trophy, Star, Zap, Palette, Eye } from 'lucide-react'
 import Link from 'next/link'
 
 interface RGBCompound {

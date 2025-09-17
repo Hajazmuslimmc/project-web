@@ -38,8 +38,9 @@ export default function Home() {
   const upcomingGames = [
     { name: "Snake Game", genre: "Arcade", rating: 4.9, link: "/snake" },
     { name: "RGB Chemistry", genre: "Puzzle", rating: 4.8, link: "/chemmail-quesets" },
-    { name: "Pixel Warriors", genre: "Action", rating: 4.6 },
-    { name: "Brain Teasers", genre: "Puzzle", rating: 4.9 }
+    { name: "Pixel Warriors", genre: "Action", rating: 4.6, link: "/pixel-warriors" },
+    { name: "Brain Teasers", genre: "Puzzle", rating: 4.9, link: "/brain-teasers" },
+    { name: "Space Shooter 3D", genre: "Action", rating: 4.7, link: "/space-shooter-3d" }
   ]
 
   return (

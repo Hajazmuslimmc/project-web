@@ -2,11 +2,13 @@
   "name": "networkak-games",
   "version": "0.1.0",
   "private": true,
+  "repository": "https://github.com/Hajazmuslimmc/project-web.git",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "push": "git add . && git commit -m \"New changes\" && git push origin main"
   },
   "dependencies": {
     "next": "14.0.4",

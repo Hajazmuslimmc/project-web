@@ -19,7 +19,7 @@ interface GameState {
   highScore: number
 }
 
-const GRID_SIZE = 20
+const GRID_SIZE = 25
 const INITIAL_SNAKE = [
   { x: 10, y: 10 },
   { x: 10, y: 11 },
@@ -41,6 +41,7 @@ export default function SnakeGame() {
 
   const gameLoopRef = useRef<NodeJS.Timeout>()
   const lastDirectionRef = useRef<string>('UP')
+  const [touchUsed, setTouchUsed] = useState(false)
 
   const generateFood = useCallback((): Position => {
     let newFood: Position
@@ -117,7 +118,7 @@ export default function SnakeGame() {
   }, [gameState.gameOver, gameState.paused, generateFood])
 
   const handleKeyPress = useCallback((event: KeyboardEvent) => {
-    if (gameState.gameOver) return
+    if (gameState.gameOver || touchUsed) return
 
     const key = event.key.toLowerCase()
     const currentDirection = lastDirectionRef.current
@@ -159,7 +160,39 @@ export default function SnakeGame() {
         resetGame()
         break
     }
-  }, [gameState.gameOver, togglePause, resetGame])
+  }, [gameState.gameOver, togglePause, resetGame, touchUsed])
+
+  // Touch controls for mobile
+  const handleTouchDirection = (dir: string) => {
+    setTouchUsed(true)
+    const currentDirection = lastDirectionRef.current
+    switch (dir) {
+      case 'UP':
+        if (currentDirection !== 'DOWN') {
+          lastDirectionRef.current = 'UP'
+          setGameState(prev => ({ ...prev, direction: 'UP' }))
+        }
+        break
+      case 'DOWN':
+        if (currentDirection !== 'UP') {
+          lastDirectionRef.current = 'DOWN'
+          setGameState(prev => ({ ...prev, direction: 'DOWN' }))
+        }
+        break
+      case 'LEFT':
+        if (currentDirection !== 'RIGHT') {
+          lastDirectionRef.current = 'LEFT'
+          setGameState(prev => ({ ...prev, direction: 'LEFT' }))
+        }
+        break
+      case 'RIGHT':
+        if (currentDirection !== 'LEFT') {
+          lastDirectionRef.current = 'RIGHT'
+          setGameState(prev => ({ ...prev, direction: 'RIGHT' }))
+        }
+        break
+    }
+  }
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyPress)
@@ -203,7 +236,7 @@ export default function SnakeGame() {
   }
 
   return (
-    <div className="flex flex-col items-center space-y-6 p-6 bg-dark-800/50 rounded-xl border border-dark-700">
+    <div className="flex flex-col items-center space-y-6 p-6 bg-dark-800/50 rounded-xl border border-dark-700 w-full max-w-full">
       {/* Game Header */}
       <div className="flex items-center justify-between w-full max-w-md">
         <div className="flex items-center space-x-4">
@@ -218,8 +251,8 @@ export default function SnakeGame() {
         </div>
       </div>
 
-      {/* Game Board */}
-      <div className="relative">
+  {/* Game Board */}
+  <div className="relative">
         <div 
           className="grid gap-0.5 p-4 bg-dark-900 rounded-lg border-2 border-dark-600"
           style={{
@@ -230,6 +263,40 @@ export default function SnakeGame() {
           {Array.from({ length: GRID_SIZE }, (_, y) =>
             Array.from({ length: GRID_SIZE }, (_, x) => renderCell(x, y))
           )}
+        </div>
+
+        {/* Mobile Touch Controls */}
+        <div className="md:hidden flex flex-col items-center mt-4 select-none">
+          <div className="flex justify-center mb-2">
+            <button
+              aria-label="Up"
+              className="w-16 h-16 bg-dark-700 rounded-full flex items-center justify-center text-primary-400 text-3xl shadow-lg active:scale-95 transition-all border-2 border-primary-600"
+              onTouchStart={() => handleTouchDirection('UP')}
+              onClick={() => handleTouchDirection('UP')}
+            >▲</button>
+          </div>
+          <div className="flex justify-center space-x-12 mb-2">
+            <button
+              aria-label="Left"
+              className="w-16 h-16 bg-dark-700 rounded-full flex items-center justify-center text-primary-400 text-3xl shadow-lg active:scale-95 transition-all border-2 border-primary-600"
+              onTouchStart={() => handleTouchDirection('LEFT')}
+              onClick={() => handleTouchDirection('LEFT')}
+            >◀</button>
+            <button
+              aria-label="Right"
+              className="w-16 h-16 bg-dark-700 rounded-full flex items-center justify-center text-primary-400 text-3xl shadow-lg active:scale-95 transition-all border-2 border-primary-600"
+              onTouchStart={() => handleTouchDirection('RIGHT')}
+              onClick={() => handleTouchDirection('RIGHT')}
+            >▶</button>
+          </div>
+          <div className="flex justify-center">
+            <button
+              aria-label="Down"
+              className="w-16 h-16 bg-dark-700 rounded-full flex items-center justify-center text-primary-400 text-3xl shadow-lg active:scale-95 transition-all border-2 border-primary-600"
+              onTouchStart={() => handleTouchDirection('DOWN')}
+              onClick={() => handleTouchDirection('DOWN')}
+            >▼</button>
+          </div>
         </div>
 
         {/* Game Over Overlay */}
@@ -292,12 +359,11 @@ export default function SnakeGame() {
 
       {/* Instructions */}
       <div className="text-center text-sm text-gray-400 max-w-md">
-        <p className="mb-2">Use <kbd className="px-2 py-1 bg-dark-700 rounded">WASD</kbd> or <kbd className="px-2 py-1 bg-dark-700 rounded">Arrow Keys</kbd> to move</p>
+        <p className="mb-2 md:block hidden">Use <kbd className="px-2 py-1 bg-dark-700 rounded">WASD</kbd> or <kbd className="px-2 py-1 bg-dark-700 rounded">Arrow Keys</kbd> to move</p>
         <p className="mb-2">Press <kbd className="px-2 py-1 bg-dark-700 rounded">SPACE</kbd> to pause/resume</p>
         <p>Press <kbd className="px-2 py-1 bg-dark-700 rounded">R</kbd> to reset</p>
+        <p className="mb-2 md:hidden block">Tap the arrows to move on mobile. Once you use touch controls, keyboard movement is disabled for this session.</p>
       </div>
     </div>
   )
 }
-
-
