@@ -165,8 +165,12 @@ export default function Home() {
               >
                 {game.link ? (
                   <Link href={game.link}>
-                    <div className="w-full h-48 bg-gradient-to-br from-primary-600 to-purple-600 rounded-lg mb-4 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
-                      <Gamepad2 className="w-16 h-16 text-white/80" />
+                    <div className="w-full h-48 bg-gradient-to-br from-primary-600 to-purple-600 rounded-lg mb-4 flex items-center justify-center group-hover:scale-105 transition-transform duration-300 overflow-hidden">
+                      {game.name === "Space Shooter 3D" ? (
+                        <img src="/space-shooter.png" alt="Space Shooter 3D" className="w-full h-full object-cover" />
+                      ) : (
+                        <Gamepad2 className="w-16 h-16 text-white/80" />
+                      )}
                     </div>
                     <h3 className="text-xl font-semibold mb-2">{game.name}</h3>
                     <p className="text-gray-400 mb-3">{game.genre}</p>
@@ -177,8 +181,12 @@ export default function Home() {
                   </Link>
                 ) : (
                   <>
-                    <div className="w-full h-48 bg-gradient-to-br from-primary-600 to-purple-600 rounded-lg mb-4 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
-                      <Gamepad2 className="w-16 h-16 text-white/80" />
+                    <div className="w-full h-48 bg-gradient-to-br from-primary-600 to-purple-600 rounded-lg mb-4 flex items-center justify-center group-hover:scale-105 transition-transform duration-300 overflow-hidden">
+                      {game.name === "Space Shooter 3D" ? (
+                        <img src="/space-shooter.png" alt="Space Shooter 3D" className="w-full h-full object-cover" />
+                      ) : (
+                        <Gamepad2 className="w-16 h-16 text-white/80" />
+                      )}
                     </div>
                     <h3 className="text-xl font-semibold mb-2">{game.name}</h3>
                     <p className="text-gray-400 mb-3">{game.genre}</p>
