@@ -38,6 +38,15 @@ export default function StarlightPage() {
         Implement client-side rendering to attach cape textures and cosmetic layers. Store user textures locally or
         load from user-provided URLs. Do not attempt to spoof server-side skin/cape data.
       </p>
+
+      <div className="mt-6">
+        <a
+          href="https://github.com/Hajazmuslimmc/project-web/releases/download/v0.1.0-1.21.4/starlight-client-1.21.4.zip"
+          className="inline-block bg-primary-600 text-white px-4 py-2 rounded-lg"
+        >
+          Download Starlight Client (1.21.4)
+        </a>
+      </div>
     </div>
   )
 }
