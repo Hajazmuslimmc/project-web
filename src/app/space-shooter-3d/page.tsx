@@ -18,8 +18,8 @@ export default function SpaceShooter3DPage() {
             </Link>
 
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-primary-500 to-purple-500 rounded-lg flex items-center justify-center">
-                <Gamepad2 className="w-5 h-5 text-white" />
+              <div className="w-8 h-8 bg-gradient-to-r from-primary-500 to-purple-500 rounded-lg flex items-center justify-center overflow-hidden">
+                <img src="/space-shooter.png" alt="Space Shooter" className="w-full h-full object-cover" />
               </div>
               <span className="text-xl font-bold gradient-text">networkak</span>
             </div>
