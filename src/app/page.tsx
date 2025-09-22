@@ -249,6 +249,25 @@ export default function Home() {
         </div>
       </section>
 
+      {/* About Section */}
+      <section id="about" className="py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 30 }}
+            transition={{ duration: 0.8, delay: 1.4 }}
+          >
+            <h1 className="text-4xl font-bold mb-6">About Us</h1>
+            <p className="text-xl text-gray-300 leading-relaxed">
+              This website was created by <strong className="text-primary-400">Firepvp</strong> and <strong className="text-primary-400">Iclasser</strong>.
+              We built it with the goal of sharing our projects and ideas with the community.
+              Everything here is designed and developed by us, and we're excited to keep improving
+              and adding new features along the way.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="py-8 px-4 sm:px-6 lg:px-8 border-t border-dark-700">
         <div className="max-w-7xl mx-auto text-center">
