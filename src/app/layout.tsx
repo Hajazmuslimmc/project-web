@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import GoogleTagManager from '@/components/GoogleTagManager'
 import StructuredData from '@/components/StructuredData'
+import { AuthProvider } from '@/contexts/AuthContext'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -101,9 +102,11 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <GoogleTagManager gtmId={gtmId} />
-        <div className="min-h-screen bg-gradient-to-br from-dark-900 via-dark-800 to-dark-900">
-          {children}
-        </div>
+        <AuthProvider>
+          <div className="min-h-screen bg-gradient-to-br from-dark-900 via-dark-800 to-dark-900">
+            {children}
+          </div>
+        </AuthProvider>
       </body>
     </html>
   )

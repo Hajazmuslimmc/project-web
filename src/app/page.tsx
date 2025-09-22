@@ -2,15 +2,31 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Play, Users, Trophy, Zap, ArrowRight, Gamepad2, Star, TrendingUp } from 'lucide-react'
+import { Play, Users, Trophy, Zap, ArrowRight, Gamepad2, Star, TrendingUp, LogIn, LogOut, User, Pickaxe } from 'lucide-react'
 import Link from 'next/link'
+import { useAuth } from '@/contexts/AuthContext'
+import { useRouter } from 'next/navigation'
 
 export default function Home() {
   const [isLoaded, setIsLoaded] = useState(false)
+  const { user, signOut, signInWithMicrosoft } = useAuth()
+  const router = useRouter()
 
   useEffect(() => {
     setIsLoaded(true)
   }, [])
+
+  const handleSignOut = async () => {
+    await signOut()
+  }
+
+  const handleSignIn = async () => {
+    try {
+      await signInWithMicrosoft()
+    } catch (error) {
+      console.error('Sign in error:', error)
+    }
+  }
 
   const features = [
     {
@@ -61,16 +77,41 @@ export default function Home() {
               <span className="text-xl font-bold gradient-text">networkak</span>
             </motion.div>
             
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: isLoaded ? 1 : 0, x: isLoaded ? 0 : 20 }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="hidden md:flex space-x-8"
+              className="flex items-center space-x-4"
             >
-              <a href="#games" className="text-gray-300 hover:text-primary-400 transition-colors">Games</a>
-              <a href="#features" className="text-gray-300 hover:text-primary-400 transition-colors">Features</a>
-              <a href="#about" className="text-gray-300 hover:text-primary-400 transition-colors">About</a>
-              <a href="#contact" className="text-gray-300 hover:text-primary-400 transition-colors">Contact</a>
+              <div className="hidden md:flex space-x-8">
+                <a href="#games" className="text-gray-300 hover:text-primary-400 transition-colors">Games</a>
+                <a href="#features" className="text-gray-300 hover:text-primary-400 transition-colors">Features</a>
+                <a href="#about" className="text-gray-300 hover:text-primary-400 transition-colors">About</a>
+                <a href="#contact" className="text-gray-300 hover:text-primary-400 transition-colors">Contact</a>
+              </div>
+              {user ? (
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-2 text-white">
+                    <User className="w-4 h-4" />
+                    <span className="text-sm">{user.displayName || user.email}</span>
+                  </div>
+                  <button
+                    onClick={handleSignOut}
+                    className="btn-secondary flex items-center space-x-2"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Sign Out</span>
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={handleSignIn}
+                  className="btn-primary flex items-center space-x-2"
+                >
+                  <LogIn className="w-4 h-4" />
+                  <span>Sign In</span>
+                </button>
+              )}
             </motion.div>
           </div>
         </div>
