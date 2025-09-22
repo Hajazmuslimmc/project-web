@@ -261,7 +261,7 @@ export default function Home() {
             <p className="text-xl text-gray-300 leading-relaxed">
               This website was created by <strong className="text-primary-400">Firepvp</strong> and <strong className="text-primary-400">Iclasser</strong>.
               We built it with the goal of sharing our projects and ideas with the community.
-              Everything here is designed and developed by us, and we're excited to keep improving
+              Everything here is designed and developed by us, and we&#39;re excited to keep improving
               and adding new features along the way.
             </p>
           </motion.div>
