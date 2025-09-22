@@ -36,7 +36,7 @@ export default function AboutPage() {
       <h2>Contribute</h2>
       <p>
         Contributions are welcome — submit issues or pull requests on GitHub. If
-        you'd like help shipping a feature or publishing a build, open an
+        you&#39;d like help shipping a feature or publishing a build, open an
         issue and tag it <code>help wanted</code>.
       </p>
     </div>
