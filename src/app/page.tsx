@@ -258,12 +258,21 @@ export default function Home() {
             transition={{ duration: 0.8, delay: 1.4 }}
           >
             <h1 className="text-4xl font-bold mb-6">About Us</h1>
-            <p className="text-xl text-gray-300 leading-relaxed">
-              This website was created by <strong className="text-primary-400">Firepvp</strong> and <strong className="text-primary-400">Iclasser</strong>.
-              We built it with the goal of sharing our projects and ideas with the community.
-              Everything here is designed and developed by us, and we&#39;re excited to keep improving
-              and adding new features along the way.
+            <p className="text-xl text-gray-300 leading-relaxed mb-6">
+              This website is made by Fc firecold if you have any questions join our discord server.
+              THis website is A Big Network we have games Madiea and helpful tools that devlopers
+              and you can use this website partners with Hajaz a large company and iclasser.
+
+
             </p>
+            <a
+              href="https://discord.gg/5KrnJFbK5y"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary inline-flex items-center space-x-2"
+            >
+              <span>Discord</span>
+            </a>
           </motion.div>
         </div>
       </section>
