@@ -11,6 +11,8 @@ interface SimpleUser {
   banner?: string;
   role: 'user' | 'mod' | 'admin';
   isBanned?: boolean;
+  followers: string[];
+  following: string[];
   createdAt: string;
 }
 
@@ -104,6 +106,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       profilePhoto: profilePhoto || undefined,
       role: isFirstUser ? 'admin' : 'user', // First user is admin
       isBanned: false,
+      followers: [],
+      following: [],
       createdAt: new Date().toISOString(),
     };
 

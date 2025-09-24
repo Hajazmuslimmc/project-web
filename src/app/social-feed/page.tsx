@@ -148,6 +148,46 @@ export default function SocialFeedPage() {
     }
   };
 
+  const handleFollow = (userId: string, username: string) => {
+    if (!user) return;
+
+    const allUsers = JSON.parse(localStorage.getItem('allUsers') || '{}');
+    const currentUserKey = user.displayName?.toLowerCase();
+    const targetUserKey = username.toLowerCase();
+
+    if (isUserFollowing(userId)) {
+      // Unfollow
+      if (allUsers[targetUserKey]?.followers) {
+        allUsers[targetUserKey].followers = allUsers[targetUserKey].followers.filter((id: string) => id !== user.uid);
+      }
+      if (allUsers[currentUserKey]?.following) {
+        allUsers[currentUserKey].following = allUsers[currentUserKey].following.filter((name: string) => name !== username);
+      }
+    } else {
+      // Follow
+      if (!allUsers[targetUserKey].followers) {
+        allUsers[targetUserKey].followers = [];
+      }
+      if (!allUsers[currentUserKey].following) {
+        allUsers[currentUserKey].following = [];
+      }
+
+      allUsers[targetUserKey].followers.push(user.uid);
+      allUsers[currentUserKey].following.push(username);
+    }
+
+    localStorage.setItem('allUsers', JSON.stringify(allUsers));
+  };
+
+  const isUserFollowing = (userId: string) => {
+    if (!user) return false;
+    return user.following?.some(name => {
+      const allUsers = JSON.parse(localStorage.getItem('allUsers') || '{}');
+      const userData = Object.values(allUsers).find((u: any) => u.uid === userId) as any;
+      return userData?.displayName === name;
+    }) || false;
+  };
+
   const isValidUrl = (string: string) => {
     try {
       new URL(string);
@@ -369,42 +409,58 @@ export default function SocialFeedPage() {
                   </div>
                 )}
 
-                {/* Post Actions */}
-                <div className="flex items-center justify-between pt-4 border-t border-dark-600">
-                  <button
-                    onClick={() => likePost(post.id)}
-                    className={`flex items-center space-x-2 transition-colors ${
-                      user && post.likes.includes(user.uid)
-                        ? 'text-red-400 hover:text-red-300'
-                        : 'text-gray-400 hover:text-white'
-                    }`}
-                  >
-                    <span>{user && post.likes.includes(user.uid) ? '❤️' : '🤍'}</span>
-                    <span className="text-sm">{post.likes.length}</span>
-                  </button>
+                      {/* Post Actions */}
+                      <div className="flex items-center justify-between pt-4 border-t border-dark-600">
+                        <div className="flex items-center space-x-4">
+                          <button
+                            onClick={() => likePost(post.id)}
+                            className={`flex items-center space-x-2 transition-colors ${
+                              user && post.likes.includes(user.uid)
+                                ? 'text-red-400 hover:text-red-300'
+                                : 'text-gray-400 hover:text-white'
+                            }`}
+                          >
+                            <span>{user && post.likes.includes(user.uid) ? '❤️' : '🤍'}</span>
+                            <span className="text-sm">{post.likes.length}</span>
+                          </button>
 
-                  {/* Admin/Mod Actions */}
-                  {user && (user.role === 'admin' || user.role === 'mod') && (
-                    <div className="flex items-center space-x-2">
-                      <button
-                        onClick={() => deletePost(post.id)}
-                        className="text-red-400 hover:text-red-300 text-sm px-2 py-1 rounded hover:bg-red-900/20 transition-colors"
-                        title="Delete post (Admin/Mod only)"
-                      >
-                        🗑️ Delete
-                      </button>
-                      {user.role === 'admin' && (
-                        <button
-                          onClick={() => banUser(post.authorId)}
-                          className="text-orange-400 hover:text-orange-300 text-sm px-2 py-1 rounded hover:bg-orange-900/20 transition-colors"
-                          title="Ban user (Admin only)"
-                        >
-                          🚫 Ban
-                        </button>
-                      )}
-                    </div>
-                  )}
-                </div>
+                          {/* Follow Button */}
+                          {user && user.uid !== post.authorId && (
+                            <button
+                              onClick={() => handleFollow(post.authorId, post.authorName)}
+                              className={`text-sm px-3 py-1 rounded transition-colors ${
+                                isUserFollowing(post.authorId)
+                                  ? 'bg-primary-600 text-white hover:bg-primary-700'
+                                  : 'bg-gray-600 text-gray-300 hover:bg-gray-500'
+                              }`}
+                            >
+                              {isUserFollowing(post.authorId) ? 'Following' : 'Follow'}
+                            </button>
+                          )}
+                        </div>
+
+                        {/* Admin/Mod Actions */}
+                        {user && (user.role === 'admin' || user.role === 'mod') && (
+                          <div className="flex items-center space-x-2">
+                            <button
+                              onClick={() => deletePost(post.id)}
+                              className="text-red-400 hover:text-red-300 text-sm px-2 py-1 rounded hover:bg-red-900/20 transition-colors"
+                              title="Delete post (Admin/Mod only)"
+                            >
+                              🗑️ Delete
+                            </button>
+                            {user.role === 'admin' && (
+                              <button
+                                onClick={() => banUser(post.authorId)}
+                                className="text-orange-400 hover:text-orange-300 text-sm px-2 py-1 rounded hover:bg-orange-900/20 transition-colors"
+                                title="Ban user (Admin only)"
+                              >
+                                🚫 Ban
+                              </button>
+                            )}
+                          </div>
+                        )}
+                      </div>
               </div>
             ))
           )}

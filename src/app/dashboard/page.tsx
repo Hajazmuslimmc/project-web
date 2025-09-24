@@ -43,6 +43,14 @@ export default function DashboardPage() {
       bgColor: 'bg-blue-500/10 border-blue-500/20'
     },
     {
+      title: 'Leaderboards',
+      description: 'Check your ranking and compete',
+      icon: <Trophy className="w-8 h-8" />,
+      href: '/leaderboards',
+      color: 'from-yellow-600 to-orange-600',
+      bgColor: 'bg-yellow-500/10 border-yellow-500/20'
+    },
+    {
       title: 'FC Messenger',
       description: 'Chat with the community',
       icon: <MessageCircle className="w-8 h-8" />,
