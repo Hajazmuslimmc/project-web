@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
-export default function SignInPage() {
+export default function SignUpPage() {
   const { user, loading, signInWithCustom } = useAuth();
   const router = useRouter();
   const [username, setUsername] = useState('');
@@ -58,8 +58,9 @@ export default function SignInPage() {
     setIsSubmitting(true);
     try {
       await signInWithCustom(username.trim());
-    } catch (error) {
-      setError('Failed to sign in. Please try again.');
+      // Success - user will be redirected by useEffect
+    } catch (error: any) {
+      setError(error.message || 'Failed to create account. Please try again.');
       setCorrectAnswer(generateCaptcha());
       setCaptchaAnswer('');
     } finally {
@@ -89,10 +90,10 @@ export default function SignInPage() {
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <h2 className="mt-6 text-3xl font-bold text-white">
-            Welcome Back
+            Create Your Account
           </h2>
           <p className="mt-2 text-sm text-gray-300">
-            Sign in to your NetworkAK account
+            Join NetworkAK and start gaming instantly
           </p>
         </div>
 
@@ -100,7 +101,7 @@ export default function SignInPage() {
           <div className="space-y-4">
             <div>
               <label htmlFor="username" className="block text-sm font-medium text-gray-300 mb-2">
-                Enter Your Username
+                Choose Your Username
               </label>
               <input
                 id="username"
@@ -168,26 +169,26 @@ export default function SignInPage() {
               {isSubmitting ? (
                 <div className="flex items-center">
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Signing In...
+                  Creating Account...
                 </div>
               ) : (
-                'Sign In'
+                'Create Account'
               )}
             </button>
           </div>
 
-          <div className="text-center space-y-2">
+          <div className="text-center">
             <p className="text-sm text-gray-400">
-              Don't have an account?{' '}
-              <Link href="/auth/signup" className="text-primary-400 hover:text-primary-300 underline">
-                Sign up here
+              Already have an account?{' '}
+              <Link href="/auth/signin" className="text-primary-400 hover:text-primary-300 underline">
+                Sign in here
               </Link>
             </p>
-            <p className="text-sm text-gray-400">
-              By signing in, you agree to our{' '}
-              <a href="/privacy-policy" className="text-primary-400 hover:text-primary-300 underline">
+            <p className="text-sm text-gray-400 mt-2">
+              By signing up, you agree to our{' '}
+              <Link href="/privacy-policy" className="text-primary-400 hover:text-primary-300 underline">
                 Privacy Policy
-              </a>
+              </Link>
             </p>
           </div>
         </form>

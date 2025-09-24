@@ -105,13 +105,20 @@ export default function Home() {
                   </button>
                 </div>
               ) : (
-                <button
-                  onClick={handleSignIn}
-                  className="btn-primary flex items-center space-x-2"
-                >
-                  <LogIn className="w-4 h-4" />
-                  <span>Sign In</span>
-                </button>
+                <div className="flex items-center space-x-3">
+                  <Link href="/auth/signin">
+                    <button className="btn-secondary flex items-center space-x-2">
+                      <LogIn className="w-4 h-4" />
+                      <span>Sign In</span>
+                    </button>
+                  </Link>
+                  <Link href="/auth/signup">
+                    <button className="btn-primary flex items-center space-x-2">
+                      <User className="w-4 h-4" />
+                      <span>Sign Up</span>
+                    </button>
+                  </Link>
+                </div>
               )}
             </motion.div>
           </div>
