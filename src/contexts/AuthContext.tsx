@@ -14,7 +14,7 @@ interface AuthContextType {
   user: SimpleUser | null;
   loading: boolean;
   signInWithMicrosoft: () => Promise<void>;
-  signInWithCustom: (username: string) => Promise<void>;
+  signInWithCustom: (username: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -56,35 +56,50 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     alert('Microsoft authentication is not yet implemented. Please use username sign-in.');
   };
 
-  const signInWithCustom = async (username: string) => {
+  const signInWithCustom = async (username: string, password: string) => {
     if (!username.trim()) {
       throw new Error('Please enter a username');
+    }
+
+    if (!password.trim()) {
+      throw new Error('Please enter a password');
     }
 
     if (username.length < 3) {
       throw new Error('Username must be at least 3 characters long');
     }
 
+    if (password.length < 6) {
+      throw new Error('Password must be at least 6 characters long');
+    }
+
     // Check if username already exists
     const existingUsers = JSON.parse(localStorage.getItem('allUsers') || '{}');
-    if (existingUsers[username.toLowerCase()]) {
-      // User exists, sign them in
-      const userData = existingUsers[username.toLowerCase()];
+    const userKey = username.toLowerCase();
+
+    if (existingUsers[userKey]) {
+      // User exists, check password
+      const userData = existingUsers[userKey];
+      if (userData.password !== password) {
+        throw new Error('Incorrect password');
+      }
+      // Sign them in
       setUser(userData);
       localStorage.setItem('simpleUser', JSON.stringify(userData));
       return;
     }
 
     // Create new user
-    const newUser: SimpleUser = {
+    const newUser: SimpleUser & { password: string } = {
       uid: `user_${username}_${Date.now()}`,
       displayName: username,
       email: `${username}@fc`,
+      password: password,
       createdAt: new Date().toISOString(),
     };
 
     // Store user in the "database" (localStorage)
-    existingUsers[username.toLowerCase()] = newUser;
+    existingUsers[userKey] = newUser;
     localStorage.setItem('allUsers', JSON.stringify(existingUsers));
 
     // Sign in the user

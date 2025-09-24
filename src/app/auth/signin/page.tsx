@@ -9,6 +9,7 @@ export default function SignInPage() {
   const { user, loading, signInWithCustom } = useAuth();
   const router = useRouter();
   const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -27,14 +28,24 @@ export default function SignInPage() {
       return;
     }
 
+    if (!password.trim()) {
+      setError('Please enter a password');
+      return;
+    }
+
     if (username.length < 3) {
       setError('Username must be at least 3 characters long');
       return;
     }
 
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      return;
+    }
+
     setIsSubmitting(true);
     try {
-      await signInWithCustom(username.trim());
+      await signInWithCustom(username.trim(), password.trim());
     } catch (error: any) {
       setError(error.message || 'Failed to sign in. Please try again.');
     } finally {
@@ -70,7 +81,7 @@ export default function SignInPage() {
           <div className="space-y-4">
             <div>
               <label htmlFor="username" className="block text-sm font-medium text-gray-300 mb-2">
-                Enter Your Username
+                Username
               </label>
               <input
                 id="username"
@@ -83,9 +94,23 @@ export default function SignInPage() {
                 className="appearance-none relative block w-full px-3 py-3 border border-gray-600 placeholder-gray-400 text-white bg-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
                 placeholder="Enter your username"
               />
-              <p className="mt-2 text-sm text-gray-400">
-                Enter any username to sign in or create a new account
-              </p>
+            </div>
+
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
+                Password
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="current-password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="appearance-none relative block w-full px-3 py-3 border border-gray-600 placeholder-gray-400 text-white bg-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
+                placeholder="Enter your password"
+              />
             </div>
           </div>
 
