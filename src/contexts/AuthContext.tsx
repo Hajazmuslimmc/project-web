@@ -8,6 +8,7 @@ interface SimpleUser {
   displayName: string;
   email: string;
   profilePhoto?: string;
+  banner?: string;
   createdAt: string;
 }
 

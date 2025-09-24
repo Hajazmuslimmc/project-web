@@ -104,6 +104,12 @@ export default function Home() {
                     )}
                     <span className="text-sm">{user.displayName || user.email}</span>
                   </div>
+                  <Link href="/settings">
+                    <button className="btn-secondary flex items-center space-x-2">
+                      <User className="w-4 h-4" />
+                      <span>Settings</span>
+                    </button>
+                  </Link>
                   <button
                     onClick={handleSignOut}
                     className="btn-secondary flex items-center space-x-2"
