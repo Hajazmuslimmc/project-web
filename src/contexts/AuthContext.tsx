@@ -9,6 +9,8 @@ interface SimpleUser {
   email: string;
   profilePhoto?: string;
   banner?: string;
+  role: 'user' | 'mod' | 'admin';
+  isBanned?: boolean;
   createdAt: string;
 }
 
@@ -91,13 +93,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       return;
     }
 
-    // Create new user
+    // Create new user (first user becomes admin, others are regular users)
+    const isFirstUser = Object.keys(existingUsers).length === 0;
+
     const newUser: SimpleUser & { password: string } = {
       uid: `user_${username}_${Date.now()}`,
       displayName: username,
       email: `${username}@fc`,
       password: password,
       profilePhoto: profilePhoto || undefined,
+      role: isFirstUser ? 'admin' : 'user', // First user is admin
+      isBanned: false,
       createdAt: new Date().toISOString(),
     };
 

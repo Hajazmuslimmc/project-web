@@ -111,12 +111,22 @@ export default function FCMessengerPage() {
   const sendMessage = () => {
     if (!user || !newMessage.trim()) return;
 
+    const content = newMessage.trim();
+
+    // Check for admin commands
+    if (content.startsWith('/')) {
+      handleAdminCommand(content);
+      setNewMessage('');
+      setIsTyping(false);
+      return;
+    }
+
     const message: Message = {
       id: `msg_${Date.now()}_${Math.random()}`,
       senderId: user.uid,
       senderName: user.displayName || 'Anonymous',
       senderPhoto: user.profilePhoto,
-      content: newMessage.trim(),
+      content: content,
       timestamp: Date.now(),
       type: 'text',
     };
@@ -127,6 +137,179 @@ export default function FCMessengerPage() {
 
     setNewMessage('');
     setIsTyping(false);
+  };
+
+  const handleAdminCommand = (command: string) => {
+    if (!user || (user.role !== 'admin' && user.role !== 'mod')) {
+      // Add system message for unauthorized command
+      const systemMessage: Message = {
+        id: `msg_${Date.now()}_${Math.random()}`,
+        senderId: 'system',
+        senderName: 'System',
+        senderPhoto: undefined,
+        content: 'You do not have permission to use admin commands.',
+        timestamp: Date.now(),
+        type: 'system',
+      };
+      const updatedMessages = [...messages, systemMessage];
+      setMessages(updatedMessages);
+      localStorage.setItem('fcMessages', JSON.stringify(updatedMessages));
+      return;
+    }
+
+    const parts = command.split(' ');
+    const cmd = parts[0].toLowerCase();
+    const targetUser = parts[1];
+
+    switch (cmd) {
+      case '/ban':
+        if (!targetUser) {
+          addSystemMessage('Usage: /ban <username>');
+          return;
+        }
+        banUser(targetUser);
+        break;
+
+      case '/banip':
+        if (!targetUser) {
+          addSystemMessage('Usage: /banip <username> (simulated IP ban)');
+          return;
+        }
+        banUser(targetUser, true);
+        break;
+
+      case '/unban':
+        if (!targetUser) {
+          addSystemMessage('Usage: /unban <username>');
+          return;
+        }
+        unbanUser(targetUser);
+        break;
+
+      case '/delete':
+        const messageId = parts[1];
+        if (!messageId) {
+          addSystemMessage('Usage: /delete <message_id> (hover over message to see ID)');
+          return;
+        }
+        deleteMessage(messageId);
+        break;
+
+      case '/clear':
+        clearChat();
+        break;
+
+      case '/promote':
+        if (!targetUser) {
+          addSystemMessage('Usage: /promote <username> (admin only)');
+          return;
+        }
+        if (user.role === 'admin') {
+          promoteUser(targetUser);
+        } else {
+          addSystemMessage('Only admins can promote users.');
+        }
+        break;
+
+      case '/kick':
+        if (!targetUser) {
+          addSystemMessage('Usage: /kick <username>');
+          return;
+        }
+        kickUser(targetUser);
+        break;
+
+      default:
+        addSystemMessage(`Unknown command: ${cmd}. Available commands: /ban, /banip, /unban, /delete, /clear, /promote, /kick`);
+    }
+  };
+
+  const addSystemMessage = (content: string) => {
+    const systemMessage: Message = {
+      id: `msg_${Date.now()}_${Math.random()}`,
+      senderId: 'system',
+      senderName: 'System',
+      senderPhoto: undefined,
+      content: content,
+      timestamp: Date.now(),
+      type: 'system',
+    };
+    const updatedMessages = [...messages, systemMessage];
+    setMessages(updatedMessages);
+    localStorage.setItem('fcMessages', JSON.stringify(updatedMessages));
+  };
+
+  const banUser = (username: string, ipBan = false) => {
+    if (!user) return;
+    const allUsers = JSON.parse(localStorage.getItem('allUsers') || '{}');
+    const userKey = username.toLowerCase();
+
+    if (allUsers[userKey]) {
+      allUsers[userKey].isBanned = true;
+      localStorage.setItem('allUsers', JSON.stringify(allUsers));
+      addSystemMessage(`${username} has been ${ipBan ? 'IP ' : ''}banned by ${user.displayName}.`);
+    } else {
+      addSystemMessage(`User ${username} not found.`);
+    }
+  };
+
+  const unbanUser = (username: string) => {
+    if (!user) return;
+    const allUsers = JSON.parse(localStorage.getItem('allUsers') || '{}');
+    const userKey = username.toLowerCase();
+
+    if (allUsers[userKey]) {
+      allUsers[userKey].isBanned = false;
+      localStorage.setItem('allUsers', JSON.stringify(allUsers));
+      addSystemMessage(`${username} has been unbanned by ${user.displayName}.`);
+    } else {
+      addSystemMessage(`User ${username} not found.`);
+    }
+  };
+
+  const deleteMessage = (messageId: string) => {
+    if (!user) return;
+    const updatedMessages = messages.filter(msg => msg.id !== messageId);
+    setMessages(updatedMessages);
+    localStorage.setItem('fcMessages', JSON.stringify(updatedMessages));
+    addSystemMessage(`Message deleted by ${user.displayName}.`);
+  };
+
+  const clearChat = () => {
+    if (!user) return;
+    setMessages([]);
+    localStorage.setItem('fcMessages', JSON.stringify([]));
+    addSystemMessage(`Chat cleared by ${user.displayName}.`);
+  };
+
+  const promoteUser = (username: string) => {
+    if (!user) return;
+    const allUsers = JSON.parse(localStorage.getItem('allUsers') || '{}');
+    const userKey = username.toLowerCase();
+
+    if (allUsers[userKey]) {
+      allUsers[userKey].role = 'mod';
+      localStorage.setItem('allUsers', JSON.stringify(allUsers));
+      addSystemMessage(`${username} has been promoted to moderator by ${user.displayName}.`);
+    } else {
+      addSystemMessage(`User ${username} not found.`);
+    }
+  };
+
+  const kickUser = (username: string) => {
+    if (!user) return;
+    // For now, just mark as temporarily banned (they can sign back in)
+    const allUsers = JSON.parse(localStorage.getItem('allUsers') || '{}');
+    const userKey = username.toLowerCase();
+
+    if (allUsers[userKey]) {
+      // Reset their online status
+      allUsers[userKey].lastOnline = 0;
+      localStorage.setItem('allUsers', JSON.stringify(allUsers));
+      addSystemMessage(`${username} has been kicked by ${user.displayName}.`);
+    } else {
+      addSystemMessage(`User ${username} not found.`);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
