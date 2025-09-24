@@ -79,7 +79,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         // Store credentials for future auto-login
         localStorage.setItem('customCredentials', JSON.stringify({ username, password }));
         return;
-      } catch (signInError) {
+      } catch (signInError: any) {
+        // If it's not "user not found", rethrow the error
+        if (signInError.code !== 'auth/user-not-found') {
+          throw signInError;
+        }
+
         // Account doesn't exist, create it
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         // Update display name
@@ -89,9 +94,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         // Store credentials for future auto-login
         localStorage.setItem('customCredentials', JSON.stringify({ username, password }));
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error with custom authentication:', error);
-      throw error;
+      // Provide more specific error messages
+      if (error.code === 'auth/email-already-in-use') {
+        throw new Error('This username is already taken. Please choose a different one.');
+      } else if (error.code === 'auth/weak-password') {
+        throw new Error('Password is too weak. Please try again.');
+      } else if (error.code === 'auth/invalid-email') {
+        throw new Error('Invalid email format.');
+      } else if (error.code === 'auth/operation-not-allowed') {
+        throw new Error('Email/password authentication is not enabled. Please enable it in Firebase Console.');
+      } else {
+        throw new Error(error.message || 'Failed to create account. Please try again.');
+      }
     }
   };
 
