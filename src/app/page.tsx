@@ -62,7 +62,7 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 bg-dark-900/80 backdrop-blur-md border-b border-dark-700">
+      <nav className="fixed top-0 w-full z-50 bg-gradient-to-r from-dark-900/90 via-dark-800/90 to-dark-900/90 backdrop-blur-md border-b border-primary-500/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <motion.div 
@@ -293,23 +293,32 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-primary-600/20 to-purple-600/20">
-        <div className="max-w-4xl mx-auto text-center">
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-primary-600/20 via-purple-600/20 to-pink-600/20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-red-600/10"></div>
+        <div className="max-w-4xl mx-auto text-center relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 30 }}
             transition={{ duration: 0.8, delay: 1.2 }}
           >
-            <h2 className="text-4xl font-bold mb-4">Ready to Start Gaming?</h2>
+            <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-white to-primary-200 bg-clip-text text-transparent">Ready to Start Gaming?</h2>
             <p className="text-xl text-gray-300 mb-8">
               Join thousands of players and experience the best web games available
             </p>
-            <Link href="/snake">
-              <button className="btn-primary text-lg px-8 py-4 flex items-center space-x-2 mx-auto">
-                <Play className="w-6 h-6" />
-                <span>Get Started Now</span>
-              </button>
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/snake">
+                <button className="bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 text-white text-lg px-8 py-4 rounded-lg flex items-center space-x-2 mx-auto transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-primary-500/25">
+                  <Play className="w-6 h-6" />
+                  <span>Get Started Now</span>
+                </button>
+              </Link>
+              <Link href="/auth/signup">
+                <button className="bg-gradient-to-r from-secondary-600 to-red-600 hover:from-secondary-700 hover:to-red-700 text-white text-lg px-8 py-4 rounded-lg flex items-center space-x-2 mx-auto transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-secondary-500/25">
+                  <Users className="w-6 h-6" />
+                  <span>Join Community</span>
+                </button>
+              </Link>
+            </div>
           </motion.div>
         </div>
       </section>
