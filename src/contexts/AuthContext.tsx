@@ -7,6 +7,7 @@ interface SimpleUser {
   uid: string;
   displayName: string;
   email: string;
+  profilePhoto?: string;
   createdAt: string;
 }
 
@@ -14,7 +15,7 @@ interface AuthContextType {
   user: SimpleUser | null;
   loading: boolean;
   signInWithMicrosoft: () => Promise<void>;
-  signInWithCustom: (username: string, password: string) => Promise<void>;
+  signInWithCustom: (username: string, password: string, profilePhoto?: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -56,7 +57,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     alert('Microsoft authentication is not yet implemented. Please use username sign-in.');
   };
 
-  const signInWithCustom = async (username: string, password: string) => {
+  const signInWithCustom = async (username: string, password: string, profilePhoto?: string) => {
     if (!username.trim()) {
       throw new Error('Please enter a username');
     }
@@ -95,6 +96,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       displayName: username,
       email: `${username}@fc`,
       password: password,
+      profilePhoto: profilePhoto || undefined,
       createdAt: new Date().toISOString(),
     };
 

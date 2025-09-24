@@ -92,8 +92,16 @@ export default function Home() {
               </div>
               {user ? (
                 <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-2 text-white">
-                    <User className="w-4 h-4" />
+                  <div className="flex items-center space-x-3 text-white">
+                    {user.profilePhoto ? (
+                      <img
+                        src={user.profilePhoto}
+                        alt="Profile"
+                        className="w-8 h-8 rounded-full object-cover border border-primary-500"
+                      />
+                    ) : (
+                      <User className="w-4 h-4" />
+                    )}
                     <span className="text-sm">{user.displayName || user.email}</span>
                   </div>
                   <button

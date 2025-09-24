@@ -11,6 +11,7 @@ export default function SignUpPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [profilePhoto, setProfilePhoto] = useState<string>('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -19,6 +20,30 @@ export default function SignUpPage() {
       router.push('/');
     }
   }, [user, router]);
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Check file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        setError('Profile photo must be less than 5MB');
+        return;
+      }
+
+      // Check file type
+      if (!file.type.startsWith('image/')) {
+        setError('Please select a valid image file');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setProfilePhoto(e.target?.result as string);
+        setError(''); // Clear any previous errors
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,7 +81,7 @@ export default function SignUpPage() {
 
     setIsSubmitting(true);
     try {
-      await signInWithCustom(username.trim(), password.trim());
+      await signInWithCustom(username.trim(), password.trim(), profilePhoto);
       // Success - user will be redirected by useEffect
     } catch (error: any) {
       setError(error.message || 'Failed to create account. Please try again.');
@@ -140,6 +165,34 @@ export default function SignUpPage() {
                 className="appearance-none relative block w-full px-3 py-3 border border-gray-600 placeholder-gray-400 text-white bg-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
                 placeholder="Confirm your password"
               />
+            </div>
+
+            <div>
+              <label htmlFor="profilePhoto" className="block text-sm font-medium text-gray-300 mb-2">
+                Profile Photo (Optional)
+              </label>
+              <div className="space-y-3">
+                {profilePhoto && (
+                  <div className="flex justify-center">
+                    <img
+                      src={profilePhoto}
+                      alt="Profile preview"
+                      className="w-20 h-20 rounded-full object-cover border-2 border-primary-500"
+                    />
+                  </div>
+                )}
+                <input
+                  id="profilePhoto"
+                  name="profilePhoto"
+                  type="file"
+                  accept="image/*"
+                  onChange={handlePhotoUpload}
+                  className="appearance-none relative block w-full px-3 py-2 border border-gray-600 text-gray-300 bg-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-primary-600 file:text-white hover:file:bg-primary-700"
+                />
+                <p className="text-xs text-gray-400">
+                  Max file size: 5MB. Supported formats: JPG, PNG, GIF, WebP
+                </p>
+              </div>
             </div>
           </div>
 
