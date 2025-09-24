@@ -87,6 +87,7 @@ export default function Home() {
                 <a href="#games" className="text-gray-300 hover:text-primary-400 transition-colors">Games</a>
                 <a href="#features" className="text-gray-300 hover:text-primary-400 transition-colors">Features</a>
                 <a href="#about" className="text-gray-300 hover:text-primary-400 transition-colors">About</a>
+                <Link href="/privacy-policy" className="text-gray-300 hover:text-primary-400 transition-colors">Privacy Policy</Link>
                 <a href="#contact" className="text-gray-300 hover:text-primary-400 transition-colors">Contact</a>
               </div>
               {user ? (
