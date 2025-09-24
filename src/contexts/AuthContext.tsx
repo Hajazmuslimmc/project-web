@@ -69,7 +69,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signInWithCustom = async (username: string) => {
     const email = `${username}@fc`;
-    const password = `fc_${username}_pass_${Date.now()}`; // Generate a unique password
+    // Generate a consistent password based on username
+    const password = `fc_${username}_secure_pass_2024`;
 
     try {
       // Try to sign in first (if account already exists)
