@@ -83,17 +83,52 @@ export default function Home() {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="flex items-center space-x-4"
             >
-              <div className="hidden md:flex space-x-8">
-                <a href="#games" className="text-gray-300 hover:text-primary-400 transition-colors">Games</a>
-                <Link href="/fc-messenger" className="text-gray-300 hover:text-primary-400 transition-colors">FC Messenger</Link>
-                <Link href="/social-feed" className="text-gray-300 hover:text-primary-400 transition-colors">Social Feed</Link>
-                <a href="#features" className="text-gray-300 hover:text-primary-400 transition-colors">Features</a>
-                <a href="#about" className="text-gray-300 hover:text-primary-400 transition-colors">About</a>
-                <Link href="/privacy-policy" className="text-gray-300 hover:text-primary-400 transition-colors">Privacy Policy</Link>
-                <a href="#contact" className="text-gray-300 hover:text-primary-400 transition-colors">Contact</a>
+              <div className="hidden md:flex space-x-6">
+                <div className="relative group">
+                  <button className="text-gray-300 hover:text-primary-400 transition-colors flex items-center space-x-1">
+                    <span>Games</span>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  <div className="absolute top-full left-0 mt-2 w-48 bg-dark-800/95 backdrop-blur-md rounded-lg border border-primary-500/20 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                    <div className="py-2">
+                      <Link href="/snake" className="block px-4 py-2 text-sm text-gray-300 hover:bg-primary-500/20 hover:text-white transition-colors">🐍 Snake Game</Link>
+                      <Link href="/brain-teasers" className="block px-4 py-2 text-sm text-gray-300 hover:bg-primary-500/20 hover:text-white transition-colors">🧠 Brain Teasers</Link>
+                      <Link href="/pixel-warriors" className="block px-4 py-2 text-sm text-gray-300 hover:bg-primary-500/20 hover:text-white transition-colors">⚔️ Pixel Warriors</Link>
+                      <Link href="/space-shooter-3d" className="block px-4 py-2 text-sm text-gray-300 hover:bg-primary-500/20 hover:text-white transition-colors">🚀 Space Shooter 3D</Link>
+                      <Link href="/chemmail-quesets" className="block px-4 py-2 text-sm text-gray-300 hover:bg-primary-500/20 hover:text-white transition-colors">🧪 Chemistry Quiz</Link>
+                      <Link href="/timer" className="block px-4 py-2 text-sm text-gray-300 hover:bg-primary-500/20 hover:text-white transition-colors">⏱️ Timer</Link>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="relative group">
+                  <button className="text-gray-300 hover:text-primary-400 transition-colors flex items-center space-x-1">
+                    <span>Community</span>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  <div className="absolute top-full left-0 mt-2 w-48 bg-dark-800/95 backdrop-blur-md rounded-lg border border-primary-500/20 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                    <div className="py-2">
+                      <Link href="/fc-messenger" className="block px-4 py-2 text-sm text-gray-300 hover:bg-primary-500/20 hover:text-white transition-colors">💬 FC Messenger</Link>
+                      <Link href="/social-feed" className="block px-4 py-2 text-sm text-gray-300 hover:bg-primary-500/20 hover:text-white transition-colors">📱 Social Feed</Link>
+                    </div>
+                  </div>
+                </div>
+
+                <Link href="/about" className="text-gray-300 hover:text-primary-400 transition-colors">About</Link>
+                <Link href="/privacy-policy" className="text-gray-300 hover:text-primary-400 transition-colors">Privacy</Link>
               </div>
               {user ? (
                 <div className="flex items-center space-x-4">
+                  <Link href="/dashboard">
+                    <button className="btn-secondary flex items-center space-x-2">
+                      <User className="w-4 h-4" />
+                      <span>Dashboard</span>
+                    </button>
+                  </Link>
                   <div className="flex items-center space-x-3 text-white">
                     {user.profilePhoto ? (
                       <img
