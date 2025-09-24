@@ -18,9 +18,10 @@ export default function LeaderboardsPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const [leaderboards, setLeaderboards] = useState<Record<string, LeaderboardEntry[]>>({});
-  const [selectedGame, setSelectedGame] = useState('snake');
+  const [selectedGame, setSelectedGame] = useState('overall');
 
   const games = [
+    { id: 'overall', name: 'Overall Rankings', icon: '🏆' },
     { id: 'snake', name: 'Snake Game', icon: '🐍' },
     { id: 'brain-teasers', name: 'Brain Teasers', icon: '🧠' },
     { id: 'pixel-warriors', name: 'Pixel Warriors', icon: '⚔️' },
@@ -52,6 +53,31 @@ export default function LeaderboardsPage() {
   };
 
   const getTopScores = (gameId: string) => {
+    if (gameId === 'overall') {
+      // Calculate overall rankings by taking the highest score from each user across all games
+      const userBestScores: Record<string, LeaderboardEntry> = {};
+
+      // Go through all games and track the best score for each user
+      Object.entries(leaderboards).forEach(([game, scores]) => {
+        if (game !== 'overall') { // Don't include overall in the calculation
+          scores.forEach(score => {
+            const existing = userBestScores[score.username];
+            if (!existing || score.score > existing.score) {
+              userBestScores[score.username] = {
+                ...score,
+                game: game // Keep track of which game they got this score from
+              };
+            }
+          });
+        }
+      });
+
+      // Convert to array and sort by score
+      return Object.values(userBestScores)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 10);
+    }
+
     const gameScores = leaderboards[gameId] || [];
     return gameScores
       .sort((a, b) => b.score - a.score)
@@ -152,9 +178,9 @@ export default function LeaderboardsPage() {
                 <Gamepad2 className="w-16 h-16 text-gray-600 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-gray-400 mb-2">No scores yet!</h3>
                 <p className="text-gray-500 mb-4">Be the first to set a high score in this game.</p>
-                <Link href={`/${selectedGame === 'chemistry' ? 'chemmail-quesets' : selectedGame}`}>
+                <Link href={selectedGame === 'overall' ? '/dashboard' : `/${selectedGame === 'chemistry' ? 'chemmail-quesets' : selectedGame}`}>
                   <button className="btn-primary">
-                    Play {games.find(g => g.id === selectedGame)?.name}
+                    {selectedGame === 'overall' ? 'Explore Games' : `Play ${games.find(g => g.id === selectedGame)?.name}`}
                   </button>
                 </Link>
               </div>
