@@ -1,11 +1,17 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { User, signInWithPopup, signOut as firebaseSignOut, onAuthStateChanged, OAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+
+// Simple user interface for our custom authentication
+interface SimpleUser {
+  uid: string;
+  displayName: string;
+  email: string;
+  createdAt: string;
+}
 
 interface AuthContextType {
-  user: User | null;
+  user: SimpleUser | null;
   loading: boolean;
   signInWithMicrosoft: () => Promise<void>;
   signInWithCustom: (username: string) => Promise<void>;
@@ -27,101 +33,68 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<SimpleUser | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check for stored credentials and auto-login
-    const storedCredentials = localStorage.getItem('customCredentials');
-    if (storedCredentials) {
+    // Check for stored user data and auto-login
+    const storedUser = localStorage.getItem('simpleUser');
+    if (storedUser) {
       try {
-        const { username, password } = JSON.parse(storedCredentials);
-        signInWithEmailAndPassword(auth, `${username}@fc`, password)
-          .then(() => {
-            // Auto-login successful
-          })
-          .catch((error) => {
-            console.error('Auto-login failed:', error);
-            localStorage.removeItem('customCredentials');
-          });
+        const userData = JSON.parse(storedUser);
+        setUser(userData);
       } catch (error) {
-        console.error('Error parsing stored credentials:', error);
-        localStorage.removeItem('customCredentials');
+        console.error('Error parsing stored user:', error);
+        localStorage.removeItem('simpleUser');
       }
     }
-
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
+    setLoading(false);
   }, []);
 
   const signInWithMicrosoft = async () => {
-    const provider = new OAuthProvider('microsoft.com');
-    try {
-      await signInWithPopup(auth, provider);
-    } catch (error) {
-      console.error('Error signing in with Microsoft:', error);
-    }
+    // For now, just show a message that Microsoft auth is not implemented
+    alert('Microsoft authentication is not yet implemented. Please use username sign-in.');
   };
 
   const signInWithCustom = async (username: string) => {
-    const email = `${username}@fc`;
-    // Generate a consistent password based on username
-    const password = `fc_${username}_secure_pass_2024`;
-
-    try {
-      // Try to sign in first (if account already exists)
-      try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        // Store credentials for future auto-login
-        localStorage.setItem('customCredentials', JSON.stringify({ username, password }));
-        return;
-      } catch (signInError: any) {
-        // If it's not "user not found", rethrow the error
-        if (signInError.code !== 'auth/user-not-found') {
-          throw signInError;
-        }
-
-        // Account doesn't exist, create it
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        // Update display name
-        await updateProfile(userCredential.user, {
-          displayName: username
-        });
-        // Store credentials for future auto-login
-        localStorage.setItem('customCredentials', JSON.stringify({ username, password }));
-      }
-    } catch (error: any) {
-      console.error('Error with custom authentication:', error);
-      // Provide more specific error messages
-      if (error.code === 'auth/email-already-in-use') {
-        throw new Error('This username is already taken. Please choose a different one.');
-      } else if (error.code === 'auth/weak-password') {
-        throw new Error('Password is too weak. Please try again.');
-      } else if (error.code === 'auth/invalid-email') {
-        throw new Error('Invalid email format.');
-      } else if (error.code === 'auth/operation-not-allowed') {
-        throw new Error('Email/password authentication is not enabled. Please enable it in Firebase Console.');
-      } else {
-        throw new Error(error.message || 'Failed to create account. Please try again.');
-      }
+    if (!username.trim()) {
+      throw new Error('Please enter a username');
     }
+
+    if (username.length < 3) {
+      throw new Error('Username must be at least 3 characters long');
+    }
+
+    // Check if username already exists
+    const existingUsers = JSON.parse(localStorage.getItem('allUsers') || '{}');
+    if (existingUsers[username.toLowerCase()]) {
+      // User exists, sign them in
+      const userData = existingUsers[username.toLowerCase()];
+      setUser(userData);
+      localStorage.setItem('simpleUser', JSON.stringify(userData));
+      return;
+    }
+
+    // Create new user
+    const newUser: SimpleUser = {
+      uid: `user_${username}_${Date.now()}`,
+      displayName: username,
+      email: `${username}@fc`,
+      createdAt: new Date().toISOString(),
+    };
+
+    // Store user in the "database" (localStorage)
+    existingUsers[username.toLowerCase()] = newUser;
+    localStorage.setItem('allUsers', JSON.stringify(existingUsers));
+
+    // Sign in the user
+    setUser(newUser);
+    localStorage.setItem('simpleUser', JSON.stringify(newUser));
   };
 
   const signOut = async () => {
-    try {
-      await firebaseSignOut(auth);
-      localStorage.removeItem('customCredentials');
-      setUser(null);
-    } catch (error) {
-      console.error('Error signing out:', error);
-      // If Firebase sign out fails, still clear local storage
-      localStorage.removeItem('customCredentials');
-      setUser(null);
-    }
+    setUser(null);
+    localStorage.removeItem('simpleUser');
   };
 
   const value = {

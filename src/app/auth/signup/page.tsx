@@ -9,24 +9,8 @@ export default function SignUpPage() {
   const { user, loading, signInWithCustom } = useAuth();
   const router = useRouter();
   const [username, setUsername] = useState('');
-  const [captchaAnswer, setCaptchaAnswer] = useState('');
-  const [captchaQuestion, setCaptchaQuestion] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Generate simple math CAPTCHA
-  const generateCaptcha = () => {
-    const num1 = Math.floor(Math.random() * 10) + 1;
-    const num2 = Math.floor(Math.random() * 10) + 1;
-    setCaptchaQuestion(`${num1} + ${num2} = ?`);
-    return num1 + num2;
-  };
-
-  const [correctAnswer, setCorrectAnswer] = useState(0);
-
-  useEffect(() => {
-    setCorrectAnswer(generateCaptcha());
-  }, []);
 
   useEffect(() => {
     if (user) {
@@ -48,29 +32,15 @@ export default function SignUpPage() {
       return;
     }
 
-    if (parseInt(captchaAnswer) !== correctAnswer) {
-      setError('Incorrect CAPTCHA answer. Please try again.');
-      setCorrectAnswer(generateCaptcha());
-      setCaptchaAnswer('');
-      return;
-    }
-
     setIsSubmitting(true);
     try {
       await signInWithCustom(username.trim());
       // Success - user will be redirected by useEffect
     } catch (error: any) {
       setError(error.message || 'Failed to create account. Please try again.');
-      setCorrectAnswer(generateCaptcha());
-      setCaptchaAnswer('');
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const regenerateCaptcha = () => {
-    setCorrectAnswer(generateCaptcha());
-    setCaptchaAnswer('');
   };
 
   if (loading) {
@@ -114,43 +84,9 @@ export default function SignUpPage() {
                 className="appearance-none relative block w-full px-3 py-3 border border-gray-600 placeholder-gray-400 text-white bg-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
                 placeholder="Enter your username"
               />
-              {username && (
-                <p className="mt-2 text-sm text-gray-400">
-                  Your email will be: <span className="text-primary-400">{username}@fc</span>
-                </p>
-              )}
-            </div>
-
-            {/* CAPTCHA Section */}
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Verify You're Human
-              </label>
-              <div className="flex items-center space-x-3">
-                <div className="flex-1">
-                  <div className="px-3 py-2 bg-gray-700 border border-gray-600 rounded-md">
-                    <span className="text-white font-mono text-lg">{captchaQuestion}</span>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={regenerateCaptcha}
-                  className="p-2 text-gray-400 hover:text-white transition-colors"
-                  title="Generate new question"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                  </svg>
-                </button>
-              </div>
-              <input
-                type="text"
-                value={captchaAnswer}
-                onChange={(e) => setCaptchaAnswer(e.target.value)}
-                className="mt-2 appearance-none relative block w-full px-3 py-2 border border-gray-600 placeholder-gray-400 text-white bg-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                placeholder="Enter the answer"
-                required
-              />
+              <p className="mt-2 text-sm text-gray-400">
+                Choose a unique username for your account
+              </p>
             </div>
           </div>
 
