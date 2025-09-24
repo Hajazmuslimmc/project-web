@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Play, Users, Trophy, Zap, ArrowRight, Gamepad2, Star, TrendingUp, LogIn, LogOut, User, Pickaxe } from 'lucide-react'
+import { Play, Users, Trophy, Zap, ArrowRight, Gamepad2, Star, TrendingUp, LogIn, LogOut, User } from 'lucide-react'
 import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
