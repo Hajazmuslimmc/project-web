@@ -85,6 +85,8 @@ export default function Home() {
             >
               <div className="hidden md:flex space-x-8">
                 <a href="#games" className="text-gray-300 hover:text-primary-400 transition-colors">Games</a>
+                <Link href="/fc-messenger" className="text-gray-300 hover:text-primary-400 transition-colors">FC Messenger</Link>
+                <Link href="/social-feed" className="text-gray-300 hover:text-primary-400 transition-colors">Social Feed</Link>
                 <a href="#features" className="text-gray-300 hover:text-primary-400 transition-colors">Features</a>
                 <a href="#about" className="text-gray-300 hover:text-primary-400 transition-colors">About</a>
                 <Link href="/privacy-policy" className="text-gray-300 hover:text-primary-400 transition-colors">Privacy Policy</Link>
