@@ -46,8 +46,8 @@ export default function SearchPage() {
     }
   }, [user, loading, router]);
 
-  const searchUsers = async (query: string) => {
-    if (!query.trim()) {
+  const searchUsers = async (searchTerm: string) => {
+    if (!searchTerm.trim()) {
       setSearchResults([]);
       return;
     }
@@ -61,7 +61,7 @@ export default function SearchPage() {
       const results: UserProfile[] = [];
       querySnapshot.forEach((doc) => {
         const userData = doc.data() as UserProfile;
-        if (userData.displayName.toLowerCase().includes(query.toLowerCase()) &&
+        if (userData.displayName.toLowerCase().includes(searchTerm.toLowerCase()) &&
             userData.uid !== user?.uid) {
           results.push(userData);
         }
@@ -70,7 +70,7 @@ export default function SearchPage() {
       setSearchResults(results);
 
       // Save to recent searches
-      const updatedRecent = [query, ...recentSearches.filter(s => s !== query)].slice(0, 5);
+      const updatedRecent = [searchTerm, ...recentSearches.filter(s => s !== searchTerm)].slice(0, 5);
       setRecentSearches(updatedRecent);
       localStorage.setItem('recentSearches', JSON.stringify(updatedRecent));
     } catch (error) {
