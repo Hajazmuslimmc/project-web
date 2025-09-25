@@ -46,7 +46,7 @@ export default function SearchPage() {
     }
   }, [user, loading, router]);
 
-  // Debounced search effect
+  // Debounced search effect - faster response
   useEffect(() => {
     if (!searchQuery.trim()) {
       setSearchResults([]);
@@ -55,7 +55,7 @@ export default function SearchPage() {
 
     const debounceTimer = setTimeout(() => {
       searchUsers(searchQuery);
-    }, 300); // Wait 300ms after user stops typing
+    }, 150); // Reduced to 150ms for faster response
 
     return () => clearTimeout(debounceTimer);
   }, [searchQuery]);
@@ -70,9 +70,9 @@ export default function SearchPage() {
     try {
       const usersRef = collection(db, 'users');
 
-      // For better search, we'll fetch all users and filter client-side
+      // Optimized search: fetch fewer users initially for faster response
       // In a production app, you'd want to use Algolia or implement server-side search
-      const q = query(usersRef, orderBy('displayName'), limit(100));
+      const q = query(usersRef, orderBy('displayName'), limit(50));
       const querySnapshot = await getDocs(q);
 
       const results: UserProfile[] = [];
