@@ -479,33 +479,33 @@ export default function FCMessengerPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-dark-900 via-dark-800 to-dark-900 flex">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex">
       {/* Sidebar - Friends & Chats */}
-      <div className="w-64 bg-dark-800/50 border-r border-dark-700 flex flex-col">
+      <div className="w-72 bg-gradient-to-b from-dark-800/80 to-dark-900/80 backdrop-blur-lg border-r border-primary-500/20 flex flex-col shadow-2xl">
         {/* Header */}
-        <div className="p-4 border-b border-dark-700">
-          <h2 className="text-xl font-bold text-white mb-2">FC Messenger</h2>
-          <div className="flex items-center space-x-2 text-sm text-gray-400">
-            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-            <span>{friends.filter(f => f.isOnline).length} Online Friends</span>
+        <div className="p-6 border-b border-primary-500/20 bg-gradient-to-r from-primary-600/10 to-purple-600/10">
+          <h2 className="text-2xl font-bold gradient-text mb-3">FC Messenger</h2>
+          <div className="flex items-center space-x-3 text-sm text-gray-300">
+            <div className="w-3 h-3 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full animate-pulse shadow-lg shadow-green-500/50"></div>
+            <span className="font-medium">{friends.filter(f => f.isOnline).length} Online Friends</span>
           </div>
         </div>
 
         {/* Global Chat */}
-        <div className="p-2">
+        <div className="p-4">
           <button
             onClick={() => setCurrentChat('global')}
-            className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${
+            className={`w-full flex items-center space-x-4 p-4 rounded-xl transition-all duration-300 transform hover:scale-105 ${
               currentChat === 'global'
-                ? 'bg-primary-600 text-white'
-                : 'hover:bg-dark-700/50 text-gray-300'
+                ? 'bg-gradient-to-r from-primary-600 to-purple-600 text-white shadow-lg shadow-primary-500/50'
+                : 'hover:bg-gradient-to-r hover:from-dark-700/60 hover:to-dark-600/60 text-gray-300 hover:shadow-lg hover:shadow-primary-500/20'
             }`}
           >
-            <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center">
-              <span className="text-sm">#</span>
+            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
+              <span className="text-lg">#</span>
             </div>
             <div className="flex-1 text-left">
-              <div className="font-semibold">General Chat</div>
+              <div className="font-semibold text-base">General Chat</div>
               <div className="text-xs opacity-75">Public chat room</div>
             </div>
           </button>
@@ -513,8 +513,8 @@ export default function FCMessengerPage() {
 
         {/* Private Chats */}
         <div className="flex-1 overflow-y-auto">
-          <h3 className="text-sm font-semibold text-gray-300 mb-2 px-4 pt-2">Private Chats</h3>
-          <div className="px-2 space-y-1">
+          <h3 className="text-sm font-semibold gradient-text mb-3 px-4 pt-2">Private Chats</h3>
+          <div className="px-4 space-y-2">
             {privateChats.map((chat) => {
               const otherParticipantId = chat.participants.find(id => id !== user?.uid);
               const friend = friends.find(f => f.uid === otherParticipantId);
@@ -523,10 +523,10 @@ export default function FCMessengerPage() {
                 <button
                   key={chat.id}
                   onClick={() => setCurrentChat(chat.id)}
-                  className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${
+                  className={`w-full flex items-center space-x-4 p-4 rounded-xl transition-all duration-300 transform hover:scale-105 ${
                     currentChat === chat.id
-                      ? 'bg-primary-600 text-white'
-                      : 'hover:bg-dark-700/50 text-gray-300'
+                      ? 'bg-gradient-to-r from-primary-600 to-purple-600 text-white shadow-lg shadow-primary-500/50'
+                      : 'hover:bg-gradient-to-r hover:from-dark-700/60 hover:to-dark-600/60 text-gray-300 hover:shadow-lg hover:shadow-primary-500/20'
                   }`}
                 >
                   <div className="relative">
@@ -534,21 +534,21 @@ export default function FCMessengerPage() {
                       <img
                         src={friend.profilePhoto}
                         alt={friend.displayName}
-                        className="w-8 h-8 rounded-full border border-primary-500"
+                        className="w-10 h-10 rounded-full border-2 border-primary-400 shadow-lg"
                       />
                     ) : (
-                      <div className="w-8 h-8 rounded-full bg-primary-600 flex items-center justify-center">
-                        <span className="text-white text-sm font-semibold">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-r from-primary-500 to-purple-600 flex items-center justify-center shadow-lg">
+                        <span className="text-white text-sm font-bold">
                           {friend?.displayName.charAt(0).toUpperCase() || '?'}
                         </span>
                       </div>
                     )}
                     {friend?.isOnline && (
-                      <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border-2 border-dark-800 rounded-full"></div>
+                      <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-gradient-to-r from-green-400 to-emerald-500 border-2 border-dark-800 rounded-full animate-pulse shadow-lg shadow-green-500/50"></div>
                     )}
                   </div>
                   <div className="flex-1 text-left min-w-0">
-                    <div className="font-semibold truncate">{friend?.displayName || 'Unknown'}</div>
+                    <div className="font-semibold truncate text-base">{friend?.displayName || 'Unknown'}</div>
                     <div className="text-xs opacity-75 truncate">
                       {chat.lastMessage?.content || 'No messages yet'}
                     </div>
@@ -559,40 +559,42 @@ export default function FCMessengerPage() {
           </div>
 
           {/* Friends List */}
-          <h3 className="text-sm font-semibold text-gray-300 mb-2 px-4 pt-4">Friends</h3>
-          <div className="px-2 space-y-1">
+          <h3 className="text-sm font-semibold gradient-text mb-3 px-4 pt-6">Friends</h3>
+          <div className="px-4 space-y-2">
             {friends.map((friend) => (
-              <div key={friend.uid} className="flex items-center space-x-3 p-2 rounded-lg hover:bg-dark-700/50 transition-colors">
+              <div key={friend.uid} className="flex items-center space-x-4 p-3 rounded-xl hover:bg-gradient-to-r hover:from-dark-700/60 hover:to-dark-600/60 transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-primary-500/20">
                 <div className="relative">
                   {friend.profilePhoto ? (
                     <img
                       src={friend.profilePhoto}
                       alt={friend.displayName}
-                      className="w-8 h-8 rounded-full border border-primary-500"
+                      className="w-10 h-10 rounded-full border-2 border-primary-400 shadow-lg"
                     />
                   ) : (
-                    <div className="w-8 h-8 rounded-full bg-primary-600 flex items-center justify-center">
-                      <span className="text-white text-sm font-semibold">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-r from-primary-500 to-purple-600 flex items-center justify-center shadow-lg">
+                      <span className="text-white text-sm font-bold">
                         {friend.displayName.charAt(0).toUpperCase()}
                       </span>
                     </div>
                   )}
-                  <div className={`absolute -bottom-1 -right-1 w-3 h-3 border-2 border-dark-800 rounded-full ${
-                    friend.isOnline ? 'bg-green-500' : 'bg-blue-500'
+                  <div className={`absolute -bottom-1 -right-1 w-4 h-4 border-2 border-dark-800 rounded-full shadow-lg ${
+                    friend.isOnline ? 'bg-gradient-to-r from-green-400 to-emerald-500 animate-pulse shadow-green-500/50' : 'bg-gradient-to-r from-blue-400 to-blue-600'
                   }`}></div>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-white text-sm truncate">{friend.displayName}</div>
+                  <div className="text-white text-sm font-medium truncate">{friend.displayName}</div>
                   <div className="text-gray-400 text-xs">
                     {friend.isOnline ? 'Online' : 'Offline'}
                   </div>
                 </div>
                 <button
                   onClick={() => startPrivateChat(friend.uid)}
-                  className="text-primary-400 hover:text-primary-300 p-1"
+                  className="text-primary-400 hover:text-primary-300 p-2 rounded-lg hover:bg-primary-500/20 transition-colors duration-200"
                   title="Start private chat"
                 >
-                  💬
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                  </svg>
                 </button>
               </div>
             ))}
@@ -611,40 +613,43 @@ export default function FCMessengerPage() {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col bg-gradient-to-br from-dark-900/50 to-dark-800/50">
         {/* Chat Header */}
-        <div className="bg-dark-800/50 border-b border-dark-700 p-4">
-          <h1 className="text-2xl font-bold text-white">{getChatDisplayName()}</h1>
-          <p className="text-gray-400 text-sm">
-            {currentChat === 'global'
-              ? 'Welcome to FC Messenger! Chat with other users.'
-              : 'Private conversation - messages are secure.'
-            }
+        <div className="bg-gradient-to-r from-dark-800/80 to-dark-900/80 backdrop-blur-lg border-b border-primary-500/20 p-6 shadow-lg">
+          <h1 className="text-3xl font-bold gradient-text mb-2">{getChatDisplayName()}</h1>
+          <p className="text-gray-300 text-sm flex items-center space-x-2">
+            <div className="w-2 h-2 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full animate-pulse"></div>
+            <span>
+              {currentChat === 'global'
+                ? 'Welcome to FC Messenger! Chat with other users.'
+                : 'Private conversation - messages are secure.'
+              }
+            </span>
           </p>
         </div>
 
         {/* Messages Area */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-gradient-to-b from-transparent to-dark-900/20">
           {messages.length === 0 ? (
-            <div className="text-center text-gray-400 py-12">
-              <div className="text-6xl mb-4">💬</div>
-              <h3 className="text-xl font-semibold mb-2">Welcome to FC Messenger!</h3>
-              <p>Start chatting with other users. Be respectful and have fun!</p>
+            <div className="text-center text-gray-400 py-20">
+              <div className="text-8xl mb-6 animate-bounce">💬</div>
+              <h3 className="text-2xl font-bold mb-3 gradient-text">Welcome to FC Messenger!</h3>
+              <p className="text-lg">Start chatting with other users. Be respectful and have fun!</p>
             </div>
           ) : (
-            messages.map((message) => (
-              <div key={message.id} className={`flex items-start space-x-3 ${message.senderId === user.uid ? 'justify-end' : ''}`}>
+            messages.map((message, index) => (
+              <div key={message.id} className={`flex items-end space-x-3 ${message.senderId === user.uid ? 'justify-end' : ''} animate-fade-in`}>
                 {message.senderId !== user.uid && (
                   <div className="flex-shrink-0">
                     {message.senderPhoto ? (
                       <img
                         src={message.senderPhoto}
                         alt={message.senderName}
-                        className="w-8 h-8 rounded-full border border-dark-600"
+                        className="w-10 h-10 rounded-full border-2 border-primary-400 shadow-lg"
                       />
                     ) : (
-                      <div className="w-8 h-8 rounded-full bg-primary-600 flex items-center justify-center">
-                        <span className="text-white text-sm font-semibold">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-r from-primary-500 to-purple-600 flex items-center justify-center shadow-lg">
+                        <span className="text-white text-sm font-bold">
                           {message.senderName.charAt(0).toUpperCase()}
                         </span>
                       </div>
@@ -652,18 +657,18 @@ export default function FCMessengerPage() {
                   </div>
                 )}
 
-                <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                <div className={`max-w-xs lg:max-w-md xl:max-w-lg relative ${
                   message.senderId === user.uid
-                    ? 'bg-primary-600 text-white'
-                    : 'bg-dark-700 text-gray-200'
+                    ? 'message-bubble-sent'
+                    : 'message-bubble-received'
                 }`}>
                   {message.senderId !== user.uid && (
-                    <div className="text-xs text-gray-400 mb-1 font-semibold">
+                    <div className="text-xs text-primary-300 mb-2 font-semibold">
                       {message.senderName}
                     </div>
                   )}
-                  <div className="text-sm">{message.content}</div>
-                  <div className={`text-xs mt-1 ${
+                  <div className="text-base leading-relaxed">{message.content}</div>
+                  <div className={`text-xs mt-2 ${
                     message.senderId === user.uid ? 'text-primary-200' : 'text-gray-400'
                   }`}>
                     {formatTime(message.timestamp)}
@@ -676,11 +681,11 @@ export default function FCMessengerPage() {
                       <img
                         src={message.senderPhoto}
                         alt={message.senderName}
-                        className="w-8 h-8 rounded-full border border-dark-600"
+                        className="w-10 h-10 rounded-full border-2 border-primary-400 shadow-lg"
                       />
                     ) : (
-                      <div className="w-8 h-8 rounded-full bg-primary-600 flex items-center justify-center">
-                        <span className="text-white text-sm font-semibold">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-r from-primary-500 to-purple-600 flex items-center justify-center shadow-lg">
+                        <span className="text-white text-sm font-bold">
                           {message.senderName.charAt(0).toUpperCase()}
                         </span>
                       </div>
@@ -694,23 +699,51 @@ export default function FCMessengerPage() {
         </div>
 
         {/* Message Input */}
-        <div className="border-t border-dark-700 p-4">
-          <div className="flex space-x-4">
-            <input
-              type="text"
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="Type your message..."
-              className="flex-1 px-4 py-2 bg-dark-700 border border-dark-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-            />
+        <div className="bg-gradient-to-r from-dark-800/80 to-dark-900/80 backdrop-blur-lg border-t border-primary-500/20 p-6">
+          <div className="flex items-end space-x-4">
+            <div className="flex-1 relative">
+              <div className="flex items-center space-x-3 bg-gradient-to-r from-dark-700/80 to-dark-600/80 backdrop-blur-sm border border-primary-500/30 rounded-2xl px-4 py-3 focus-within:border-primary-400 focus-within:ring-2 focus-within:ring-primary-500/20 transition-all duration-300">
+                <button className="text-gray-400 hover:text-primary-400 transition-colors duration-200 p-1">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                  </svg>
+                </button>
+                <input
+                  type="text"
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Type your message..."
+                  className="flex-1 bg-transparent text-white placeholder-gray-400 focus:outline-none text-base"
+                />
+                <button className="text-gray-400 hover:text-primary-400 transition-colors duration-200 p-1">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1.586a1 1 0 01.707.293l.707.707A1 1 0 0012.414 11H15m-3 7.5A9.5 9.5 0 1121.5 12 9.5 9.5 0 0112 2.5z" />
+                  </svg>
+                </button>
+              </div>
+            </div>
             <button
               onClick={sendMessage}
               disabled={!newMessage.trim()}
-              className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className={`p-3 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg ${
+                newMessage.trim()
+                  ? 'bg-gradient-to-r from-primary-600 to-purple-600 text-white shadow-primary-500/50 hover:shadow-primary-500/70'
+                  : 'bg-gray-600 text-gray-400 cursor-not-allowed'
+              }`}
+              title="Send message"
             >
-              Send
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+              </svg>
             </button>
+          </div>
+          <div className="flex items-center justify-between mt-3 text-xs text-gray-400">
+            <span>Press Enter to send, Shift+Enter for new line</span>
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span>Online</span>
+            </div>
           </div>
         </div>
       </div>
