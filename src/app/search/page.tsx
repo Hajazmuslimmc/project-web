@@ -46,6 +46,20 @@ export default function SearchPage() {
     }
   }, [user, loading, router]);
 
+  // Debounced search effect
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      return;
+    }
+
+    const debounceTimer = setTimeout(() => {
+      searchUsers(searchQuery);
+    }, 300); // Wait 300ms after user stops typing
+
+    return () => clearTimeout(debounceTimer);
+  }, [searchQuery]);
+
   const searchUsers = async (searchTerm: string) => {
     if (!searchTerm.trim()) {
       setSearchResults([]);
@@ -55,16 +69,38 @@ export default function SearchPage() {
     setIsSearching(true);
     try {
       const usersRef = collection(db, 'users');
-      const q = query(usersRef, orderBy('displayName'), limit(50));
+
+      // For better search, we'll fetch all users and filter client-side
+      // In a production app, you'd want to use Algolia or implement server-side search
+      const q = query(usersRef, orderBy('displayName'), limit(100));
       const querySnapshot = await getDocs(q);
 
       const results: UserProfile[] = [];
       querySnapshot.forEach((doc) => {
         const userData = doc.data() as UserProfile;
+        // Case-insensitive search that matches partial names
         if (userData.displayName.toLowerCase().includes(searchTerm.toLowerCase()) &&
             userData.uid !== user?.uid) {
           results.push(userData);
         }
+      });
+
+      // Sort results by relevance (exact matches first, then prefix matches)
+      results.sort((a, b) => {
+        const aName = a.displayName.toLowerCase();
+        const bName = b.displayName.toLowerCase();
+        const term = searchTerm.toLowerCase();
+
+        // Exact match gets highest priority
+        if (aName === term) return -1;
+        if (bName === term) return 1;
+
+        // Prefix match gets second priority
+        if (aName.startsWith(term) && !bName.startsWith(term)) return -1;
+        if (bName.startsWith(term) && !aName.startsWith(term)) return 1;
+
+        // Alphabetical order for the rest
+        return aName.localeCompare(bName);
       });
 
       setSearchResults(results);
@@ -126,7 +162,7 @@ export default function SearchPage() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search by username..."
+                placeholder="Search by username (real-time)..."
                 className="w-full pl-10 pr-4 py-3 bg-dark-700 border border-dark-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
               />
             </div>
