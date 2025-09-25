@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { User, MessageCircle, Users, Calendar, MapPin, Link as LinkIcon, Heart, Image, Video, FileText, UserPlus, UserCheck, UserMinus } from 'lucide-react';
 import { db } from '@/lib/firebase';
-import { doc, getDoc, updateDoc, arrayUnion, arrayRemove, collection, query, where, getDocs } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, arrayUnion, arrayRemove, collection, query, where, getDocs, addDoc } from 'firebase/firestore';
 
 interface Post {
   id: string;
@@ -38,7 +38,7 @@ export default function ProfilePage({ params }: { params: { username: string } }
   const router = useRouter();
   const [profileUser, setProfileUser] = useState<UserProfile | null>(null);
   const [userPosts, setUserPosts] = useState<Post[]>([]);
-  const [isFollowing, setIsFollowing] = useState(false);
+  const [friendshipStatus, setFriendshipStatus] = useState<'none' | 'friends' | 'pending_sent' | 'pending_received'>('none');
   const [activeTab, setActiveTab] = useState<'posts' | 'media'>('posts');
 
   useEffect(() => {
@@ -60,9 +60,9 @@ export default function ProfilePage({ params }: { params: { username: string } }
         const profile = userDoc.data() as UserProfile;
         setProfileUser(profile);
 
-        // Check if current user is following this user
-        if (user && profile.followers && profile.followers.includes(user.uid)) {
-          setIsFollowing(true);
+        // Check friendship status
+        if (user) {
+          await checkFriendshipStatus(user.uid, profile.uid);
         }
       } else {
         // User not found
@@ -71,6 +71,47 @@ export default function ProfilePage({ params }: { params: { username: string } }
     } catch (error) {
       console.error('Error loading user profile:', error);
       router.push('/dashboard');
+    }
+  };
+
+  const checkFriendshipStatus = async (currentUserId: string, profileUserId: string) => {
+    try {
+      // Check if they are already friends
+      if (profileUser?.friends?.includes(currentUserId)) {
+        setFriendshipStatus('friends');
+        return;
+      }
+
+      // Check for pending friend requests
+      const sentRequestsQuery = query(
+        collection(db, 'friendRequests'),
+        where('senderId', '==', currentUserId),
+        where('receiverId', '==', profileUserId),
+        where('status', '==', 'pending')
+      );
+
+      const receivedRequestsQuery = query(
+        collection(db, 'friendRequests'),
+        where('senderId', '==', profileUserId),
+        where('receiverId', '==', currentUserId),
+        where('status', '==', 'pending')
+      );
+
+      const [sentSnapshot, receivedSnapshot] = await Promise.all([
+        getDocs(sentRequestsQuery),
+        getDocs(receivedRequestsQuery)
+      ]);
+
+      if (!sentSnapshot.empty) {
+        setFriendshipStatus('pending_sent');
+      } else if (!receivedSnapshot.empty) {
+        setFriendshipStatus('pending_received');
+      } else {
+        setFriendshipStatus('none');
+      }
+    } catch (error) {
+      console.error('Error checking friendship status:', error);
+      setFriendshipStatus('none');
     }
   };
 
@@ -87,40 +128,82 @@ export default function ProfilePage({ params }: { params: { username: string } }
     }
   };
 
-  const handleFollow = async () => {
+  const handleSendFriendRequest = async () => {
     if (!user || !profileUser) return;
 
     try {
-      const profileUserRef = doc(db, 'users', profileUser.uid);
-      const currentUserRef = doc(db, 'users', user.uid);
+      // Create friend request
+      await addDoc(collection(db, 'friendRequests'), {
+        senderId: user.uid,
+        senderName: user.displayName,
+        senderPhoto: user.profilePhoto,
+        receiverId: profileUser.uid,
+        receiverName: profileUser.displayName,
+        status: 'pending',
+        createdAt: new Date(),
+      });
 
-      if (isFollowing) {
-        // Unfollow
-        await updateDoc(profileUserRef, {
-          followers: arrayRemove(user.uid)
-        });
-        await updateDoc(currentUserRef, {
-          following: arrayRemove(profileUser.displayName)
-        });
-      } else {
-        // Follow
-        await updateDoc(profileUserRef, {
-          followers: arrayUnion(user.uid)
-        });
-        await updateDoc(currentUserRef, {
-          following: arrayUnion(profileUser.displayName)
-        });
-      }
+      // Create notification for receiver
+      await addDoc(collection(db, 'notifications'), {
+        userId: profileUser.uid,
+        type: 'friend_request',
+        title: 'New Friend Request',
+        message: `${user.displayName} sent you a friend request`,
+        senderId: user.uid,
+        senderName: user.displayName,
+        senderPhoto: user.profilePhoto,
+        isRead: false,
+        createdAt: new Date(),
+      });
 
-      setIsFollowing(!isFollowing);
-
-      // Update profile user data
-      const updatedProfileDoc = await getDoc(profileUserRef);
-      if (updatedProfileDoc.exists()) {
-        setProfileUser(updatedProfileDoc.data() as UserProfile);
-      }
+      setFriendshipStatus('pending_sent');
     } catch (error) {
-      console.error('Error updating follow status:', error);
+      console.error('Error sending friend request:', error);
+    }
+  };
+
+  const handleCancelFriendRequest = async () => {
+    if (!user || !profileUser) return;
+
+    try {
+      // Find and delete the friend request
+      const requestsQuery = query(
+        collection(db, 'friendRequests'),
+        where('senderId', '==', user.uid),
+        where('receiverId', '==', profileUser.uid),
+        where('status', '==', 'pending')
+      );
+
+      const snapshot = await getDocs(requestsQuery);
+      snapshot.forEach(async (doc) => {
+        await updateDoc(doc.ref, { status: 'cancelled' });
+      });
+
+      setFriendshipStatus('none');
+    } catch (error) {
+      console.error('Error cancelling friend request:', error);
+    }
+  };
+
+  const handleRemoveFriend = async () => {
+    if (!user || !profileUser) return;
+
+    try {
+      // Remove from friends list for both users
+      const userRef = doc(db, 'users', user.uid);
+      const profileUserRef = doc(db, 'users', profileUser.uid);
+
+      await updateDoc(userRef, {
+        friends: arrayRemove(profileUser.uid)
+      });
+
+      await updateDoc(profileUserRef, {
+        friends: arrayRemove(user.uid)
+      });
+
+      setFriendshipStatus('none');
+    } catch (error) {
+      console.error('Error removing friend:', error);
     }
   };
 
@@ -213,18 +296,54 @@ export default function ProfilePage({ params }: { params: { username: string } }
                   </div>
                 </div>
 
-                {/* Follow Button */}
+                {/* Friend Request Buttons */}
                 {user && !isOwnProfile && (
-                  <button
-                    onClick={handleFollow}
-                    className={`px-6 py-2 rounded-lg font-semibold transition-all duration-300 ${
-                      isFollowing
-                        ? 'bg-dark-700 border-2 border-primary-500 text-primary-400 hover:bg-primary-500 hover:text-white'
-                        : 'bg-gradient-to-r from-primary-600 to-purple-600 text-white hover:from-primary-700 hover:to-purple-700'
-                    }`}
-                  >
-                    {isFollowing ? 'Following' : 'Follow'}
-                  </button>
+                  <div className="flex gap-2">
+                    {friendshipStatus === 'none' && (
+                      <button
+                        onClick={handleSendFriendRequest}
+                        className="px-6 py-2 bg-gradient-to-r from-primary-600 to-purple-600 text-white rounded-lg hover:from-primary-700 hover:to-purple-700 transition-all duration-300 flex items-center gap-2 font-semibold"
+                      >
+                        <UserPlus className="w-4 h-4" />
+                        Add Friend
+                      </button>
+                    )}
+
+                    {friendshipStatus === 'pending_sent' && (
+                      <button
+                        onClick={handleCancelFriendRequest}
+                        className="px-6 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-all duration-300 flex items-center gap-2 font-semibold"
+                      >
+                        <UserMinus className="w-4 h-4" />
+                        Cancel Request
+                      </button>
+                    )}
+
+                    {friendshipStatus === 'pending_received' && (
+                      <div className="text-sm text-gray-400 flex items-center gap-2">
+                        <UserPlus className="w-4 h-4" />
+                        Friend request pending
+                      </div>
+                    )}
+
+                    {friendshipStatus === 'friends' && (
+                      <div className="flex gap-2">
+                        <Link href={`/fc-messenger?chat=${profileUser.uid}`}>
+                          <button className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2">
+                            <MessageCircle className="w-4 h-4" />
+                            Message
+                          </button>
+                        </Link>
+                        <button
+                          onClick={handleRemoveFriend}
+                          className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2"
+                        >
+                          <UserMinus className="w-4 h-4" />
+                          Unfriend
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 )}
 
                 {isOwnProfile && (

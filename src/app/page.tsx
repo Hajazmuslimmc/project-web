@@ -6,6 +6,7 @@ import { Play, Users, Trophy, Zap, ArrowRight, Gamepad2, Star, TrendingUp, LogIn
 import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
+import Notifications from '@/components/Notifications'
 
 export default function Home() {
   const [isLoaded, setIsLoaded] = useState(false)
@@ -129,6 +130,7 @@ export default function Home() {
                       <span>Dashboard</span>
                     </button>
                   </Link>
+                  <Notifications />
                   <div className="flex items-center space-x-3 text-white">
                     {user.profilePhoto ? (
                       <img
