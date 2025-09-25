@@ -4,7 +4,9 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { User, MessageCircle, Users, Calendar, MapPin, Link as LinkIcon, Heart, Image, Video, FileText } from 'lucide-react';
+import { User, MessageCircle, Users, Calendar, MapPin, Link as LinkIcon, Heart, Image, Video, FileText, UserPlus, UserCheck, UserMinus } from 'lucide-react';
+import { db } from '@/lib/firebase';
+import { doc, getDoc, updateDoc, arrayUnion, arrayRemove, collection, query, where, getDocs } from 'firebase/firestore';
 
 interface Post {
   id: string;
@@ -28,6 +30,7 @@ interface UserProfile {
   createdAt: string;
   followers: string[];
   following: string[];
+  friends: string[];
 }
 
 export default function ProfilePage({ params }: { params: { username: string } }) {
@@ -45,20 +48,28 @@ export default function ProfilePage({ params }: { params: { username: string } }
     }
   }, [params.username]);
 
-  const loadUserProfile = () => {
-    const allUsers = JSON.parse(localStorage.getItem('allUsers') || '{}');
-    const userKey = params.username.toLowerCase();
+  const loadUserProfile = async () => {
+    try {
+      // First try to find user by displayName
+      const usersRef = collection(db, 'users');
+      const q = query(usersRef, where('displayName', '==', params.username));
+      const querySnapshot = await getDocs(q);
 
-    if (allUsers[userKey]) {
-      const profile = allUsers[userKey];
-      setProfileUser(profile);
+      if (!querySnapshot.empty) {
+        const userDoc = querySnapshot.docs[0];
+        const profile = userDoc.data() as UserProfile;
+        setProfileUser(profile);
 
-      // Check if current user is following this user
-      if (user && profile.followers && profile.followers.includes(user.uid)) {
-        setIsFollowing(true);
+        // Check if current user is following this user
+        if (user && profile.followers && profile.followers.includes(user.uid)) {
+          setIsFollowing(true);
+        }
+      } else {
+        // User not found
+        router.push('/dashboard');
       }
-    } else {
-      // User not found
+    } catch (error) {
+      console.error('Error loading user profile:', error);
       router.push('/dashboard');
     }
   };
@@ -76,39 +87,41 @@ export default function ProfilePage({ params }: { params: { username: string } }
     }
   };
 
-  const handleFollow = () => {
+  const handleFollow = async () => {
     if (!user || !profileUser) return;
 
-    const allUsers = JSON.parse(localStorage.getItem('allUsers') || '{}');
-    const currentUserKey = user.displayName?.toLowerCase();
-    const profileUserKey = profileUser.displayName.toLowerCase();
+    try {
+      const profileUserRef = doc(db, 'users', profileUser.uid);
+      const currentUserRef = doc(db, 'users', user.uid);
 
-    if (isFollowing) {
-      // Unfollow
-      if (allUsers[profileUserKey]?.followers) {
-        allUsers[profileUserKey].followers = allUsers[profileUserKey].followers.filter((id: string) => id !== user.uid);
-      }
-      if (allUsers[currentUserKey]?.following) {
-        allUsers[currentUserKey].following = allUsers[currentUserKey].following.filter((name: string) => name !== profileUser.displayName);
-      }
-    } else {
-      // Follow
-      if (!allUsers[profileUserKey].followers) {
-        allUsers[profileUserKey].followers = [];
-      }
-      if (!allUsers[currentUserKey].following) {
-        allUsers[currentUserKey].following = [];
+      if (isFollowing) {
+        // Unfollow
+        await updateDoc(profileUserRef, {
+          followers: arrayRemove(user.uid)
+        });
+        await updateDoc(currentUserRef, {
+          following: arrayRemove(profileUser.displayName)
+        });
+      } else {
+        // Follow
+        await updateDoc(profileUserRef, {
+          followers: arrayUnion(user.uid)
+        });
+        await updateDoc(currentUserRef, {
+          following: arrayUnion(profileUser.displayName)
+        });
       }
 
-      allUsers[profileUserKey].followers.push(user.uid);
-      allUsers[currentUserKey].following.push(profileUser.displayName);
+      setIsFollowing(!isFollowing);
+
+      // Update profile user data
+      const updatedProfileDoc = await getDoc(profileUserRef);
+      if (updatedProfileDoc.exists()) {
+        setProfileUser(updatedProfileDoc.data() as UserProfile);
+      }
+    } catch (error) {
+      console.error('Error updating follow status:', error);
     }
-
-    localStorage.setItem('allUsers', JSON.stringify(allUsers));
-    setIsFollowing(!isFollowing);
-
-    // Update profile user data
-    setProfileUser(allUsers[profileUserKey]);
   };
 
   const formatTime = (timestamp: number) => {

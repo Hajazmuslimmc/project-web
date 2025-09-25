@@ -396,7 +396,7 @@ export default function Home() {
             <span className="text-lg font-bold gradient-text">networkak</span>
           </div>
           <p className="text-gray-400">
-            © 2024 networkak. All rights reserved. | Premium Web Gaming Experience
+            © 2025 networkak. All rights reserved. | Premium Web Experience
           </p>
         </div>
       </footer>
