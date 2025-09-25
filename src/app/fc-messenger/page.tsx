@@ -506,7 +506,7 @@ export default function FCMessengerPage() {
             </div>
             <div className="flex-1 text-left">
               <div className="font-semibold text-base">General Chat</div>
-              <div className="text-xs opacity-75">Public chat room</div>
+              <div className="text-xs opacity-75">🌐 Open to all users</div>
             </div>
           </button>
         </div>
@@ -621,8 +621,8 @@ export default function FCMessengerPage() {
             <div className="w-2 h-2 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full animate-pulse"></div>
             <span>
               {currentChat === 'global'
-                ? 'Welcome to FC Messenger! Chat with other users.'
-                : 'Private conversation - messages are secure.'
+                ? '🌐 Open to all users - Chat with anyone on FC Messenger!'
+                : '🔒 Private conversation - messages are secure.'
               }
             </span>
           </p>
