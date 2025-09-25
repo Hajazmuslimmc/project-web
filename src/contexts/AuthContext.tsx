@@ -43,11 +43,29 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Remove admin role from all users
+    const allUsers = JSON.parse(localStorage.getItem('allUsers') || '{}');
+    let modified = false;
+    Object.keys(allUsers).forEach(key => {
+      if (allUsers[key].role === 'admin') {
+        allUsers[key].role = 'user';
+        modified = true;
+      }
+    });
+    if (modified) {
+      localStorage.setItem('allUsers', JSON.stringify(allUsers));
+    }
+
     // Check for stored user data and auto-login
     const storedUser = localStorage.getItem('simpleUser');
     if (storedUser) {
       try {
         const userData = JSON.parse(storedUser);
+        // Also update the current user's role if it was admin
+        if (userData.role === 'admin') {
+          userData.role = 'user';
+          localStorage.setItem('simpleUser', JSON.stringify(userData));
+        }
         setUser(userData);
       } catch (error) {
         console.error('Error parsing stored user:', error);
@@ -95,16 +113,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       return;
     }
 
-    // Create new user (first user becomes admin, others are regular users)
-    const isFirstUser = Object.keys(existingUsers).length === 0;
-
+    // Create new user
     const newUser: SimpleUser & { password: string } = {
       uid: `user_${username}_${Date.now()}`,
       displayName: username,
       email: `${username}@fc`,
       password: password,
       profilePhoto: profilePhoto || undefined,
-      role: isFirstUser ? 'admin' : 'user', // First user is admin
+      role: 'user', // All users are regular users
       isBanned: false,
       followers: [],
       following: [],

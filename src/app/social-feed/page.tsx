@@ -27,18 +27,11 @@ export default function SocialFeedPage() {
   const [isPosting, setIsPosting] = useState(false);
 
   useEffect(() => {
-    if (!loading && !user) {
-      router.push('/auth/signin');
-      return;
-    }
-
-    if (user) {
-      loadPosts();
-      // Set up periodic updates
-      const interval = setInterval(loadPosts, 5000); // Update every 5 seconds
-      return () => clearInterval(interval);
-    }
-  }, [user, loading, router]);
+    loadPosts();
+    // Set up periodic updates
+    const interval = setInterval(loadPosts, 5000); // Update every 5 seconds
+    return () => clearInterval(interval);
+  }, []);
 
   const loadPosts = () => {
     const storedPosts = localStorage.getItem('socialPosts');
@@ -205,139 +198,139 @@ export default function SocialFeedPage() {
     );
   }
 
-  if (!user) {
-    return null; // Will redirect
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-dark-900 via-dark-800 to-dark-900">
       <div className="max-w-2xl mx-auto py-8 px-4">
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">FC Social Feed</h1>
-          <p className="text-gray-400">Share your thoughts, photos, and experiences with the community</p>
+          <p className="text-gray-400">
+            {user ? 'Share your thoughts, photos, and experiences with the community' : 'View the community feed'}
+          </p>
         </div>
 
         {/* Create Post */}
-        <div className="bg-dark-800/50 rounded-lg p-6 mb-8 border border-dark-700">
-          <div className="flex items-start space-x-4">
-            <div className="flex-shrink-0">
-              {user.profilePhoto ? (
-                <img
-                  src={user.profilePhoto}
-                  alt={user.displayName}
-                  className="w-12 h-12 rounded-full border-2 border-primary-500"
-                />
-              ) : (
-                <div className="w-12 h-12 rounded-full bg-primary-600 flex items-center justify-center border-2 border-primary-500">
-                  <span className="text-white font-semibold">
-                    {user.displayName?.charAt(0).toUpperCase()}
-                  </span>
-                </div>
-              )}
-            </div>
-
-            <div className="flex-1 space-y-4">
-              <textarea
-                value={newPostContent}
-                onChange={(e) => setNewPostContent(e.target.value)}
-                placeholder="What's on your mind?"
-                className="w-full px-4 py-3 bg-dark-700 border border-dark-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 resize-none"
-                rows={3}
-              />
-
-              {/* Media Upload */}
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2">
-                  <label className="flex items-center space-x-2 cursor-pointer">
-                    <span className="text-gray-400">📷</span>
-                    <span className="text-sm text-gray-400 hover:text-white">Photo</span>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleMediaUpload}
-                      className="hidden"
-                    />
-                  </label>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <label className="flex items-center space-x-2 cursor-pointer">
-                    <span className="text-gray-400">🎥</span>
-                    <span className="text-sm text-gray-400 hover:text-white">Video</span>
-                    <input
-                      type="file"
-                      accept="video/*"
-                      onChange={(e) => {
-                        setMediaType('video');
-                        handleMediaUpload(e as any);
-                      }}
-                      className="hidden"
-                    />
-                  </label>
-                </div>
-
-                <div className="flex-1">
-                  <input
-                    type="url"
-                    placeholder="Share a link..."
-                    onChange={(e) => {
-                      if (isValidUrl(e.target.value)) {
-                        setNewPostMedia(e.target.value);
-                        setMediaType('link');
-                      }
-                    }}
-                    className="w-full px-3 py-2 bg-dark-700 border border-dark-600 rounded text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm"
+        {user && (
+          <div className="bg-dark-800/50 rounded-lg p-6 mb-8 border border-dark-700">
+            <div className="flex items-start space-x-4">
+              <div className="flex-shrink-0">
+                {user.profilePhoto ? (
+                  <img
+                    src={user.profilePhoto}
+                    alt={user.displayName}
+                    className="w-12 h-12 rounded-full border-2 border-primary-500"
                   />
-                </div>
+                ) : (
+                  <div className="w-12 h-12 rounded-full bg-primary-600 flex items-center justify-center border-2 border-primary-500">
+                    <span className="text-white font-semibold">
+                      {user.displayName?.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                )}
               </div>
 
-              {/* Media Preview */}
-              {newPostMedia && (
-                <div className="relative">
-                  {mediaType === 'image' && (
-                    <img
-                      src={newPostMedia}
-                      alt="Post preview"
-                      className="max-w-full h-48 object-cover rounded-lg border border-primary-500"
+              <div className="flex-1 space-y-4">
+                <textarea
+                  value={newPostContent}
+                  onChange={(e) => setNewPostContent(e.target.value)}
+                  placeholder="What's on your mind?"
+                  className="w-full px-4 py-3 bg-dark-700 border border-dark-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 resize-none"
+                  rows={3}
+                />
+
+                {/* Media Upload */}
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-2">
+                    <label className="flex items-center space-x-2 cursor-pointer">
+                      <span className="text-gray-400">📷</span>
+                      <span className="text-sm text-gray-400 hover:text-white">Photo</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleMediaUpload}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <label className="flex items-center space-x-2 cursor-pointer">
+                      <span className="text-gray-400">🎥</span>
+                      <span className="text-sm text-gray-400 hover:text-white">Video</span>
+                      <input
+                        type="file"
+                        accept="video/*"
+                        onChange={(e) => {
+                          setMediaType('video');
+                          handleMediaUpload(e as any);
+                        }}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+
+                  <div className="flex-1">
+                    <input
+                      type="url"
+                      placeholder="Share a link..."
+                      onChange={(e) => {
+                        if (isValidUrl(e.target.value)) {
+                          setNewPostMedia(e.target.value);
+                          setMediaType('link');
+                        }
+                      }}
+                      className="w-full px-3 py-2 bg-dark-700 border border-dark-600 rounded text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm"
                     />
-                  )}
-                  {mediaType === 'video' && (
-                    <video
-                      src={newPostMedia}
-                      controls
-                      className="max-w-full h-48 rounded-lg border border-primary-500"
-                    />
-                  )}
-                  {mediaType === 'link' && (
-                    <div className="p-3 bg-dark-700 rounded-lg border border-primary-500">
-                      <div className="flex items-center space-x-2">
-                        <span className="text-primary-400">🔗</span>
-                        <span className="text-white text-sm truncate">{newPostMedia}</span>
+                  </div>
+                </div>
+
+                {/* Media Preview */}
+                {newPostMedia && (
+                  <div className="relative">
+                    {mediaType === 'image' && (
+                      <img
+                        src={newPostMedia}
+                        alt="Post preview"
+                        className="max-w-full h-48 object-cover rounded-lg border border-primary-500"
+                      />
+                    )}
+                    {mediaType === 'video' && (
+                      <video
+                        src={newPostMedia}
+                        controls
+                        className="max-w-full h-48 rounded-lg border border-primary-500"
+                      />
+                    )}
+                    {mediaType === 'link' && (
+                      <div className="p-3 bg-dark-700 rounded-lg border border-primary-500">
+                        <div className="flex items-center space-x-2">
+                          <span className="text-primary-400">🔗</span>
+                          <span className="text-white text-sm truncate">{newPostMedia}</span>
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
+                    <button
+                      onClick={() => setNewPostMedia('')}
+                      className="absolute top-2 right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-700"
+                    >
+                      ×
+                    </button>
+                  </div>
+                )}
+
+                <div className="flex justify-end">
                   <button
-                    onClick={() => setNewPostMedia('')}
-                    className="absolute top-2 right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-700"
+                    onClick={createPost}
+                    disabled={isPosting || (!newPostContent.trim() && !newPostMedia)}
+                    className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
-                    ×
+                    {isPosting ? 'Posting...' : 'Post'}
                   </button>
                 </div>
-              )}
-
-              <div className="flex justify-end">
-                <button
-                  onClick={createPost}
-                  disabled={isPosting || (!newPostContent.trim() && !newPostMedia)}
-                  className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  {isPosting ? 'Posting...' : 'Post'}
-                </button>
               </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Posts Feed */}
         <div className="space-y-6">

@@ -39,16 +39,11 @@ export default function ProfilePage({ params }: { params: { username: string } }
   const [activeTab, setActiveTab] = useState<'posts' | 'media'>('posts');
 
   useEffect(() => {
-    if (!loading && !user) {
-      router.push('/auth/signin');
-      return;
-    }
-
-    if (user && params.username) {
+    if (params.username) {
       loadUserProfile();
       loadUserPosts();
     }
-  }, [user, loading, params.username, router]);
+  }, [params.username]);
 
   const loadUserProfile = () => {
     const allUsers = JSON.parse(localStorage.getItem('allUsers') || '{}');
@@ -141,11 +136,11 @@ export default function ProfilePage({ params }: { params: { username: string } }
     );
   }
 
-  if (!user || !profileUser) {
+  if (!profileUser) {
     return null; // Will redirect
   }
 
-  const isOwnProfile = user.displayName === profileUser.displayName;
+  const isOwnProfile = user ? user.displayName === profileUser.displayName : false;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-dark-900 via-dark-800 to-dark-900">
@@ -206,7 +201,7 @@ export default function ProfilePage({ params }: { params: { username: string } }
                 </div>
 
                 {/* Follow Button */}
-                {!isOwnProfile && (
+                {user && !isOwnProfile && (
                   <button
                     onClick={handleFollow}
                     className={`px-6 py-2 rounded-lg font-semibold transition-all duration-300 ${

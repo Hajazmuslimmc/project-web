@@ -21,6 +21,7 @@ interface User {
   profilePhoto?: string;
   isOnline: boolean;
   lastSeen: number;
+  friends: string[];
 }
 
 export default function FCMessengerPage() {
@@ -90,6 +91,7 @@ export default function FCMessengerPage() {
         profilePhoto: userData.profilePhoto,
         isOnline,
         lastSeen: userData.lastOnline || 0,
+        friends: userData.friends || [],
       });
     });
 
