@@ -7,33 +7,34 @@ export default function DownloadPage() {
       name: 'Windows',
       logo: '🪟',
       description: 'Download for Windows 10/11',
-      downloadUrl: '#',
-      fileName: 'Networkak-Setup.exe',
+      downloadUrl: '/Networkak/dist/Networkak Setup 1.0.0.exe',
+      fileName: 'Networkak Setup 1.0.0.exe',
       size: '45.2 MB'
     },
     {
       name: 'macOS',
       logo: '🍎',
       description: 'Download for macOS 10.15+',
-      downloadUrl: '#',
-      fileName: 'Networkak.dmg',
+      downloadUrl: '/Networkak/dist/Networkak-1.0.0-arm64.dmg',
+      fileName: 'Networkak-1.0.0-arm64.dmg',
       size: '52.8 MB'
     },
     {
       name: 'Linux',
       logo: '🐧',
       description: 'Download for Linux (Ubuntu, Fedora, etc.)',
-      downloadUrl: '#',
-      fileName: 'Networkak.AppImage',
+      downloadUrl: '/Networkak/dist/Networkak-1.0.0-arm64.AppImage',
+      fileName: 'Networkak-1.0.0-arm64.AppImage',
       size: '48.6 MB'
     },
     {
       name: 'Android',
       logo: '🤖',
-      description: 'Download APK for Android',
-      downloadUrl: '#',
-      fileName: 'Networkak.apk',
-      size: '38.4 MB'
+      description: 'Use Web App on Android Devices',
+      downloadUrl: '/',
+      fileName: 'Web App',
+      size: 'N/A',
+      webApp: true
     },
     {
       name: 'iOS',
@@ -136,10 +137,18 @@ export default function DownloadPage() {
                     >
                       Coming Soon
                     </button>
+                  ) : platform.webApp ? (
+                    <Link href={platform.downloadUrl}>
+                      <button className="w-full bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-primary-500/25">
+                        Open Web App
+                      </button>
+                    </Link>
                   ) : (
-                    <button className="w-full bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-primary-500/25">
-                      Download Now
-                    </button>
+                    <a href={platform.downloadUrl} download>
+                      <button className="w-full bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-primary-500/25">
+                        Download Now
+                      </button>
+                    </a>
                   )}
                 </div>
               </div>

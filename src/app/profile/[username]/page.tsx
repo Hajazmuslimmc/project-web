@@ -33,6 +33,12 @@ interface UserProfile {
   friends: string[];
 }
 
+export async function generateStaticParams() {
+  // For static export, we can't generate all possible usernames
+  // Return empty array to skip static generation for this route
+  return [];
+}
+
 export default function ProfilePage({ params }: { params: { username: string } }) {
   const { user, loading } = useAuth();
   const router = useRouter();

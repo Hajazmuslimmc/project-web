@@ -11,6 +11,9 @@
     "push": "git add . && git commit -m \"New changes\" && git push origin main"
   },
   "dependencies": {
+    "@capacitor/android": "^7.4.3",
+    "@capacitor/cli": "^7.4.3",
+    "@capacitor/core": "^7.4.3",
     "firebase": "^12.3.0",
     "framer-motion": "^10.16.16",
     "lucide-react": "^0.294.0",
