@@ -138,17 +138,26 @@ export default function DownloadPage() {
                       Coming Soon
                     </button>
                   ) : platform.webApp ? (
-                    <Link href={platform.downloadUrl}>
-                      <button className="w-full bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-primary-500/25">
-                        Open Web App
-                      </button>
-                    </Link>
+                    <button
+                      onClick={() => window.location.href = platform.downloadUrl}
+                      className="w-full bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-primary-500/25"
+                    >
+                      Open Web App
+                    </button>
                   ) : (
-                    <a href={platform.downloadUrl} download>
-                      <button className="w-full bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-primary-500/25">
-                        Download Now
-                      </button>
-                    </a>
+                    <button
+                      onClick={() => {
+                        const link = document.createElement('a');
+                        link.href = platform.downloadUrl;
+                        link.download = platform.fileName;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                      }}
+                      className="w-full bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-primary-500/25"
+                    >
+                      Download Now
+                    </button>
                   )}
                 </div>
               </div>
