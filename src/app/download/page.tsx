@@ -16,7 +16,7 @@ export default function DownloadPage() {
     {
       name: 'macOS',
       logo: '🍎',
-      description: 'Download for macOS 10.15+',
+      description: 'Download for macOS 10.15+ (Apple Silicon M1/M2/M3/M4)',
       downloadUrl: '/Networkak/dist/Networkak-1.0.0-arm64.dmg',
       fileName: 'Networkak-1.0.0-arm64.dmg',
       size: '52.8 MB'
