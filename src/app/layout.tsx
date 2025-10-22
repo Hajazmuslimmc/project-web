@@ -1,9 +1,3 @@
-import type { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: 'Web Games',
-}
-
 export default function RootLayout({
   children,
 }: {
@@ -11,6 +5,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <title>Web Games</title>
+      </head>
       <body>
         {children}
       </body>
