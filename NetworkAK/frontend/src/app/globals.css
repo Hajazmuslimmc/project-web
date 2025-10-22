@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  /* PayPal-like colors */
+  --color-paypal-blue: #0070ba;
+  --color-paypal-blue-light: #009cde;
+  --color-paypal-gray: #f7f9fb;
+  --color-paypal-dark-gray: #303c42;
+  --color-paypal-light-gray: #cbd2d6;
+  --color-paypal-success: #28a745;
+  --color-paypal-error: #dc3545;
+  --color-paypal-warning: #ffc107;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-inter);
+  --color-paypal-blue: var(--color-paypal-blue);
+  --color-paypal-blue-light: var(--color-paypal-blue-light);
+  --color-paypal-gray: var(--color-paypal-gray);
+  --color-paypal-dark-gray: var(--color-paypal-dark-gray);
+  --color-paypal-light-gray: var(--color-paypal-light-gray);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+}
+
+/* PayPal-like button styles */
+.btn-paypal-blue {
+  @apply bg-blue-500 text-white px-6 py-3 rounded font-semibold text-sm uppercase tracking-wide;
+  background-color: var(--color-paypal-blue);
+  transition: background-color 0.2s ease;
+}
+
+.btn-paypal-blue:hover {
+  background-color: var(--color-paypal-blue-light);
+}
+
+.btn-paypal-outline {
+  @apply border-2 px-6 py-3 rounded font-semibold text-sm uppercase tracking-wide;
+  border-color: var(--color-paypal-blue);
+  color: var(--color-paypal-blue);
+  background: transparent;
+  transition: all 0.2s ease;
+}
+
+.btn-paypal-outline:hover {
+  background-color: var(--color-paypal-blue);
+  color: white;
+}
+
+/* Common layouts */
+.container-paypal {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Card styles */
+.card-paypal {
+  @apply bg-white border border-gray-200 rounded-lg shadow-sm;
+  border-color: var(--color-paypal-light-gray);
+}
+
+/* Form styles */
+.form-paypal input {
+  @apply w-full px-4 py-3 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500;
+}
+
+.form-paypal input:focus {
+  border-color: var(--color-paypal-blue);
+}
