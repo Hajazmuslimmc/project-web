@@ -4,7 +4,7 @@ import type { Firestore } from 'firebase/firestore';
 export async function GET(request: NextRequest) {
   try {
     // Check if Firebase is available
-    const { db } = await import('@/lib/firebase');
+    const { db } = await import('../../../lib/firebase');
     if (!db) {
       return NextResponse.json({ error: 'Database not configured' }, { status: 503 });
     }
