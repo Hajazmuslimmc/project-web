@@ -11,7 +11,9 @@ const signupSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
   name: z.string().min(1, 'Name is required').max(100, 'Name must be less than 100 characters'),
-  role: z.union([z.literal('member'), z.literal('cretro'), z.literal('peruim')])
+  role: z.string().refine((val) => ['member', 'cretro', 'peruim'].includes(val), {
+    message: 'Please select a valid role'
+  })
 });
 
 type SignupFormData = z.infer<typeof signupSchema>;
