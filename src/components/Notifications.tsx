@@ -45,7 +45,7 @@ export default function Notifications() {
 
     // Listen for notifications
     const notificationsQuery = query(
-      collection(db, 'notifications'),
+      collection(db!, 'notifications'),
       where('userId', '==', user.uid)
     );
 
@@ -66,7 +66,7 @@ export default function Notifications() {
 
     // Listen for friend requests
     const friendRequestsQuery = query(
-      collection(db, 'friendRequests'),
+      collection(db!, 'friendRequests'),
       where('receiverId', '==', user.uid),
       where('status', '==', 'pending')
     );
@@ -90,13 +90,13 @@ export default function Notifications() {
 
     try {
       // Update friend request status
-      await updateDoc(doc(db, 'friendRequests', request.id), {
+      await updateDoc(doc(db!, 'friendRequests', request.id), {
         status: 'accepted'
       });
 
       // Add to friends list for both users
-      const userRef = doc(db, 'users', user.uid);
-      const senderRef = doc(db, 'users', request.senderId);
+      const userRef = doc(db!, 'users', user.uid);
+      const senderRef = doc(db!, 'users', request.senderId);
 
       await updateDoc(userRef, {
         friends: arrayUnion(request.senderId)
@@ -107,7 +107,7 @@ export default function Notifications() {
       });
 
       // Create notification for sender
-      await addDoc(collection(db, 'notifications'), {
+      await addDoc(collection(db!, 'notifications'), {
         userId: request.senderId,
         type: 'friend_request',
         title: 'Friend Request Accepted',
@@ -127,7 +127,7 @@ export default function Notifications() {
         !n.isRead
       );
       if (notification) {
-        await updateDoc(doc(db, 'notifications', notification.id), {
+        await updateDoc(doc(db!, 'notifications', notification.id), {
           isRead: true
         });
       }
@@ -142,7 +142,7 @@ export default function Notifications() {
 
     try {
       // Update friend request status
-      await updateDoc(doc(db, 'friendRequests', request.id), {
+      await updateDoc(doc(db!, 'friendRequests', request.id), {
         status: 'declined'
       });
 
@@ -153,7 +153,7 @@ export default function Notifications() {
         !n.isRead
       );
       if (notification) {
-        await updateDoc(doc(db, 'notifications', notification.id), {
+        await updateDoc(doc(db!, 'notifications', notification.id), {
           isRead: true
         });
       }
@@ -166,7 +166,7 @@ export default function Notifications() {
   const markAsRead = async (notificationId: string) => {
     if (!isFirebaseAvailable) return;
     try {
-      await updateDoc(doc(db, 'notifications', notificationId), {
+      await updateDoc(doc(db!, 'notifications', notificationId), {
         isRead: true
       });
     } catch (error) {
