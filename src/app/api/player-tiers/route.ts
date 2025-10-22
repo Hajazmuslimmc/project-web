@@ -1,14 +1,20 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { collection, query, where, orderBy, getDocs, doc, setDoc, updateDoc, deleteDoc, getDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
-
 // GET - Fetch all player tier entries
+import { NextRequest, NextResponse } from 'next/server';
+import type { Firestore } from 'firebase/firestore';
 export async function GET(request: NextRequest) {
   try {
+    // Check if Firebase is available
+    const { db } = await import('@/lib/firebase');
+    if (!db) {
+      return NextResponse.json({ error: 'Database not configured' }, { status: 503 });
+    }
+
+    const { collection, query, where, orderBy, getDocs } = await import('firebase/firestore');
+    const dbInstance = db as Firestore;
     const { searchParams } = new URL(request.url);
     const tier = searchParams.get('tier');
 
-    const playerTiersRef = collection(db, 'playerTiers');
+    const playerTiersRef = collection(dbInstance, 'playerTiers');
 
     let q;
     if (tier && tier !== 'ALL') {
@@ -42,6 +48,14 @@ export async function GET(request: NextRequest) {
 // POST - Add new player tier entry (mod only)
 export async function POST(request: NextRequest) {
   try {
+    // Check if Firebase is available
+    const { db } = await import('@/lib/firebase');
+    if (!db) {
+      return NextResponse.json({ error: 'Database not configured' }, { status: 503 });
+    }
+
+    const { collection, query, where, getDocs, doc, updateDoc, setDoc, getDoc } = await import('firebase/firestore');
+    const dbInstance = db as Firestore;
     const body = await request.json();
     const { player_id, name, tier, reason, added_by } = body;
 
@@ -56,7 +70,7 @@ export async function POST(request: NextRequest) {
 
     // Check if player already exists
     const existingQuery = query(
-      collection(db, 'playerTiers'),
+      collection(dbInstance, 'playerTiers'),
       where('player_id', '==', player_id)
     );
     const existingDocs = await getDocs(existingQuery);
@@ -64,7 +78,7 @@ export async function POST(request: NextRequest) {
     if (!existingDocs.empty) {
       // Update existing player
       const existingId = existingDocs.docs[0].id;
-      await updateDoc(doc(db, 'playerTiers', existingId), {
+      await updateDoc(doc(dbInstance, 'playerTiers', existingId), {
         name,
         tier,
         reason,
@@ -72,14 +86,14 @@ export async function POST(request: NextRequest) {
         updatedAt: new Date()
       });
 
-      const updatedDoc = await getDoc(doc(db, 'playerTiers', existingId));
+      const updatedDoc = await getDoc(doc(dbInstance, 'playerTiers', existingId));
       return NextResponse.json({
         id: updatedDoc.id,
         ...updatedDoc.data()
       });
     } else {
       // Create new player entry
-      const newPlayerRef = doc(collection(db, 'playerTiers'));
+      const newPlayerRef = doc(collection(dbInstance, 'playerTiers'));
       const newPlayer = {
         player_id,
         name,
@@ -106,6 +120,14 @@ export async function POST(request: NextRequest) {
 // PUT - Update player tier entry
 export async function PUT(request: NextRequest) {
   try {
+    // Check if Firebase is available
+    const { db } = await import('@/lib/firebase');
+    if (!db) {
+      return NextResponse.json({ error: 'Database not configured' }, { status: 503 });
+    }
+
+    const { doc, updateDoc, getDoc } = await import('firebase/firestore');
+    const dbInstance = db as Firestore;
     const body = await request.json();
     const { id, name, tier, reason } = body;
 
@@ -113,14 +135,14 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    await updateDoc(doc(db, 'playerTiers', id), {
+    await updateDoc(doc(dbInstance, 'playerTiers', id), {
       name,
       tier,
       reason,
       updatedAt: new Date()
     });
 
-    const updatedDoc = await getDoc(doc(db, 'playerTiers', id));
+    const updatedDoc = await getDoc(doc(dbInstance, 'playerTiers', id));
     if (!updatedDoc.exists()) {
       return NextResponse.json({ error: 'Player tier entry not found' }, { status: 404 });
     }
@@ -138,6 +160,14 @@ export async function PUT(request: NextRequest) {
 // DELETE - Remove player tier entry
 export async function DELETE(request: NextRequest) {
   try {
+    // Check if Firebase is available
+    const { db } = await import('@/lib/firebase');
+    if (!db) {
+      return NextResponse.json({ error: 'Database not configured' }, { status: 503 });
+    }
+
+    const { doc, deleteDoc } = await import('firebase/firestore');
+    const dbInstance = db as Firestore;
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 
@@ -145,7 +175,7 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Missing player ID' }, { status: 400 });
     }
 
-    await deleteDoc(doc(db, 'playerTiers', id));
+    await deleteDoc(doc(dbInstance, 'playerTiers', id));
 
     return NextResponse.json({ success: true });
   } catch (error) {
