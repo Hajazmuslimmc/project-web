@@ -1,0 +1,33 @@
+{
+  "name": "web-games",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "13.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "@types/node": "^18",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "typescript": "^4.9",
+    "firebase": "^9.15",
+    "next-auth": "^4",
+    "tailwindcss": "^3",
+    "autoprefixer": "^10",
+    "postcss": "^8",
+    "lucide-react": "^0.200",
+    "zod": "^3",
+    "react-hot-toast": "^2",
+    "react-icons": "^4"
+  },
+  "devDependencies": {
+    "eslint": "^8",
+    "eslint-config-next": "^13"
+  }
+}
