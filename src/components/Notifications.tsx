@@ -3,6 +3,9 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { useEffect, useState } from 'react';
 import { db } from '@/lib/firebase';
+
+// Only use Firebase if it's configured
+const isFirebaseAvailable = !!db;
 import { collection, query, where, onSnapshot, doc, updateDoc, deleteDoc, addDoc, arrayUnion } from 'firebase/firestore';
 import { Bell, UserPlus, MessageCircle, X, Check, UserCheck } from 'lucide-react';
 
@@ -38,7 +41,7 @@ export default function Notifications() {
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user || !isFirebaseAvailable) return;
 
     // Listen for notifications
     const notificationsQuery = query(
@@ -83,7 +86,7 @@ export default function Notifications() {
   }, [user]);
 
   const handleAcceptFriendRequest = async (request: FriendRequest) => {
-    if (!user) return;
+    if (!user || !isFirebaseAvailable) return;
 
     try {
       // Update friend request status
@@ -135,7 +138,7 @@ export default function Notifications() {
   };
 
   const handleDeclineFriendRequest = async (request: FriendRequest) => {
-    if (!user) return;
+    if (!user || !isFirebaseAvailable) return;
 
     try {
       // Update friend request status
@@ -161,6 +164,7 @@ export default function Notifications() {
   };
 
   const markAsRead = async (notificationId: string) => {
+    if (!isFirebaseAvailable) return;
     try {
       await updateDoc(doc(db, 'notifications', notificationId), {
         isRead: true
