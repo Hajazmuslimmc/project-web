@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { getAuth, Auth } from 'firebase/auth';
+import { getFirestore, Firestore } from 'firebase/firestore';
+import type { FirebaseApp } from 'firebase/app';
 
 // Check if all required Firebase environment variables are configured
 const isFirebaseConfigured = () => {
@@ -12,9 +13,9 @@ const isFirebaseConfigured = () => {
   return requiredVars.every(v => v && v !== 'your_api_key_here' && v !== 'your_project_id');
 };
 
-let app;
-let auth;
-let db;
+let app: FirebaseApp | null = null;
+let auth: Auth | null = null;
+let db: Firestore | null = null;
 
 if (isFirebaseConfigured()) {
   const firebaseConfig = {
@@ -30,10 +31,7 @@ if (isFirebaseConfigured()) {
   auth = getAuth(app);
   db = getFirestore(app);
 } else {
-  // Firebase not configured - export dummies to prevent app crashes
-  app = null;
-  auth = null;
-  db = null;
+  // Firebase not configured - export null to prevent app crashes
   console.warn('Firebase not configured. Please add your Firebase credentials to Vercel environment variables.');
 }
 
