@@ -14,12 +14,14 @@ export default function Header() {
         </div>
 
         <nav className="flex items-center space-x-4">
-          <Link href="/explore" className="hover:text-gray-200">
-            Explore
+          <Link href="/browse" className="hover:text-gray-200">
+            Browse
           </Link>
-          <Link href="/create" className="hover:text-gray-200">
-            Create
-          </Link>
+          {session?.user?.role === 'Creator' && (
+            <Link href="/create" className="hover:text-gray-200">
+              Create Service
+            </Link>
+          )}
           <Link href="/profile" className="hover:text-gray-200">
             Profile
           </Link>
