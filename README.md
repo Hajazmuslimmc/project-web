@@ -1,214 +1,130 @@
-# Web Games Marketplace
+# networkak 🎮
 
-A modern Fiverr-like marketplace for software development services built with Next.js, featuring support for multiple programming languages including Python, Java, JavaScript, HTML, CSS, and C++.
+A premium web gaming platform built with Next.js, TypeScript, and Tailwind CSS. Experience the future of web gaming with stunning graphics, smooth animations, and immersive gameplay.
 
 ## 🚀 Features
 
-- **🏗️ Multi-Language Support**: Services for Python, Java, JavaScript, HTML, CSS, and C++
-- **👥 Dual User Roles**: Creators post services, Members browse and purchase
-- **🔐 Secure Authentication**: NextAuth.js with Google OAuth
-- **💾 Firebase Backend**: Real-time database with Firestore
-- **🎨 Modern UI**: Tailwind CSS styling
-- **📱 Responsive Design**: Works on all devices
-- **🔍 Advanced Filtering**: Filter services by programming language and type
+- **Modern UI/UX**: Beautiful, responsive design with smooth animations
+- **Premium Games**: Access to the latest and greatest web games
+- **Multiplayer Experience**: Connect with players worldwide
+- **Achievements & Leaderboards**: Track progress and compete globally
+- **Instant Play**: No downloads required - play instantly
+- **Mobile Responsive**: Optimized for all devices
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: Next.js 13 (Pages Router), React, TypeScript
+- **Framework**: Next.js 14 with App Router
+- **Language**: TypeScript
 - **Styling**: Tailwind CSS
-- **Authentication**: NextAuth.js
-- **Database**: Firebase Firestore
-- **Icons**: Lucide React, React Icons
-- **Forms**: Built-in HTML forms with validation
+- **Animations**: Framer Motion
+- **Icons**: Lucide React
+- **Deployment**: Vercel (recommended)
 
-## 📋 Prerequisites
+## 📦 Installation
 
-- Node.js 16+ and npm
-- Firebase project with Firestore enabled
-- Google Cloud Console account for OAuth
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Hajazmuslimmc/project-web.git
+   cd project-web
+   ```
 
-## 🚀 Getting Started
+2. **Install dependencies**
+   ```bash
+   npm install
+   # or
+   yarn install
+   # or
+   pnpm install
+   ```
 
-### 1. Clone and Install
+3. **Run the development server**
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   # or
+   pnpm dev
+   ```
+
+4. **Open your browser**
+   Navigate to [http://localhost:3000](http://localhost:3000) to see the application.
+
+## 🎯 Project Structure
+
+```
+src/
+├── app/
+│   ├── globals.css          # Global styles and Tailwind imports
+│   ├── layout.tsx           # Root layout component
+│   └── page.tsx             # Home page component
+├── components/              # Reusable components (to be added)
+├── lib/                     # Utility functions (to be added)
+└── types/                   # TypeScript type definitions (to be added)
+```
+
+## 🎨 Design Features
+
+- **Dark Theme**: Modern dark color scheme with gradient accents
+- **Smooth Animations**: Framer Motion powered animations
+- **Responsive Design**: Mobile-first approach
+- **Interactive Elements**: Hover effects and micro-interactions
+- **Gradient Text**: Eye-catching gradient text effects
+
+## 🚀 Deployment
+
+### Deploy on Vercel (Recommended)
+
+1. Push your code to GitHub
+2. Connect your repository to Vercel
+3. Deploy automatically on every push
+
+### Deploy on Other Platforms
 
 ```bash
-git clone https://github.com/Hajazmuslimmc/project-web.git
-cd project-web
-npm install
-```
-
-### 2. Firebase Setup
-
-1. Create a new Firebase project at [Firebase Console](https://console.firebase.google.com/)
-2. Enable Firestore Database
-3. Go to Project Settings > General > Add App (Web)
-4. Copy your Firebase config values
-
-### 3. Google OAuth Setup
-
-1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. Create a new project or select existing
-3. Enable Google+ API
-4. Create OAuth 2.0 credentials
-5. Add authorized redirect URIs:
-   - `http://localhost:3000/api/auth/callback/google` (development)
-   - `https://yourdomain.com/api/auth/callback/google` (production)
-
-### 4. Environment Variables
-
-Create `.env.local` file with:
-
-```env
-# Firebase Configuration
-NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key_here
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project_id.appspot.com
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
-
-# NextAuth Configuration
-NEXTAUTH_SECRET=your_random_secret_here
-NEXTAUTH_URL=http://localhost:3000
-
-# Google OAuth
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-```
-
-### 5. Run the Application
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## 🏗️ Project Structure
-
-```
-web-games/
-├── components/          # Reusable React components
-│   └── Header.js       # Main navigation header
-├── lib/                # Utility libraries
-│   └── firebase.js     # Firebase configuration
-├── pages/              # Next.js pages
-│   ├── api/           # API routes
-│   │   └── auth/[...nextauth].js
-│   ├── auth/          # Authentication pages
-│   ├── index.js       # Homepage
-│   ├── browse.js      # Services browse page
-│   ├── create.js      # Service creation form
-│   ├── profile.js     # User profile (coming soon)
-│   ├── _app.js        # App wrapper
-│   └── _document.js   # Document wrapper
-└── styles/            
-    └── globals.css    # Global styles
-```
-
-## 🎯 Supported Programming Languages
-
-The platform supports services in these programming languages:
-
-- **🐍 Python**: Data science, ML, web development, automation
-- **☕ Java**: Enterprise apps, Android, backend services
-- **💿 C++**: System programming, game dev, performance
-- **⚛️ JavaScript**: Web apps, Node.js, frontend/backends
-- **🌐 HTML & CSS**: Websites, responsive design, UI/UX
-- **🎨 Design & Artwork**: Digital art, graphics, creative work
-
-## 🤝 User Roles
-
-### Creators
-- Only creators can post services
-- Choose programming language for each service
-- Set custom pricing
-- Offer different types: Services, Courses, Artwork
-
-### Members
-- Browse all available services
-- Filter by programming language and service type
-- Purchase services (payment integration coming soon)
-- Leave reviews and ratings (coming soon)
-
-## 🚀 Development Commands
-
-```bash
-# Start development server
-npm run dev
-
-# Build for production
+# Build the application
 npm run build
 
-# Start production server
+# Start the production server
 npm start
-
-# Run linting
-npm run lint
 ```
 
-## 🔧 Firebase Firestore Schema
+## 🎮 Adding Games
 
-### Services Collection
-```javascript
-{
-  title: String,
-  description: String,
-  type: "Service" | "Course" | "Artwork",
-  category: String,
-  programmingLanguage: "Python" | "Java" | "JavaScript" | "HTML" | "CSS" | "C++",
-  price: Number,
-  creatorId: String,
-  creatorEmail: String,
-  creatorName: String,
-  createdAt: Timestamp,
-  status: "active" | "inactive"
-}
-```
+To add new games to the platform:
 
-## 🌟 Roadmap
-
-- [ ] User profile management
-- [ ] Payment processing (Stripe integration)
-- [ ] Reviews and ratings system
-- [ ] Messaging system between buyers/sellers
-- [ ] Advanced search and filters
-- [ ] File upload for service attachments
-- [ ] Admin dashboard
-- [ ] Mobile app (React Native)
-
-## 📦 Dependencies
-
-Key packages:
-- `next`: React framework
-- `react`: UI library
-- `next-auth`: Authentication
-- `firebase`: Database and auth backend
-- `tailwindcss`: Utility-first CSS
-- `react-hot-toast`: Notifications
+1. Create game components in `src/components/games/`
+2. Add game routes in `src/app/games/`
+3. Update the games list in the main page
+4. Add game metadata and descriptions
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📄 License
+## 📝 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🆘 Support
+## 🎯 Roadmap
 
-If you encounter issues:
-1. Check the environment variables are set correctly
-2. Ensure Firebase project is properly configured
-3. Verify Google OAuth credentials
-4. Check the browser console for error messages
+- [ ] User authentication system
+- [ ] Game categories and filtering
+- [ ] User profiles and achievements
+- [ ] Real-time multiplayer games
+- [ ] Game ratings and reviews
+- [ ] Admin dashboard
+- [ ] Mobile app version
 
-For questions, please open an issue on GitHub.
+## 📞 Contact
+
+- **Website**: [networkak](https://networkak.com)
+- **Email**: contact@networkak.com
+- **GitHub**: [@Hajazmuslimmc](https://github.com/Hajazmuslimmc)
 
 ---
 
-Built with ❤️ using Next.js and Firebase
+Made with ❤️ by the networkak Team

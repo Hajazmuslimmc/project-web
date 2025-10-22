@@ -1,0 +1,18 @@
+directories:
+  output: dist
+  buildResources: build
+appId: com.networkak.app
+productName: Networkak
+win:
+  target: nsis
+  icon: icon.ico
+mac:
+  target:
+    - target: dmg
+      arch: arm64
+  icon: icon.icns
+linux:
+  target: AppImage
+  icon: icon.png
+files: []
+electronVersion: 25.9.8
