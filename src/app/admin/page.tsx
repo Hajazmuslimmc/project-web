@@ -62,13 +62,19 @@ export default function AdminPage() {
 
         const newPlayerId = await addPlayer(playerData)
         if (newPlayerId) {
-          // Reload players to get the new data
-          const updatedPlayers = await getAllPlayers()
-          setPlayers(updatedPlayers)
+          // Add to local state immediately for instant UI update
+          const newPlayerObj = {
+            id: newPlayerId,
+            ...playerData,
+            createdAt: new Date(),
+            updatedAt: new Date()
+          }
+          setPlayers(prevPlayers => [...prevPlayers, newPlayerObj])
           setNewPlayer({ name: '', tier: 5, gameMode: 'bedwars' })
         }
       } catch (error) {
         console.error('Error adding player:', error)
+        alert('Failed to add player. Please try again.')
       } finally {
         setSaving(false)
       }
@@ -326,12 +332,12 @@ export default function AdminPage() {
             </div>
           </div>
 
-          {/* Save Changes */}
+          {/* Status */}
           <div className="mt-8 text-center">
-            <button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/25 flex items-center space-x-2 mx-auto">
-              <Save className="w-5 h-5" />
-              <span>Save All Changes</span>
-            </button>
+            <div className="inline-flex items-center space-x-2 bg-green-600/20 border border-green-400/30 rounded-lg px-4 py-2">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              <span className="text-green-400 text-sm font-medium">All changes save automatically</span>
+            </div>
           </div>
         </div>
       </div>
