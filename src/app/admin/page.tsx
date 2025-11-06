@@ -1,17 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Plus, User, Crown, Shield, Sword, Target, Users, Save, Trash2 } from 'lucide-react'
+import { ArrowLeft, Plus, User, Crown, Shield, Sword, Target, Users, Save, Trash2, Loader2 } from 'lucide-react'
+import { Player, getAllPlayers, addPlayer, updatePlayer, deletePlayer, initializeSampleData } from '@/lib/tiers'
 
 export default function AdminPage() {
-  const [players, setPlayers] = useState([
-    { id: 1, name: 'Marlow', tier: 1, gameMode: 'bedwars', verified: true },
-    { id: 2, name: 'Lurrn', tier: 1, gameMode: 'skywars', verified: true },
-    { id: 3, name: 'PlayerX', tier: 1, gameMode: 'duels', verified: true },
-    { id: 4, name: 'ProGamer', tier: 2, gameMode: 'bedwars', verified: true },
-    { id: 5, name: 'ElitePlayer', tier: 2, gameMode: 'skywars', verified: true },
-  ])
+  const [players, setPlayers] = useState<Player[]>([])
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
 
   const [newPlayer, setNewPlayer] = useState({
     name: '',
@@ -36,34 +33,111 @@ export default function AdminPage() {
     { level: 5, name: 'Tier 5', color: 'text-purple-400' },
   ]
 
-  const addPlayer = () => {
-    if (newPlayer.name.trim()) {
-      const player = {
-        id: Date.now(),
-        name: newPlayer.name.trim(),
-        tier: newPlayer.tier,
-        gameMode: newPlayer.gameMode,
-        verified: true
+  // Load players from Firebase on component mount
+  useEffect(() => {
+    const loadPlayers = async () => {
+      try {
+        const playersData = await getAllPlayers()
+        setPlayers(playersData)
+      } catch (error) {
+        console.error('Error loading players:', error)
+      } finally {
+        setLoading(false)
       }
-      setPlayers([...players, player])
-      setNewPlayer({ name: '', tier: 5, gameMode: 'bedwars' })
+    }
+
+    loadPlayers()
+  }, [])
+
+  const handleAddPlayer = async () => {
+    if (newPlayer.name.trim()) {
+      setSaving(true)
+      try {
+        const playerData = {
+          name: newPlayer.name.trim(),
+          tier: newPlayer.tier,
+          gameMode: newPlayer.gameMode,
+          verified: true
+        }
+
+        const newPlayerId = await addPlayer(playerData)
+        if (newPlayerId) {
+          // Reload players to get the new data
+          const updatedPlayers = await getAllPlayers()
+          setPlayers(updatedPlayers)
+          setNewPlayer({ name: '', tier: 5, gameMode: 'bedwars' })
+        }
+      } catch (error) {
+        console.error('Error adding player:', error)
+      } finally {
+        setSaving(false)
+      }
     }
   }
 
-  const updatePlayerTier = (id: number, newTier: number) => {
-    setPlayers(players.map(player =>
-      player.id === id ? { ...player, tier: newTier } : player
-    ))
+  const handleUpdatePlayerTier = async (id: string, newTier: number) => {
+    setSaving(true)
+    try {
+      const success = await updatePlayer(id, { tier: newTier })
+      if (success) {
+        // Update local state
+        setPlayers(players.map(player =>
+          player.id === id ? { ...player, tier: newTier } : player
+        ))
+      }
+    } catch (error) {
+      console.error('Error updating player tier:', error)
+    } finally {
+      setSaving(false)
+    }
   }
 
-  const updatePlayerGameMode = (id: number, newGameMode: string) => {
-    setPlayers(players.map(player =>
-      player.id === id ? { ...player, gameMode: newGameMode } : player
-    ))
+  const handleUpdatePlayerGameMode = async (id: string, newGameMode: string) => {
+    setSaving(true)
+    try {
+      const success = await updatePlayer(id, { gameMode: newGameMode })
+      if (success) {
+        // Update local state
+        setPlayers(players.map(player =>
+          player.id === id ? { ...player, gameMode: newGameMode } : player
+        ))
+      }
+    } catch (error) {
+      console.error('Error updating player game mode:', error)
+    } finally {
+      setSaving(false)
+    }
   }
 
-  const removePlayer = (id: number) => {
-    setPlayers(players.filter(player => player.id !== id))
+  const handleRemovePlayer = async (id: string) => {
+    if (confirm('Are you sure you want to remove this player?')) {
+      setSaving(true)
+      try {
+        const success = await deletePlayer(id)
+        if (success) {
+          setPlayers(players.filter(player => player.id !== id))
+        }
+      } catch (error) {
+        console.error('Error removing player:', error)
+      } finally {
+        setSaving(false)
+      }
+    }
+  }
+
+  const handleInitializeSampleData = async () => {
+    if (confirm('This will add sample data to your database. Continue?')) {
+      setSaving(true)
+      try {
+        await initializeSampleData()
+        const updatedPlayers = await getAllPlayers()
+        setPlayers(updatedPlayers)
+      } catch (error) {
+        console.error('Error initializing sample data:', error)
+      } finally {
+        setSaving(false)
+      }
+    }
   }
 
   const getTierColor = (tier: number) => {
@@ -165,11 +239,12 @@ export default function AdminPage() {
 
               <div className="flex items-end">
                 <button
-                  onClick={addPlayer}
-                  className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-2"
+                  onClick={handleAddPlayer}
+                  disabled={saving}
+                  className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 disabled:from-gray-600 disabled:to-gray-700 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105 disabled:hover:scale-100 flex items-center justify-center space-x-2"
                 >
-                  <Plus className="w-4 h-4" />
-                  <span>Add Player</span>
+                  {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
+                  <span>{saving ? 'Adding...' : 'Add Player'}</span>
                 </button>
               </div>
             </div>
@@ -207,8 +282,9 @@ export default function AdminPage() {
                       <td className="py-4 px-4">
                         <select
                           value={player.gameMode}
-                          onChange={(e) => updatePlayerGameMode(player.id, e.target.value)}
-                          className="px-3 py-1 bg-black/20 border border-white/20 rounded text-white text-sm focus:outline-none focus:ring-1 focus:ring-purple-500"
+                          onChange={(e) => handleUpdatePlayerGameMode(player.id, e.target.value)}
+                          disabled={saving}
+                          className="px-3 py-1 bg-black/20 border border-white/20 rounded text-white text-sm focus:outline-none focus:ring-1 focus:ring-purple-500 disabled:opacity-50"
                         >
                           {gameModes.map((mode) => (
                             <option key={mode.id} value={mode.id} className="bg-slate-800">
@@ -221,8 +297,9 @@ export default function AdminPage() {
                       <td className="py-4 px-4">
                         <select
                           value={player.tier}
-                          onChange={(e) => updatePlayerTier(player.id, parseInt(e.target.value))}
-                          className="px-3 py-1 bg-black/20 border border-white/20 rounded text-white text-sm focus:outline-none focus:ring-1 focus:ring-purple-500"
+                          onChange={(e) => handleUpdatePlayerTier(player.id, parseInt(e.target.value))}
+                          disabled={saving}
+                          className="px-3 py-1 bg-black/20 border border-white/20 rounded text-white text-sm focus:outline-none focus:ring-1 focus:ring-purple-500 disabled:opacity-50"
                         >
                           {tiers.map((tier) => (
                             <option key={tier.level} value={tier.level} className="bg-slate-800">
@@ -234,8 +311,9 @@ export default function AdminPage() {
 
                       <td className="py-4 px-4">
                         <button
-                          onClick={() => removePlayer(player.id)}
-                          className="bg-red-600 hover:bg-red-700 text-white p-2 rounded transition-colors"
+                          onClick={() => handleRemovePlayer(player.id)}
+                          disabled={saving}
+                          className="bg-red-600 hover:bg-red-700 disabled:bg-gray-600 text-white p-2 rounded transition-colors"
                           title="Remove player"
                         >
                           <Trash2 className="w-4 h-4" />

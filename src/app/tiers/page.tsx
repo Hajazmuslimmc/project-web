@@ -1,11 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Trophy, Users, Star, Crown, Shield, Sword, Target } from 'lucide-react'
+import { ArrowLeft, Trophy, Users, Star, Crown, Shield, Sword, Target, Loader2 } from 'lucide-react'
+import { Player, getAllPlayers, getPlayersByGameMode } from '@/lib/tiers'
 
 export default function TiersPage() {
   const [selectedGameMode, setSelectedGameMode] = useState('all')
+  const [players, setPlayers] = useState<Player[]>([])
+  const [loading, setLoading] = useState(true)
 
   const gameModes = [
     { id: 'all', name: 'All Modes', icon: <Trophy className="w-5 h-5" /> },
@@ -17,6 +20,30 @@ export default function TiersPage() {
     { id: 'boxing', name: 'Boxing', icon: <Target className="w-5 h-5" /> },
   ]
 
+  // Load players from Firebase
+  useEffect(() => {
+    const loadPlayers = async () => {
+      try {
+        const playersData = selectedGameMode === 'all'
+          ? await getAllPlayers()
+          : await getPlayersByGameMode(selectedGameMode)
+        setPlayers(playersData)
+      } catch (error) {
+        console.error('Error loading players:', error)
+        setPlayers([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadPlayers()
+  }, [selectedGameMode])
+
+  // Group players by tier
+  const getPlayersByTier = (tier: number) => {
+    return players.filter(player => player.tier === tier)
+  }
+
   const tiers = [
     {
       level: 1,
@@ -24,11 +51,7 @@ export default function TiersPage() {
       color: 'from-yellow-400 to-yellow-600',
       bgColor: 'bg-gradient-to-r from-yellow-400/20 to-yellow-600/20',
       borderColor: 'border-yellow-400/50',
-      players: [
-        { name: 'Marlow', gameMode: 'bedwars', verified: true },
-        { name: 'Lurrn', gameMode: 'skywars', verified: true },
-        { name: 'PlayerX', gameMode: 'duels', verified: true },
-      ]
+      players: getPlayersByTier(1)
     },
     {
       level: 2,
@@ -36,11 +59,7 @@ export default function TiersPage() {
       color: 'from-gray-300 to-gray-500',
       bgColor: 'bg-gradient-to-r from-gray-300/20 to-gray-500/20',
       borderColor: 'border-gray-400/50',
-      players: [
-        { name: 'ProGamer', gameMode: 'bedwars', verified: true },
-        { name: 'ElitePlayer', gameMode: 'skywars', verified: true },
-        { name: 'SkillMaster', gameMode: 'duels', verified: true },
-      ]
+      players: getPlayersByTier(2)
     },
     {
       level: 3,
@@ -48,11 +67,7 @@ export default function TiersPage() {
       color: 'from-blue-400 to-blue-600',
       bgColor: 'bg-gradient-to-r from-blue-400/20 to-blue-600/20',
       borderColor: 'border-blue-400/50',
-      players: [
-        { name: 'Competitor', gameMode: 'bedwars', verified: true },
-        { name: 'Challenger', gameMode: 'skywars', verified: true },
-        { name: 'Warrior', gameMode: 'duels', verified: true },
-      ]
+      players: getPlayersByTier(3)
     },
     {
       level: 4,
@@ -60,11 +75,7 @@ export default function TiersPage() {
       color: 'from-green-400 to-green-600',
       bgColor: 'bg-gradient-to-r from-green-400/20 to-green-600/20',
       borderColor: 'border-green-400/50',
-      players: [
-        { name: 'RisingStar', gameMode: 'bedwars', verified: true },
-        { name: 'Ambitious', gameMode: 'skywars', verified: true },
-        { name: 'Determined', gameMode: 'duels', verified: true },
-      ]
+      players: getPlayersByTier(4)
     },
     {
       level: 5,
@@ -72,17 +83,9 @@ export default function TiersPage() {
       color: 'from-purple-400 to-purple-600',
       bgColor: 'bg-gradient-to-r from-purple-400/20 to-purple-600/20',
       borderColor: 'border-purple-400/50',
-      players: [
-        { name: 'Newbie', gameMode: 'bedwars', verified: true },
-        { name: 'Beginner', gameMode: 'skywars', verified: true },
-        { name: 'Learner', gameMode: 'duels', verified: true },
-      ]
+      players: getPlayersByTier(5)
     }
   ]
-
-  const filteredPlayers = selectedGameMode === 'all'
-    ? tiers.flatMap(tier => tier.players)
-    : tiers.flatMap(tier => tier.players.filter(player => player.gameMode === selectedGameMode))
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
