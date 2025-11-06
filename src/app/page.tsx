@@ -1,19 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { useAuth } from '@/contexts/AuthContext'
-import { LogOut, User } from 'lucide-react'
 
 export default function Home() {
-  const { user, signOut } = useAuth()
-
-  const handleSignOut = async () => {
-    try {
-      await signOut()
-    } catch (error) {
-      console.error('Sign out error:', error)
-    }
-  }
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Navigation */}
@@ -33,33 +22,9 @@ export default function Home() {
               <a href="#contact" className="text-gray-300 hover:text-white transition-colors">Contact</a>
             </div>
             <div className="flex items-center space-x-4">
-              {user ? (
-                <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-3 text-white">
-                    <User className="w-5 h-5" />
-                    <span className="text-sm">{user.email || 'Anonymous User'}</span>
-                  </div>
-                  <Link href="/admin" className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors">
-                    Admin
-                  </Link>
-                  <button
-                    onClick={handleSignOut}
-                    className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center space-x-2"
-                  >
-                    <LogOut className="w-4 h-4" />
-                    <span>Sign Out</span>
-                  </button>
-                </div>
-              ) : (
-                <div className="flex items-center space-x-3">
-                  <Link href="/auth/signup" className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-4 py-2 rounded-lg transition-all duration-300 transform hover:scale-105">
-                    Sign Up
-                  </Link>
-                  <Link href="/auth/signin" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-4 py-2 rounded-lg transition-all duration-300 transform hover:scale-105">
-                    Sign In
-                  </Link>
-                </div>
-              )}
+              <Link href="/admin" className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors">
+                Admin
+              </Link>
             </div>
           </div>
         </div>
