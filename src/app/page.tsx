@@ -37,7 +37,7 @@ export default function Home() {
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center space-x-3 text-white">
                     <User className="w-5 h-5" />
-                    <span className="text-sm">{user.email}</span>
+                    <span className="text-sm">{user.email || 'Anonymous User'}</span>
                   </div>
                   <Link href="/admin" className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors">
                     Admin
@@ -52,6 +52,9 @@ export default function Home() {
                 </div>
               ) : (
                 <div className="flex items-center space-x-3">
+                  <Link href="/auth/signup" className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-4 py-2 rounded-lg transition-all duration-300 transform hover:scale-105">
+                    Sign Up
+                  </Link>
                   <Link href="/auth/signin" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-4 py-2 rounded-lg transition-all duration-300 transform hover:scale-105">
                     Sign In
                   </Link>
