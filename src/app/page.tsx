@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
@@ -12,6 +14,7 @@ export default function Home() {
               <span className="text-xl font-bold text-white">networkak</span>
             </div>
             <div className="hidden md:flex space-x-8">
+              <Link href="/tiers" className="text-gray-300 hover:text-white transition-colors">🏆 MCTiers</Link>
               <a href="#features" className="text-gray-300 hover:text-white transition-colors">Features</a>
               <a href="#about" className="text-gray-300 hover:text-white transition-colors">About</a>
               <a href="#contact" className="text-gray-300 hover:text-white transition-colors">Contact</a>
