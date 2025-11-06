@@ -167,7 +167,7 @@ export default function TiersPage() {
                 <h3 className="text-xl font-bold text-white text-center mb-4">{tier.name}</h3>
                 <div className="space-y-2">
                   {tier.players
-                    .filter(player => selectedGameMode === 'all' || player.gameMode === selectedGameMode)
+                    .filter(player => selectedGameMode === 'all' || player.game_mode === selectedGameMode)
                     .map((player, index) => (
                     <div key={index} className="flex items-center justify-between bg-black/20 rounded-lg p-2">
                       <div className="flex items-center space-x-2">
@@ -176,7 +176,7 @@ export default function TiersPage() {
                           <Star className="w-4 h-4 text-yellow-400 fill-current" />
                         )}
                       </div>
-                      <span className="text-xs text-gray-400 capitalize">{player.gameMode}</span>
+                      <span className="text-xs text-gray-400 capitalize">{player.game_mode}</span>
                     </div>
                   ))}
                 </div>

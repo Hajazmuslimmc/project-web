@@ -1,25 +1,15 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
-import {
-  User,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signOut as firebaseSignOut,
-  onAuthStateChanged,
-  GoogleAuthProvider,
-  signInWithPopup,
-  OAuthProvider
-} from 'firebase/auth'
-import { auth } from '@/lib/firebase'
+import { User, Session } from '@supabase/supabase-js'
+import { supabase } from '@/lib/supabase'
 
 interface AuthContextType {
   user: User | null
+  session: Session | null
   loading: boolean
   signIn: (email: string, password: string) => Promise<void>
   signUp: (email: string, password: string) => Promise<void>
-  signInWithGoogle: () => Promise<void>
-  signInWithMicrosoft: () => Promise<void>
   signOut: () => Promise<void>
 }
 
@@ -39,71 +29,56 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null)
+  const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user)
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
+      setUser(session?.user ?? null)
       setLoading(false)
     })
 
-    return unsubscribe
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      setSession(session)
+      setUser(session?.user ?? null)
+      setLoading(false)
+    })
+
+    return () => subscription.unsubscribe()
   }, [])
 
   const signIn = async (email: string, password: string) => {
-    try {
-      await signInWithEmailAndPassword(auth, email, password)
-    } catch (error) {
-      console.error('Sign in error:', error)
-      throw error
-    }
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    })
+    if (error) throw error
   }
 
   const signUp = async (email: string, password: string) => {
-    try {
-      await createUserWithEmailAndPassword(auth, email, password)
-    } catch (error) {
-      console.error('Sign up error:', error)
-      throw error
-    }
-  }
-
-  const signInWithGoogle = async () => {
-    try {
-      const provider = new GoogleAuthProvider()
-      await signInWithPopup(auth, provider)
-    } catch (error) {
-      console.error('Google sign in error:', error)
-      throw error
-    }
-  }
-
-  const signInWithMicrosoft = async () => {
-    try {
-      const provider = new OAuthProvider('microsoft.com')
-      await signInWithPopup(auth, provider)
-    } catch (error) {
-      console.error('Microsoft sign in error:', error)
-      throw error
-    }
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+    })
+    if (error) throw error
   }
 
   const signOut = async () => {
-    try {
-      await firebaseSignOut(auth)
-    } catch (error) {
-      console.error('Sign out error:', error)
-      throw error
-    }
+    const { error } = await supabase.auth.signOut()
+    if (error) throw error
   }
 
   const value = {
     user,
+    session,
     loading,
     signIn,
     signUp,
-    signInWithGoogle,
-    signInWithMicrosoft,
     signOut
   }
 

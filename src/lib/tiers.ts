@@ -1,41 +1,18 @@
-import { db } from './firebase'
-import {
-  collection,
-  doc,
-  getDocs,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  query,
-  orderBy,
-  where
-} from 'firebase/firestore'
+import { supabase, Player } from './supabase'
 
-export interface Player {
-  id: string
-  name: string
-  tier: number
-  gameMode: string
-  verified: boolean
-  createdAt?: Date
-  updatedAt?: Date
-}
-
-// Collection reference
-const tiersCollection = collection(db, 'tiers')
+export type { Player }
 
 // Get all players
 export const getAllPlayers = async (): Promise<Player[]> => {
   try {
-    const q = query(tiersCollection, orderBy('tier', 'asc'), orderBy('name', 'asc'))
-    const querySnapshot = await getDocs(q)
+    const { data, error } = await supabase
+      .from('tiers')
+      .select('*')
+      .order('tier', { ascending: true })
+      .order('name', { ascending: true })
 
-    return querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data(),
-      createdAt: doc.data().createdAt?.toDate(),
-      updatedAt: doc.data().updatedAt?.toDate()
-    })) as Player[]
+    if (error) throw error
+    return data || []
   } catch (error) {
     console.error('Error getting players:', error)
     return []
@@ -45,20 +22,15 @@ export const getAllPlayers = async (): Promise<Player[]> => {
 // Get players by game mode
 export const getPlayersByGameMode = async (gameMode: string): Promise<Player[]> => {
   try {
-    const q = query(
-      tiersCollection,
-      where('gameMode', '==', gameMode),
-      orderBy('tier', 'asc'),
-      orderBy('name', 'asc')
-    )
-    const querySnapshot = await getDocs(q)
+    const { data, error } = await supabase
+      .from('tiers')
+      .select('*')
+      .eq('game_mode', gameMode)
+      .order('tier', { ascending: true })
+      .order('name', { ascending: true })
 
-    return querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data(),
-      createdAt: doc.data().createdAt?.toDate(),
-      updatedAt: doc.data().updatedAt?.toDate()
-    })) as Player[]
+    if (error) throw error
+    return data || []
   } catch (error) {
     console.error('Error getting players by game mode:', error)
     return []
@@ -66,16 +38,16 @@ export const getPlayersByGameMode = async (gameMode: string): Promise<Player[]> 
 }
 
 // Add new player
-export const addPlayer = async (playerData: Omit<Player, 'id' | 'createdAt' | 'updatedAt'>): Promise<string | null> => {
+export const addPlayer = async (playerData: Omit<Player, 'id' | 'created_at' | 'updated_at'>): Promise<string | null> => {
   try {
-    const docData = {
-      ...playerData,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    }
+    const { data, error } = await supabase
+      .from('tiers')
+      .insert([playerData])
+      .select()
+      .single()
 
-    const docRef = await addDoc(tiersCollection, docData)
-    return docRef.id
+    if (error) throw error
+    return data?.id || null
   } catch (error) {
     console.error('Error adding player:', error)
     return null
@@ -83,13 +55,17 @@ export const addPlayer = async (playerData: Omit<Player, 'id' | 'createdAt' | 'u
 }
 
 // Update player
-export const updatePlayer = async (id: string, updates: Partial<Omit<Player, 'id' | 'createdAt'>>): Promise<boolean> => {
+export const updatePlayer = async (id: string, updates: Partial<Omit<Player, 'id' | 'created_at'>>): Promise<boolean> => {
   try {
-    const docRef = doc(tiersCollection, id)
-    await updateDoc(docRef, {
-      ...updates,
-      updatedAt: new Date()
-    })
+    const { error } = await supabase
+      .from('tiers')
+      .update({
+        ...updates,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', id)
+
+    if (error) throw error
     return true
   } catch (error) {
     console.error('Error updating player:', error)
@@ -100,7 +76,12 @@ export const updatePlayer = async (id: string, updates: Partial<Omit<Player, 'id
 // Delete player
 export const deletePlayer = async (id: string): Promise<boolean> => {
   try {
-    await deleteDoc(doc(tiersCollection, id))
+    const { error } = await supabase
+      .from('tiers')
+      .delete()
+      .eq('id', id)
+
+    if (error) throw error
     return true
   } catch (error) {
     console.error('Error deleting player:', error)
@@ -115,27 +96,28 @@ export const initializeSampleData = async () => {
 
     if (existingPlayers.length === 0) {
       const samplePlayers = [
-        { name: 'Marlow', tier: 1, gameMode: 'bedwars', verified: true },
-        { name: 'Lurrn', tier: 1, gameMode: 'skywars', verified: true },
-        { name: 'PlayerX', tier: 1, gameMode: 'duels', verified: true },
-        { name: 'ProGamer', tier: 2, gameMode: 'bedwars', verified: true },
-        { name: 'ElitePlayer', tier: 2, gameMode: 'skywars', verified: true },
-        { name: 'SkillMaster', tier: 2, gameMode: 'duels', verified: true },
-        { name: 'Competitor', tier: 3, gameMode: 'bedwars', verified: true },
-        { name: 'Challenger', tier: 3, gameMode: 'skywars', verified: true },
-        { name: 'Warrior', tier: 3, gameMode: 'duels', verified: true },
-        { name: 'RisingStar', tier: 4, gameMode: 'bedwars', verified: true },
-        { name: 'Ambitious', tier: 4, gameMode: 'skywars', verified: true },
-        { name: 'Determined', tier: 4, gameMode: 'duels', verified: true },
-        { name: 'Newbie', tier: 5, gameMode: 'bedwars', verified: true },
-        { name: 'Beginner', tier: 5, gameMode: 'skywars', verified: true },
-        { name: 'Learner', tier: 5, gameMode: 'duels', verified: true },
+        { name: 'Marlow', tier: 1, game_mode: 'bedwars', verified: true },
+        { name: 'Lurrn', tier: 1, game_mode: 'skywars', verified: true },
+        { name: 'PlayerX', tier: 1, game_mode: 'duels', verified: true },
+        { name: 'ProGamer', tier: 2, game_mode: 'bedwars', verified: true },
+        { name: 'ElitePlayer', tier: 2, game_mode: 'skywars', verified: true },
+        { name: 'SkillMaster', tier: 2, game_mode: 'duels', verified: true },
+        { name: 'Competitor', tier: 3, game_mode: 'bedwars', verified: true },
+        { name: 'Challenger', tier: 3, game_mode: 'skywars', verified: true },
+        { name: 'Warrior', tier: 3, game_mode: 'duels', verified: true },
+        { name: 'RisingStar', tier: 4, game_mode: 'bedwars', verified: true },
+        { name: 'Ambitious', tier: 4, game_mode: 'skywars', verified: true },
+        { name: 'Determined', tier: 4, game_mode: 'duels', verified: true },
+        { name: 'Newbie', tier: 5, game_mode: 'bedwars', verified: true },
+        { name: 'Beginner', tier: 5, game_mode: 'skywars', verified: true },
+        { name: 'Learner', tier: 5, game_mode: 'duels', verified: true },
       ]
 
-      for (const player of samplePlayers) {
-        await addPlayer(player)
-      }
+      const { error } = await supabase
+        .from('tiers')
+        .insert(samplePlayers)
 
+      if (error) throw error
       console.log('Sample data initialized successfully')
     }
   } catch (error) {
