@@ -52,11 +52,8 @@ export default function Home() {
                 </div>
               ) : (
                 <div className="flex items-center space-x-3">
-                  <Link href="/auth/signin" className="text-gray-300 hover:text-white transition-colors">
+                  <Link href="/auth/signin" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-4 py-2 rounded-lg transition-all duration-300 transform hover:scale-105">
                     Sign In
-                  </Link>
-                  <Link href="/auth/signup" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-4 py-2 rounded-lg transition-all duration-300 transform hover:scale-105">
-                    Sign Up
                   </Link>
                 </div>
               )}
