@@ -147,7 +147,7 @@ export default function Home() {
             creative game design to deliver entertainment that captivates and engages players worldwide.
           </p>
           <a
-            href="https://discord.gg/example"
+            href="https://discord.gg/86deseDdbf"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center space-x-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105"
