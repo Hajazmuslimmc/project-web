@@ -9,6 +9,7 @@ interface AuthContextType {
   session: Session | null
   loading: boolean
   signIn: (email: string, password: string) => Promise<void>
+  signUp: (password?: string) => Promise<void>
   signOut: () => Promise<void>
 }
 
@@ -59,11 +60,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     if (error) throw error
   }
 
-  const signUp = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-    })
+  const signUp = async (password?: string) => {
+    // Use anonymous authentication - no email or phone required
+    const { error } = await supabase.auth.signInAnonymously()
     if (error) throw error
   }
 
@@ -77,6 +76,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     session,
     loading,
     signIn,
+    signUp,
     signOut
   }
 
