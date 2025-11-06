@@ -2,13 +2,17 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { ArrowLeft, Plus, User, Crown, Shield, Sword, Target, Users, Save, Trash2, Loader2 } from 'lucide-react'
 import { Player, getAllPlayers, addPlayer, updatePlayer, deletePlayer, initializeSampleData } from '@/lib/tiers'
+import { useAuth } from '@/contexts/AuthContext'
 
 export default function AdminPage() {
   const [players, setPlayers] = useState<Player[]>([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const { user, loading: authLoading } = useAuth()
+  const router = useRouter()
 
   const [newPlayer, setNewPlayer] = useState({
     name: '',
@@ -33,9 +37,18 @@ export default function AdminPage() {
     { level: 5, name: 'Tier 5', color: 'text-purple-400' },
   ]
 
+  // Check authentication and redirect if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/auth/signin')
+    }
+  }, [user, authLoading, router])
+
   // Load players from Firebase on component mount
   useEffect(() => {
     const loadPlayers = async () => {
+      if (!user) return // Don't load if not authenticated
+
       try {
         const playersData = await getAllPlayers()
         setPlayers(playersData)
@@ -46,8 +59,27 @@ export default function AdminPage() {
       }
     }
 
-    loadPlayers()
-  }, [])
+    if (user) {
+      loadPlayers()
+    }
+  }, [user])
+
+  // Show loading while checking authentication
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 animate-spin text-purple-400 mx-auto mb-4" />
+          <p className="text-white text-lg">Loading...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Redirect if not authenticated
+  if (!user) {
+    return null // Will redirect in useEffect
+  }
 
   const handleAddPlayer = async () => {
     if (newPlayer.name.trim()) {
