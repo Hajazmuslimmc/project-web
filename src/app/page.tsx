@@ -120,7 +120,6 @@ export default function Home() {
                 </div>
 
                 <Link href="/about" className="text-gray-300 hover:text-primary-400 transition-colors">About</Link>
-                <Link href="/download" className="text-primary-400 hover:text-primary-300 transition-colors font-semibold">📥 Download</Link>
                 <Link href="/privacy-policy" className="text-gray-300 hover:text-primary-400 transition-colors">Privacy</Link>
               </div>
               {user ? (
@@ -200,11 +199,6 @@ export default function Home() {
                 <button className="btn-primary flex items-center justify-center space-x-2">
                   <Play className="w-5 h-5" />
                   <span>Start Playing Now</span>
-                </button>
-              </Link>
-              <Link href="/download">
-                <button className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-6 py-3 rounded-lg flex items-center justify-center space-x-2 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-green-500/25">
-                  <span>📥 Download App</span>
                 </button>
               </Link>
               <button className="btn-secondary flex items-center justify-center space-x-2">
