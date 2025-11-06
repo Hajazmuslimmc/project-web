@@ -319,7 +319,7 @@ export default function AdminPage() {
 
                       <td className="py-4 px-4">
                         <select
-                          value={player.gameMode}
+                          value={player.game_mode}
                           onChange={(e) => handleUpdatePlayerGameMode(player.id, e.target.value)}
                           disabled={saving}
                           className="px-3 py-1 bg-black/20 border border-white/20 rounded text-white text-sm focus:outline-none focus:ring-1 focus:ring-purple-500 disabled:opacity-50"
