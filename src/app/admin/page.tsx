@@ -88,7 +88,7 @@ export default function AdminPage() {
         const playerData = {
           name: newPlayer.name.trim(),
           tier: newPlayer.tier,
-          gameMode: newPlayer.gameMode,
+          game_mode: newPlayer.gameMode,
           verified: true
         }
 
@@ -133,11 +133,11 @@ export default function AdminPage() {
   const handleUpdatePlayerGameMode = async (id: string, newGameMode: string) => {
     setSaving(true)
     try {
-      const success = await updatePlayer(id, { gameMode: newGameMode })
+      const success = await updatePlayer(id, { game_mode: newGameMode })
       if (success) {
         // Update local state
         setPlayers(players.map(player =>
-          player.id === id ? { ...player, gameMode: newGameMode } : player
+          player.id === id ? { ...player, game_mode: newGameMode } : player
         ))
       }
     } catch (error) {
