@@ -1,4 +1,34 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Better Notes - Cross-Platform Note-Taking Tool | Networkak',
+  description: 'Better Notes is a cross-platform note-taking tool for Mac, Windows, Linux, Android, and iOS. Take notes seamlessly across all your devices with Better Notes Networkak.',
+  keywords: [
+    'Better Notes',
+    'BetterNotes Networkak',
+    'cross-platform notes',
+    'note taking app',
+    'Mac notes',
+    'Windows notes',
+    'Android notes',
+    'iOS notes',
+    'Linux notes',
+    'multi-platform notes'
+  ],
+  openGraph: {
+    title: 'Better Notes - Cross-Platform Note-Taking Tool',
+    description: 'Take notes seamlessly across all your devices. Better Notes works on Mac, Windows, Linux, Android, and iOS.',
+    url: 'https://your-domain.com/betternotes',
+    siteName: 'Networkak',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Better Notes - Cross-Platform Notes',
+    description: 'Cross-platform note-taking tool for all devices. Download Better Notes today!',
+  },
+};
 
 export default function BetterNotesPage() {
   return (
