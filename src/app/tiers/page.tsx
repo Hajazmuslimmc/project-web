@@ -127,8 +127,7 @@ export default function TiersPage() {
               <span className="text-white">Ranking System</span>
             </h1>
             <p className="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
-              The official competitive Minecraft PvP ranking system. Founded by high-level players,
-              MCTiers ranks players across 7 game modes based on skill level and testing results.
+              The best network all apps custome tools media free and paid stuff
             </p>
           </div>
 
