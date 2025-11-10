@@ -4,36 +4,6 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Trophy, Users, Star, Crown, Shield, Sword, Target, Loader2 } from 'lucide-react'
 import { Player, getAllPlayers, getPlayersByGameMode } from '@/lib/tiers'
-import type { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: 'McNetTiers - Minecraft PvP Ranking System | Networkak',
-  description: 'McNetTiers is the best network all apps custome tools media free and paid stuff. Official Minecraft PvP ranking system with competitive player tiers.',
-  keywords: [
-    'McNetTiers',
-    'Minecraft ranking',
-    'PvP tiers',
-    'Minecraft competitive',
-    'player ranking',
-    'gaming tiers',
-    'Networkak',
-    'Minecraft PvP',
-    'bedwars ranking',
-    'skywars tiers'
-  ],
-  openGraph: {
-    title: 'McNetTiers - Minecraft PvP Ranking System',
-    description: 'The best network for Minecraft PvP rankings. McNetTiers ranks players across 7 game modes based on skill level.',
-    url: 'https://your-domain.com/tiers',
-    siteName: 'Networkak',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'McNetTiers - Minecraft PvP Rankings',
-    description: 'Official Minecraft PvP ranking system. Check player tiers and rankings!',
-  },
-};
 
 export default function TiersPage() {
   const [selectedGameMode, setSelectedGameMode] = useState('all')
