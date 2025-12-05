@@ -4,7 +4,13 @@ import Link from 'next/link'
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-emerald-900 via-cyan-900 to-blue-900">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0">
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-yellow-400/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-emerald-300/10 rounded-full blur-3xl animate-bounce"></div>
+        <div className="absolute top-3/4 left-1/3 w-48 h-48 bg-cyan-300/15 rounded-full blur-2xl animate-pulse"></div>
+      </div>
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 bg-black/20 backdrop-blur-md border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -16,22 +22,33 @@ export default function Home() {
               <span className="text-xl font-bold text-white">networkak</span>
             </div>
             <div className="hidden md:flex space-x-8">
-              <Link href="/tiers" className="text-gray-300 hover:text-white transition-colors">🏆 MCTiers</Link>
               <a href="#features" className="text-gray-300 hover:text-white transition-colors">Features</a>
               <a href="#about" className="text-gray-300 hover:text-white transition-colors">About</a>
               <a href="#contact" className="text-gray-300 hover:text-white transition-colors">Contact</a>
             </div>
-            <div className="flex items-center space-x-4">
-              <Link href="/admin" className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors">
-                Admin
-              </Link>
-            </div>
+
           </div>
         </div>
       </nav>
 
+      {/* 2026 Celebration Banner */}
+      <section className="pt-20 pb-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="bg-gradient-to-r from-yellow-400 via-pink-500 to-cyan-500 p-1 rounded-full shadow-2xl animate-pulse">
+            <div className="bg-black/80 backdrop-blur-sm rounded-full py-4 px-8">
+              <h1 className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-yellow-300 via-pink-400 to-cyan-300 bg-clip-text text-transparent mb-2">
+                🎉 Welcome 2026! 🎉
+              </h1>
+              <p className="text-white font-semibold text-lg md:text-xl">
+                We're so happy you're here to start the new year with amazing games! 🚀✨
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Hero Section */}
-      <section className="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
+      <section className="pt-16 pb-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-5xl md:text-7xl font-bold mb-6">
@@ -46,14 +63,14 @@ export default function Home() {
               From action-packed adventures to brain-teasing puzzles, we've got it all.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/25">
-                Start Playing Now
+              <button className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-semibold py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-emerald-500/25 animate-pulse">
+                🎮 Start Playing Now
               </button>
-              <Link href="/betternotes/download" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-blue-500/25 text-center">
-                Download Better Notes
+              <Link href="/betternotes/download" className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-semibold py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-cyan-500/25 text-center">
+                📥 Download Better Notes
               </Link>
-              <button className="border-2 border-white/20 text-white hover:bg-white/10 font-semibold py-4 px-8 rounded-lg transition-all duration-300">
-                Explore Games
+              <button className="border-2 border-emerald-400 text-emerald-400 hover:bg-emerald-400/10 font-semibold py-4 px-8 rounded-lg transition-all duration-300 hover:scale-105 animate-bounce">
+                🌟 Explore Games
               </button>
             </div>
           </div>
@@ -140,11 +157,11 @@ export default function Home() {
             Join thousands of players and experience the best web games available
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-purple-500/25">
-              Get Started Now
+            <button className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white font-semibold py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-emerald-500/25 animate-pulse">
+              🎯 Get Started Now
             </button>
-            <button className="border-2 border-white/20 text-white hover:bg-white/10 font-semibold py-4 px-8 rounded-lg transition-all duration-300">
-              Join Community
+            <button className="border-2 border-cyan-400 text-cyan-400 hover:bg-cyan-400/10 font-semibold py-4 px-8 rounded-lg transition-all duration-300 hover:scale-105 animate-bounce">
+              👥 Join Community
             </button>
           </div>
         </div>
@@ -183,7 +200,7 @@ export default function Home() {
             <span className="text-lg font-bold text-white">networkak</span>
           </div>
           <p className="text-gray-400">
-            © 2025 networkak. All rights reserved. | Premium Web Gaming Experience
+            © 2026 networkak. All rights reserved. | Premium Web Gaming Experience
           </p>
         </div>
       </footer>
