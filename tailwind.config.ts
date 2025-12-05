@@ -154,6 +154,28 @@ const config: Config = {
           900: '#164e63',
         },
       },
+      textColor: {
+        primary: 'var(--primary)',
+        secondary: 'var(--secondary)',
+        accent: 'var(--accent)',
+        muted: 'var(--muted)',
+        'muted-foreground': 'var(--muted-foreground)',
+      },
+      backgroundColor: {
+        primary: 'var(--primary)',
+        secondary: 'var(--secondary)',
+        accent: 'var(--accent)',
+        card: 'var(--card)',
+      },
+      borderColor: {
+        primary: 'var(--primary)',
+        secondary: 'var(--secondary)',
+        border: 'var(--border)',
+      },
+      ringColor: {
+        primary: 'var(--primary)',
+        secondary: 'var(--secondary)',
+      },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',
         'slide-up': 'slideUp 0.5s ease-out',
@@ -169,7 +191,7 @@ const config: Config = {
           '100%': { transform: 'translateY(0)', opacity: '1' },
         },
       },
-    },
+    }),
   },
   plugins: [],
 }
