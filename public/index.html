@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Master Client — Installer</title>
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; padding: 40px; max-width:720px; margin:auto; }
+    .card { border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,0.08); padding:24px; background:#fff; }
+    pre { background:#f6f8fa; padding:12px; border-radius:8px; overflow:auto; }
+    button { margin-right:8px; padding:10px 14px; border-radius:10px; border:0; cursor:pointer; }
+    .primary { background:#0366d6; color:white; }
+    .muted { background:#efefef; color:#111; }
+    .hint { color:#555; font-size:0.95rem; margin-top:12px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Master Client — Installer</h1>
+    <p>Click <strong>Copy installer</strong> to copy a PowerShell installer script to your clipboard. Or download the ZIP directly and run the script locally.</p>
+
+    <div style="margin:12px 0">
+      <button id="copyBtn" class="primary">Copy installer</button>
+      <a id="psDownload" class="muted" href="/install.ps1" download><button class="muted">Download installer (PS1)</button></a>
+      <a id="zipLink" href="https://example.com/masterclient.zip" download><button class="muted">Download game ZIP</button></a>
+    </div>
+
+    <p class="hint">Replace the ZIP link with your hosted ZIP URL (see below). The script downloads and extracts into <code>C:\MasterClientGame\</code>.</p>
+
+    <h3>Installer preview</h3>
+    <pre id="scriptPreview">
+// Installer script will be copied to clipboard when you press "Copy installer".
+    </pre>
+
+    <h3>Quick usage</h3>
+    <ol>
+      <li>Host <code>masterclient.zip</code> on your server and update the ZIP URL in this page (the button link) and in the PS1 script.</li>
+      <li>User clicks Copy installer → pastes into a file `install.ps1` and runs it in PowerShell:</li>
+    </ol>
+    <pre>powershell -ExecutionPolicy Bypass -File .\install.ps1</pre>
+
+    <p class="hint">Make sure your ZIP contains the final game files (a root folder or files). If the ZIP contains a top-level folder, the script will move its contents into <code>C:\MasterClientGame\</code>.</p>
+  </div>
+
+<script>
+const zipUrl = "https://example.com/masterclient.zip"; // ← replace with your ZIP URL
+const psScript = `# Master Client installer (PowerShell)
+# Downloads a ZIP, extracts to C:\\MasterClientGame, creates desktop shortcut.
+$zipUrl = "${zipUrl}"
+$installDir = "$env:SystemDrive\\MasterClientGame"
+$tempZip = Join-Path $env:TEMP "masterclient_download.zip"
+
+Write-Host "Downloading installer..."
+try {
+    Invoke-WebRequest -Uri $zipUrl -OutFile $tempZip -UseBasicParsing -ErrorAction Stop
+} catch {
+    Write-Host "Failed to download: $($_.Exception.Message)" -ForegroundColor Red
+    exit 1
+}
+
+if (Test-Path $installDir) {
+    Write-Host "Existing install detected at $installDir"
+} else {
+    New-Item -Path $installDir -ItemType Directory -Force | Out-Null
+}
+
+Write-Host "Extracting..."
+try {
+    Expand-Archive -Path $tempZip -DestinationPath $installDir -Force
+} catch {
+    Write-Host "Extraction failed: $($_.Exception.Message)" -ForegroundColor Red
+    exit 1
+}
+
+# Optional: If ZIP created a single top-level folder, move its contents up
+$children = Get-ChildItem -Path $installDir
+if ($children.Count -eq 1 -and $children[0].PSIsContainer) {
+    $single = $children[0].FullName
+    Write-Host "Normalizing folder structure..."
+    Get-ChildItem -Path $single -Force | Move-Item -Destination $installDir -Force
+    Remove-Item -Path $single -Recurse -Force
+}
+
+# Create desktop shortcut (points to an .exe or .bat inside the install dir)
+$target = Get-ChildItem -Path $installDir -Filter *.exe -Recurse | Select-Object -First 1
+if ($null -eq $target) {
+    Write-Host "No .exe found in install directory. Skipping shortcut creation."
+} else {
+    $WshShell = New-Object -ComObject WScript.Shell
+    $desktop = [Environment]::GetFolderPath("Desktop")
+    $lnk = $WshShell.CreateShortcut((Join-Path $desktop "Master Client.lnk"))
+    $lnk.TargetPath = $target.FullName
+    $lnk.WorkingDirectory = (Split-Path $target.FullName)
+    $lnk.Save()
+    Write-Host "Shortcut created on desktop."
+}
+
+# Cleanup
+Remove-Item -Path $tempZip -Force -ErrorAction SilentlyContinue
+
+Write-Host "Installation complete. Files are in $installDir"
+`;
+
+document.getElementById('scriptPreview').textContent = psScript;
+
+document.getElementById('copyBtn').addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(psScript);
+    alert("Installer script copied to clipboard. Paste into a file named install.ps1 and run:\n\npowershell -ExecutionPolicy Bypass -File .\\install.ps1");
+  } catch (e) {
+    // fallback download
+    const blob = new Blob([psScript], {type: 'text/plain'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'install.ps1';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+});
+</script>
+</body>
+</html>
