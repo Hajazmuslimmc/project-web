@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     'paid tools',
     'note taking app',
     'Minecraft ranking',
-    'PvP tiers',
+
     'gaming network'
   ],
   authors: [{ name: 'Networkak Team' }],
