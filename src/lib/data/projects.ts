@@ -82,7 +82,7 @@ export const projects: Project[] = [
     id: 'roblox-scripts',
     title: 'Roblox Automation Scripts',
     description: 'Advanced automation scripts and tools for Roblox game development and player assistance.',
-    longDescription: 'Comprehensive collection of Roblox scripts including admin tools, game mechanics automation, and player enhancement scripts. Built for both developers and players.',
+    longDescription: 'Comprehensive collection of Roblox scripts for game mechanics automation and player enhancement. Built for both developers and players.',
     tech: ['Lua', 'Roblox Studio', 'Roblox API'],
     category: 'games',
     featured: false,

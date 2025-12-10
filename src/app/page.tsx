@@ -16,15 +16,9 @@ export default function Home() {
               <span className="text-xl font-bold text-white">networkak</span>
             </div>
             <div className="hidden md:flex space-x-8">
-              <Link href="/tiers" className="text-gray-300 hover:text-white transition-colors">🏆 MCTiers</Link>
               <a href="#features" className="text-gray-300 hover:text-white transition-colors">Features</a>
               <a href="#about" className="text-gray-300 hover:text-white transition-colors">About</a>
               <a href="#contact" className="text-gray-300 hover:text-white transition-colors">Contact</a>
-            </div>
-            <div className="flex items-center space-x-4">
-              <a href="/admin" className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors">
-                Admin
-              </a>
             </div>
           </div>
         </div>
