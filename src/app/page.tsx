@@ -654,6 +654,106 @@ export default function ToolsDirectory() {
       url: "/json-validator",
       status: "live",
       featured: false
+    },
+    {
+      id: "65",
+      name: "CloudPad Notes",
+      description: "A clean, cloud-synced note app with folders, reminders, handwriting support, and offline mode.",
+      category: "Productivity",
+      icon: "📝",
+      url: "/betternotes",
+      status: "live",
+      featured: false
+    },
+    {
+      id: "66",
+      name: "TaskFlow Manager",
+      description: "A smart task manager with team collaboration, notifications, deadlines, and visual boards.",
+      category: "Productivity",
+      icon: "✅",
+      url: "#",
+      status: "live",
+      featured: false
+    },
+    {
+      id: "67",
+      name: "PulseCall",
+      description: "A secure calling & messaging app with HD voice, encrypted chats, screen sharing, and voice rooms.",
+      category: "Communication",
+      icon: "📞",
+      url: "#",
+      status: "live",
+      featured: false
+    },
+    {
+      id: "68",
+      name: "StreamBox Player",
+      description: "A universal media player that supports all major formats, streaming links, subtitles, and playlists.",
+      category: "Media",
+      icon: "🎥",
+      url: "#",
+      status: "live",
+      featured: false
+    },
+    {
+      id: "69",
+      name: "PhotoWave Studio",
+      description: "A powerful photo editor with filters, AI background removal, retouch tools, and batch editing.",
+      category: "Design",
+      icon: "🖼️",
+      url: "/image-optimizer",
+      status: "live",
+      featured: false
+    },
+    {
+      id: "70",
+      name: "SoundForge Recorder",
+      description: "A cross-platform recorder with noise suppression, auto-leveling, transcription, and cloud sync.",
+      category: "Media",
+      icon: "🎤",
+      url: "#",
+      status: "live",
+      featured: false
+    },
+    {
+      id: "71",
+      name: "CodeNest IDE",
+      description: "A lightweight coding IDE with auto-formatting, extensions, Git sync, and live preview.",
+      category: "Development",
+      icon: "💻",
+      url: "/code-formatter",
+      status: "live",
+      featured: false
+    },
+    {
+      id: "72",
+      name: "VaultLock Password Manager",
+      description: "A secure password manager with autofill, 2FA, encrypted cloud backup, and device sync.",
+      category: "Security",
+      icon: "🔒",
+      url: "/password-generator",
+      status: "live",
+      featured: false
+    },
+    {
+      id: "73",
+      name: "TimeCast Screen Recorder",
+      description: "Record your screen with audio, webcam overlays, drawing tools, and instant share links.",
+      category: "Media",
+      icon: "📹",
+      url: "#",
+      status: "live",
+      featured: false
+    },
+    {
+      id: "74",
+      name: "SyncPlay Music",
+      description: "A cross-platform music player with playlists, cloud backup, offline mode, and lyric syncing.",
+      category: "Entertainment",
+      icon: "🎵",
+      url: "#",
+      status: "live",
+      featured: false
     }
   ];
 
