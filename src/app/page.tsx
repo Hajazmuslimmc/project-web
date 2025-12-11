@@ -61,7 +61,7 @@ export default function ToolsDirectory() {
       description: "Create beautiful color palettes for your designs with AI-powered suggestions.",
       category: "Design",
       icon: "🎨",
-      url: "#",
+      url: "/color-palette",
       status: "beta",
       featured: true
     },
