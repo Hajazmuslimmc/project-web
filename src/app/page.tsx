@@ -151,8 +151,8 @@ export default function ToolsDirectory() {
       description: "Remove background noise from audio files using advanced AI technology.",
       category: "AI Tools",
       icon: "🎧",
-      url: "#",
-      status: "coming-soon",
+      url: "/ai-noise-remover",
+      status: "live",
       featured: false
     },
     {
