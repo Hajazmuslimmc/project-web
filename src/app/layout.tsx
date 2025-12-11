@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     siteName: 'Networkak',
     images: [
       {
-        url: 'https://networkak.com/favicon.png',
+        url: 'https://networkak.com/assets/favicon.png',
         width: 1200,
         height: 630,
         alt: 'Networkak.com - Premium Web Gaming Platform',
@@ -58,7 +58,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Networkak.com - Premium Web Gaming & Tools',
     description: 'Experience premium web gaming and powerful free tools at Networkak.com. Play instantly, create effortlessly.',
-    images: ['https://networkak.com/favicon.png'],
+    images: ['https://networkak.com/assets/favicon.png'],
     creator: '@networkak',
     site: '@networkak',
   },
@@ -76,9 +76,9 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: '/favicon.png',
-    shortcut: '/favicon.png',
-    apple: '/favicon.png',
+    icon: '/assets/favicon.png',
+    shortcut: '/assets/favicon.png',
+    apple: '/assets/favicon.png',
   },
   manifest: '/manifest.json',
 }
@@ -95,8 +95,8 @@ export default function RootLayout({
     "alternateName": "Networkak.com",
     "description": "Premium web gaming platform and free online tools directory. Experience the future of web gaming with stunning graphics, smooth animations, and powerful utilities.",
     "url": "https://networkak.com",
-    "logo": "https://networkak.com/favicon.png",
-    "image": "https://networkak.com/favicon.png",
+    "logo": "https://networkak.com/assets/favicon.png",
+    "image": "https://networkak.com/assets/favicon.png",
     "sameAs": [
       "https://github.com/Hajazmuslimmc/project-web",
       "https://twitter.com/networkak",
