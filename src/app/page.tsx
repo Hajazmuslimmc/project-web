@@ -404,6 +404,56 @@ export default function ToolsDirectory() {
       url: "#",
       status: "coming-soon",
       featured: true
+    },
+    {
+      id: "40",
+      name: "Meme Generator",
+      description: "Create viral memes with popular templates, custom text, and trending formats.",
+      category: "Entertainment",
+      icon: "😂",
+      url: "#",
+      status: "coming-soon",
+      featured: true
+    },
+    {
+      id: "41",
+      name: "Avatar Creator",
+      description: "Design custom avatars and profile pictures with AI-powered character generation.",
+      category: "Entertainment",
+      icon: "👤",
+      url: "#",
+      status: "coming-soon",
+      featured: true
+    },
+    {
+      id: "42",
+      name: "Photo Cartoonizer",
+      description: "Transform photos into cartoon-style images with AI artistic filters and effects.",
+      category: "Entertainment",
+      icon: "🎨",
+      url: "#",
+      status: "coming-soon",
+      featured: true
+    },
+    {
+      id: "43",
+      name: "AI Face Swap",
+      description: "Swap faces in photos and videos with realistic AI-powered face replacement technology.",
+      category: "Entertainment",
+      icon: "🔄",
+      url: "#",
+      status: "coming-soon",
+      featured: true
+    },
+    {
+      id: "44",
+      name: "AI Voice Changer",
+      description: "Transform your voice with AI effects, celebrity impressions, and character voices.",
+      category: "Entertainment",
+      icon: "🎤",
+      url: "#",
+      status: "coming-soon",
+      featured: true
     }
   ];
 
