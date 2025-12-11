@@ -454,6 +454,56 @@ export default function ToolsDirectory() {
       url: "#",
       status: "coming-soon",
       featured: true
+    },
+    {
+      id: "45",
+      name: "Thumbnail Maker",
+      description: "Create eye-catching YouTube thumbnails with templates, text effects, and design tools.",
+      category: "Creator Tools",
+      icon: "🖼️",
+      url: "#",
+      status: "coming-soon",
+      featured: true
+    },
+    {
+      id: "46",
+      name: "Title + Description Generator",
+      description: "Generate viral YouTube titles and SEO-optimized descriptions with AI assistance.",
+      category: "Creator Tools",
+      icon: "📝",
+      url: "#",
+      status: "coming-soon",
+      featured: true
+    },
+    {
+      id: "47",
+      name: "Video Captions Generator",
+      description: "Auto-generate accurate captions and subtitles for videos with AI speech recognition.",
+      category: "Creator Tools",
+      icon: "💬",
+      url: "#",
+      status: "coming-soon",
+      featured: true
+    },
+    {
+      id: "48",
+      name: "Music Remover",
+      description: "Remove background music from videos while preserving voice and sound effects.",
+      category: "Creator Tools",
+      icon: "🎵",
+      url: "#",
+      status: "coming-soon",
+      featured: true
+    },
+    {
+      id: "49",
+      name: "Sound Effects Finder",
+      description: "Browse and download royalty-free sound effects for videos, podcasts, and content.",
+      category: "Creator Tools",
+      icon: "🔊",
+      url: "#",
+      status: "coming-soon",
+      featured: true
     }
   ];
 
