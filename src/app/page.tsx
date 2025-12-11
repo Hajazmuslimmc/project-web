@@ -810,10 +810,13 @@ export default function ToolsDirectory() {
         <div className="relative max-w-7xl mx-auto px-4 py-20">
           <div className="text-center">
             <h1 className="text-5xl md:text-7xl font-bold mb-6">
-              <span className="gradient-text">Networkak</span> Tools
+              <span className="gradient-text">Networkak</span>
             </h1>
-            <p className="text-xl md:text-2xl mb-8 text-blue-100 max-w-3xl mx-auto">
-              Discover our collection of powerful, free tools designed to boost your productivity and creativity.
+            <p className="text-xl md:text-2xl mb-4 text-blue-100 max-w-3xl mx-auto">
+              Premium Web Gaming Platform & Free Online Tools
+            </p>
+            <p className="text-lg mb-8 text-blue-200 max-w-2xl mx-auto">
+              Experience the future of web gaming with stunning graphics, smooth animations, and powerful productivity tools. Play instantly at Networkak.com - no downloads required.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button 
@@ -974,9 +977,9 @@ export default function ToolsDirectory() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
-              <h3 className="text-2xl font-bold gradient-text mb-4">Networkak</h3>
+              <h3 className="text-2xl font-bold gradient-text mb-4">Networkak.com</h3>
               <p className="text-gray-300 mb-4">
-                Building the future of web tools. Our mission is to provide powerful, accessible tools that enhance productivity and creativity for everyone.
+                Building the future of web gaming and online tools. Networkak.com is your ultimate destination for premium web games and powerful free utilities that enhance productivity and creativity for everyone worldwide.
               </p>
               <div className="flex gap-4">
                 <a href="#" className="text-gray-400 hover:text-white transition-colors">GitHub</a>
