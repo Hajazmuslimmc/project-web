@@ -84,9 +84,10 @@ export default function MinecraftGame() {
       return newWorld;
     });
     
+    const blockType = block.type as Exclude<Block['type'], 'air'>;
     setInventory(prev => ({
       ...prev,
-      [block.type]: prev[block.type] + 1
+      [blockType]: prev[blockType] + 1
     }));
   };
 
