@@ -13,7 +13,7 @@ export default function MinecraftGame() {
   const [selectedBlock, setSelectedBlock] = useState<Block['type']>('grass');
   const [playerX, setPlayerX] = useState(5);
   const [playerY, setPlayerY] = useState(5);
-  const [inventory, setInventory] = useState({
+  const [inventory, setInventory] = useState<Record<Block['type'], number>>({
     grass: 10, dirt: 10, stone: 5, wood: 5, water: 3, air: 0
   });
 
@@ -87,7 +87,7 @@ export default function MinecraftGame() {
     if (block.type !== 'air') {
       setInventory(prev => ({
         ...prev,
-        [block.type]: (prev[block.type as keyof typeof prev] || 0) + 1
+        [block.type]: prev[block.type] + 1
       }));
     }
   };
