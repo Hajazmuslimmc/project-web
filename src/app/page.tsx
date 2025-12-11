@@ -171,8 +171,8 @@ export default function ToolsDirectory() {
       description: "Upscale video resolution and enhance quality using AI machine learning algorithms.",
       category: "AI Tools",
       icon: "🎥",
-      url: "#",
-      status: "coming-soon",
+      url: "/video-upscaler",
+      status: "live",
       featured: false
     },
     {
