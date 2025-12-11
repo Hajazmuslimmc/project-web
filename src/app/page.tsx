@@ -22,7 +22,7 @@ export default function ToolsDirectory() {
       category: "Productivity",
       icon: "📝",
       url: "/betternotes",
-      status: "live",
+      status: "coming-soon",
       featured: true
     },
     {
@@ -32,7 +32,7 @@ export default function ToolsDirectory() {
       category: "Development",
       icon: "💻",
       url: "/code-formatter",
-      status: "live",
+      status: "coming-soon",
       featured: true
     },
     {
@@ -42,7 +42,7 @@ export default function ToolsDirectory() {
       category: "Media",
       icon: "🖼️",
       url: "/image-optimizer",
-      status: "live",
+      status: "coming-soon",
       featured: false
     },
     {
@@ -52,7 +52,7 @@ export default function ToolsDirectory() {
       category: "Security",
       icon: "🔐",
       url: "/password-generator",
-      status: "live",
+      status: "coming-soon",
       featured: false
     },
     {
@@ -62,7 +62,7 @@ export default function ToolsDirectory() {
       category: "Design",
       icon: "🎨",
       url: "/color-palette",
-      status: "beta",
+      status: "coming-soon",
       featured: true
     },
     {
@@ -72,7 +72,7 @@ export default function ToolsDirectory() {
       category: "Utility",
       icon: "🔗",
       url: "/url-shortener",
-      status: "live",
+      status: "coming-soon",
       featured: false
     },
     {
@@ -82,7 +82,7 @@ export default function ToolsDirectory() {
       category: "Development",
       icon: "📋",
       url: "/json-validator",
-      status: "live",
+      status: "coming-soon",
       featured: false
     },
     {
@@ -92,7 +92,7 @@ export default function ToolsDirectory() {
       category: "AI Tools",
       icon: "🤖",
       url: "/ai-summarizer",
-      status: "live",
+      status: "coming-soon",
       featured: true
     },
     {
@@ -102,7 +102,7 @@ export default function ToolsDirectory() {
       category: "Utility",
       icon: "📱",
       url: "/qr-generator",
-      status: "live",
+      status: "coming-soon",
       featured: false
     },
     {
@@ -112,7 +112,7 @@ export default function ToolsDirectory() {
       category: "Games",
       icon: "🏎️",
       url: "/car-race-game",
-      status: "live",
+      status: "coming-soon",
       featured: true
     },
     {
@@ -122,7 +122,7 @@ export default function ToolsDirectory() {
       category: "Games",
       icon: "🟫",
       url: "/bloxed-io",
-      status: "live",
+      status: "coming-soon",
       featured: true
     },
     {
@@ -132,7 +132,7 @@ export default function ToolsDirectory() {
       category: "Games",
       icon: "⛏️",
       url: "/minecraft-game",
-      status: "live",
+      status: "coming-soon",
       featured: true
     },
     {
@@ -142,7 +142,7 @@ export default function ToolsDirectory() {
       category: "Media",
       icon: "❄️",
       url: "/icecut",
-      status: "beta",
+      status: "coming-soon",
       featured: true
     },
     {
@@ -152,7 +152,7 @@ export default function ToolsDirectory() {
       category: "AI Tools",
       icon: "🎧",
       url: "/ai-noise-remover",
-      status: "live",
+      status: "coming-soon",
       featured: false
     },
     {
@@ -172,7 +172,7 @@ export default function ToolsDirectory() {
       category: "AI Tools",
       icon: "🎥",
       url: "/video-upscaler",
-      status: "live",
+      status: "coming-soon",
       featured: false
     },
     {
@@ -312,7 +312,7 @@ export default function ToolsDirectory() {
       category: "Security",
       icon: "🔑",
       url: "/password-generator",
-      status: "live",
+      status: "coming-soon",
       featured: false
     },
     {
@@ -532,7 +532,7 @@ export default function ToolsDirectory() {
       category: "AI Tools",
       icon: "✍️",
       url: "/ai-summarizer",
-      status: "live",
+      status: "coming-soon",
       featured: true
     },
     {
@@ -562,7 +562,7 @@ export default function ToolsDirectory() {
       category: "Communication",
       icon: "💬",
       url: "#",
-      status: "live",
+      status: "coming-soon",
       featured: false
     },
     {
@@ -572,7 +572,7 @@ export default function ToolsDirectory() {
       category: "Productivity",
       icon: "🌐",
       url: "#",
-      status: "live",
+      status: "coming-soon",
       featured: false
     },
     {
@@ -582,7 +582,7 @@ export default function ToolsDirectory() {
       category: "Games",
       icon: "🎮",
       url: "#",
-      status: "beta",
+      status: "coming-soon",
       featured: false
     },
     {
@@ -592,7 +592,7 @@ export default function ToolsDirectory() {
       category: "Utility",
       icon: "⬇️",
       url: "#",
-      status: "live",
+      status: "coming-soon",
       featured: false
     },
     {
@@ -602,7 +602,7 @@ export default function ToolsDirectory() {
       category: "AI Tools",
       icon: "🎧",
       url: "/ai-noise-remover",
-      status: "live",
+      status: "coming-soon",
       featured: false
     },
     {
@@ -612,7 +612,7 @@ export default function ToolsDirectory() {
       category: "Utility",
       icon: "☁️",
       url: "#",
-      status: "live",
+      status: "coming-soon",
       featured: false
     },
     {
@@ -622,7 +622,7 @@ export default function ToolsDirectory() {
       category: "Media",
       icon: "🎬",
       url: "/icecut",
-      status: "live",
+      status: "coming-soon",
       featured: false
     },
     {
@@ -632,7 +632,7 @@ export default function ToolsDirectory() {
       category: "Design",
       icon: "🎨",
       url: "#",
-      status: "live",
+      status: "coming-soon",
       featured: false
     },
     {
@@ -642,7 +642,7 @@ export default function ToolsDirectory() {
       category: "Utility",
       icon: "⚡",
       url: "#",
-      status: "live",
+      status: "coming-soon",
       featured: false
     },
     {
@@ -652,7 +652,7 @@ export default function ToolsDirectory() {
       category: "Development",
       icon: "🛠️",
       url: "/json-validator",
-      status: "live",
+      status: "coming-soon",
       featured: false
     },
     {
@@ -662,7 +662,7 @@ export default function ToolsDirectory() {
       category: "Productivity",
       icon: "📝",
       url: "/betternotes",
-      status: "live",
+      status: "coming-soon",
       featured: false
     },
     {
@@ -672,7 +672,7 @@ export default function ToolsDirectory() {
       category: "Productivity",
       icon: "✅",
       url: "#",
-      status: "live",
+      status: "coming-soon",
       featured: false
     },
     {
@@ -682,7 +682,7 @@ export default function ToolsDirectory() {
       category: "Communication",
       icon: "📞",
       url: "#",
-      status: "live",
+      status: "coming-soon",
       featured: false
     },
     {
@@ -692,7 +692,7 @@ export default function ToolsDirectory() {
       category: "Media",
       icon: "🎥",
       url: "#",
-      status: "live",
+      status: "coming-soon",
       featured: false
     },
     {
@@ -702,7 +702,7 @@ export default function ToolsDirectory() {
       category: "Design",
       icon: "🖼️",
       url: "/image-optimizer",
-      status: "live",
+      status: "coming-soon",
       featured: false
     },
     {
@@ -712,7 +712,7 @@ export default function ToolsDirectory() {
       category: "Media",
       icon: "🎤",
       url: "#",
-      status: "live",
+      status: "coming-soon",
       featured: false
     },
     {
@@ -722,7 +722,7 @@ export default function ToolsDirectory() {
       category: "Development",
       icon: "💻",
       url: "/code-formatter",
-      status: "live",
+      status: "coming-soon",
       featured: false
     },
     {
@@ -732,7 +732,7 @@ export default function ToolsDirectory() {
       category: "Security",
       icon: "🔒",
       url: "/password-generator",
-      status: "live",
+      status: "coming-soon",
       featured: false
     },
     {
@@ -742,7 +742,7 @@ export default function ToolsDirectory() {
       category: "Media",
       icon: "📹",
       url: "#",
-      status: "live",
+      status: "coming-soon",
       featured: false
     },
     {
@@ -752,7 +752,7 @@ export default function ToolsDirectory() {
       category: "Entertainment",
       icon: "🎵",
       url: "#",
-      status: "live",
+      status: "coming-soon",
       featured: false
     }
   ];
