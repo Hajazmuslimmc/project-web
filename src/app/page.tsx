@@ -71,7 +71,7 @@ export default function ToolsDirectory() {
       description: "Shorten long URLs with custom aliases, analytics, and QR code generation.",
       category: "Utility",
       icon: "🔗",
-      url: "#",
+      url: "/url-shortener",
       status: "live",
       featured: false
     },
