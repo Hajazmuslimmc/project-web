@@ -354,6 +354,56 @@ export default function ToolsDirectory() {
       url: "#",
       status: "coming-soon",
       featured: false
+    },
+    {
+      id: "35",
+      name: "Citation Generator",
+      description: "Generate accurate citations in APA, MLA, Chicago, and Harvard formats automatically.",
+      category: "Education",
+      icon: "📚",
+      url: "#",
+      status: "coming-soon",
+      featured: true
+    },
+    {
+      id: "36",
+      name: "AI Essay Helper",
+      description: "Get writing assistance, structure suggestions, and grammar improvements for essays.",
+      category: "Education",
+      icon: "✍️",
+      url: "#",
+      status: "coming-soon",
+      featured: true
+    },
+    {
+      id: "37",
+      name: "Math Solver",
+      description: "Solve complex math problems step-by-step with AI-powered explanations and solutions.",
+      category: "Education",
+      icon: "🔢",
+      url: "#",
+      status: "coming-soon",
+      featured: true
+    },
+    {
+      id: "38",
+      name: "Plagiarism Checker",
+      description: "Check text for plagiarism against billions of sources with detailed similarity reports.",
+      category: "Education",
+      icon: "🔍",
+      url: "#",
+      status: "coming-soon",
+      featured: true
+    },
+    {
+      id: "39",
+      name: "Flashcard Creator",
+      description: "Create interactive flashcards with spaced repetition for effective studying and memorization.",
+      category: "Education",
+      icon: "🃏",
+      url: "#",
+      status: "coming-soon",
+      featured: true
     }
   ];
 
