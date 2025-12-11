@@ -122,7 +122,12 @@ export default function ToolsDirectory() {
     return matchesSearch && matchesCategory;
   });
 
-  const featuredTools = tools.filter(tool => tool.featured);
+  const featuredTools = tools.filter(tool => {
+    const matchesSearch = tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         tool.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = selectedCategory === "All" || tool.category === selectedCategory;
+    return tool.featured && matchesSearch && matchesCategory;
+  });
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -214,29 +219,35 @@ export default function ToolsDirectory() {
       {/* Featured Tools */}
       <section className="max-w-7xl mx-auto px-4 py-12">
         <h2 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">Featured Tools</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {featuredTools.map(tool => (
-            <div key={tool.id} className="group bg-white dark:bg-gray-800 rounded-xl shadow-lg card-hover border border-gray-200 dark:border-gray-700 overflow-hidden">
-              <div className="p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="text-4xl">{tool.icon}</div>
-                  {getStatusBadge(tool.status)}
-                </div>
-                <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">{tool.name}</h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">{tool.description}</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-blue-600 dark:text-blue-400 font-medium">{tool.category}</span>
-                  <a
-                    href={tool.url}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
-                  >
-                    Try Now
-                  </a>
+        {featuredTools.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {featuredTools.map(tool => (
+              <div key={tool.id} className="group bg-white dark:bg-gray-800 rounded-xl shadow-lg card-hover border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <div className="p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="text-4xl">{tool.icon}</div>
+                    {getStatusBadge(tool.status)}
+                  </div>
+                  <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">{tool.name}</h3>
+                  <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">{tool.description}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-blue-600 dark:text-blue-400 font-medium">{tool.category}</span>
+                    <a
+                      href={tool.url}
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                    >
+                      Try Now
+                    </a>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-8">
+            <p className="text-gray-600 dark:text-gray-300">No featured tools match your search criteria.</p>
+          </div>
+        )}
       </section>
 
       {/* All Tools */}
