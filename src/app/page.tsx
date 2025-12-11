@@ -134,6 +134,16 @@ export default function ToolsDirectory() {
       url: "/minecraft-game",
       status: "live",
       featured: true
+    },
+    {
+      id: "13",
+      name: "IceCut",
+      description: "Professional video editing app with timeline, effects, and export capabilities like CapCut.",
+      category: "Media",
+      icon: "❄️",
+      url: "/icecut",
+      status: "beta",
+      featured: true
     }
   ];
 
