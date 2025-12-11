@@ -104,6 +104,16 @@ export default function ToolsDirectory() {
       url: "/qr-generator",
       status: "live",
       featured: false
+    },
+    {
+      id: "10",
+      name: "Car Race Game",
+      description: "Fast-paced car racing game. Avoid obstacles and get the highest score!",
+      category: "Games",
+      icon: "🏎️",
+      url: "/car-race-game",
+      status: "live",
+      featured: true
     }
   ];
 
