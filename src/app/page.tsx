@@ -114,6 +114,16 @@ export default function ToolsDirectory() {
       url: "/car-race-game",
       status: "live",
       featured: true
+    },
+    {
+      id: "11",
+      name: "Bloxed.io",
+      description: "Multiplayer-style block collection game with 4 different game modes to master.",
+      category: "Games",
+      icon: "🟫",
+      url: "/bloxed-io",
+      status: "live",
+      featured: true
     }
   ];
 
