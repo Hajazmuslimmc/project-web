@@ -81,7 +81,7 @@ export default function ToolsDirectory() {
       description: "Validate, format, and minify JSON data with syntax highlighting and error detection.",
       category: "Development",
       icon: "📋",
-      url: "#",
+      url: "/json-validator",
       status: "live",
       featured: false
     },
