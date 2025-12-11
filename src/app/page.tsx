@@ -144,6 +144,46 @@ export default function ToolsDirectory() {
       url: "/icecut",
       status: "beta",
       featured: true
+    },
+    {
+      id: "14",
+      name: "AI Background Noise Remover",
+      description: "Remove background noise from audio files using advanced AI technology.",
+      category: "AI Tools",
+      icon: "🎧",
+      url: "#",
+      status: "coming-soon",
+      featured: false
+    },
+    {
+      id: "15",
+      name: "Audio Enhancer",
+      description: "Enhance audio quality with AI-powered noise reduction and clarity improvement.",
+      category: "AI Tools",
+      icon: "🔊",
+      url: "#",
+      status: "coming-soon",
+      featured: false
+    },
+    {
+      id: "16",
+      name: "Video Quality Upscaler",
+      description: "Upscale video resolution and enhance quality using AI machine learning algorithms.",
+      category: "AI Tools",
+      icon: "🎥",
+      url: "#",
+      status: "coming-soon",
+      featured: false
+    },
+    {
+      id: "17",
+      name: "Photo Fixer",
+      description: "Fix and enhance photos with AI-powered restoration, denoising, and quality improvement.",
+      category: "AI Tools",
+      icon: "🖼️",
+      url: "#",
+      status: "coming-soon",
+      featured: false
     }
   ];
 
