@@ -2,371 +2,341 @@
 
 import React, { useState, useEffect } from "react";
 
-// Networkak - Single-file React app
-// Features:
-// - Search apps
-// - Categories filter
-// - App cards with details modal
-// - Bookmarks (localStorage)
-// - Dark mode (persisted)
-// - Simple "download manager" simulator
-// - Minimal, responsive layout using Tailwind utility classes
-
-// NOTE: This file expects Tailwind CSS to be configured in your project.
-// If you prefer plain CSS, replace classNames with your own styles.
-
-type App = {
+type Tool = {
   id: string;
-  title: string;
-  desc: string;
+  name: string;
+  description: string;
   category: string;
   icon: string;
-  size: string;
   url: string;
+  status: 'live' | 'beta' | 'coming-soon';
+  featured: boolean;
 };
 
-type Download = {
-  id: string;
-  title: string;
-  progress: number;
-  size: string;
-};
-
-export default function NetworkakApp() {
-  const sampleApps: App[] = [
+export default function ToolsDirectory() {
+  const tools: Tool[] = [
     {
       id: "1",
-      title: "FlowChat",
-      desc: "Real-time chat for communities and creators.",
-      category: "Communication",
-      icon: "💬",
-      size: "25MB",
-      url: "#",
+      name: "Better Notes",
+      description: "Cross-platform note-taking app with advanced features, sync, and collaboration tools.",
+      category: "Productivity",
+      icon: "📝",
+      url: "/betternotes",
+      status: "live",
+      featured: true
     },
     {
       id: "2",
-      title: "ClipMaster",
-      desc: "Quick video trimming and converter in the cloud.",
-      category: "Productivity",
-      icon: "✂️",
-      size: "45MB",
+      name: "Code Formatter Pro",
+      description: "Beautiful code formatting tool supporting 50+ programming languages with custom themes.",
+      category: "Development",
+      icon: "💻",
       url: "#",
+      status: "live",
+      featured: true
     },
     {
       id: "3",
-      title: "Pixel Studio",
-      desc: "Lightweight online image editor.",
-      category: "Design",
-      icon: "🖌️",
-      size: "30MB",
+      name: "Image Optimizer",
+      description: "Compress and optimize images without quality loss. Supports WebP, AVIF, and more.",
+      category: "Media",
+      icon: "🖼️",
       url: "#",
+      status: "live",
+      featured: false
     },
     {
       id: "4",
-      title: "DevPad",
-      desc: "In-browser code editor with terminals.",
-      category: "Development",
-      icon: "💻",
-      size: "60MB",
+      name: "Password Generator",
+      description: "Generate secure passwords with customizable length, characters, and complexity.",
+      category: "Security",
+      icon: "🔐",
       url: "#",
+      status: "live",
+      featured: false
     },
+    {
+      id: "5",
+      name: "Color Palette Studio",
+      description: "Create beautiful color palettes for your designs with AI-powered suggestions.",
+      category: "Design",
+      icon: "🎨",
+      url: "#",
+      status: "beta",
+      featured: true
+    },
+    {
+      id: "6",
+      name: "URL Shortener",
+      description: "Shorten long URLs with custom aliases, analytics, and QR code generation.",
+      category: "Utility",
+      icon: "🔗",
+      url: "#",
+      status: "live",
+      featured: false
+    },
+    {
+      id: "7",
+      name: "JSON Validator",
+      description: "Validate, format, and minify JSON data with syntax highlighting and error detection.",
+      category: "Development",
+      icon: "📋",
+      url: "#",
+      status: "live",
+      featured: false
+    },
+    {
+      id: "8",
+      name: "AI Text Summarizer",
+      description: "Summarize long articles and documents using advanced AI technology.",
+      category: "AI Tools",
+      icon: "🤖",
+      url: "#",
+      status: "coming-soon",
+      featured: true
+    }
   ];
 
-  const [query, setQuery] = useState("");
-  const [apps, setApps] = useState<App[]>(sampleApps);
-  const [category, setCategory] = useState("All");
-  const [bookmarks, setBookmarks] = useState<string[]>(() => {
-    try {
-      return JSON.parse(localStorage.getItem("networkak:bookmarks") || "[]");
-    } catch (e) {
-      return [];
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [darkMode, setDarkMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('darkMode') === 'true';
     }
+    return false;
   });
-  const [dark, setDark] = useState(() => {
-    try {
-      return JSON.parse(localStorage.getItem("networkak:dark") || "false");
-    } catch (e) {
-      return false;
-    }
-  });
-  const [selectedApp, setSelectedApp] = useState<App | null>(null);
-  const [downloads, setDownloads] = useState<Download[]>([]);
 
   useEffect(() => {
-    localStorage.setItem("networkak:bookmarks", JSON.stringify(bookmarks));
-  }, [bookmarks]);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('darkMode', darkMode.toString());
+      document.documentElement.classList.toggle('dark', darkMode);
+    }
+  }, [darkMode]);
 
-  useEffect(() => {
-    localStorage.setItem("networkak:dark", JSON.stringify(dark));
-    document.documentElement.classList.toggle("dark", dark);
-  }, [dark]);
-
-  const categories = ["All", ...Array.from(new Set(apps.map((a) => a.category)))];
-
-  function toggleBookmark(appId: string) {
-    setBookmarks((prev) => {
-      if (prev.includes(appId)) return prev.filter((id) => id !== appId);
-      return [...prev, appId];
-    });
-  }
-
-  function startDownload(app: App) {
-    const id = Date.now().toString();
-    const entry = { id, title: app.title, progress: 0, size: app.size };
-    setDownloads((d) => [entry, ...d]);
-
-    // simulate progress
-    const interval = setInterval(() => {
-      setDownloads((current) =>
-        current.map((dl) =>
-          dl.id === id ? { ...dl, progress: Math.min(100, dl.progress + Math.floor(Math.random() * 20) + 5) } : dl
-        )
-      );
-    }, 500);
-
-    // finish
-    setTimeout(() => {
-      clearInterval(interval);
-      setDownloads((current) => current.map((dl) => (dl.id === id ? { ...dl, progress: 100 } : dl)));
-    }, 3000 + Math.random() * 3000);
-  }
-
-  const filtered = apps.filter((a) => {
-    const q = query.trim().toLowerCase();
-    if (category !== "All" && a.category !== category) return false;
-    if (!q) return true;
-    return a.title.toLowerCase().includes(q) || a.desc.toLowerCase().includes(q) || a.category.toLowerCase().includes(q);
+  const categories = ["All", ...Array.from(new Set(tools.map(tool => tool.category)))];
+  
+  const filteredTools = tools.filter(tool => {
+    const matchesSearch = tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         tool.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = selectedCategory === "All" || tool.category === selectedCategory;
+    return matchesSearch && matchesCategory;
   });
+
+  const featuredTools = tools.filter(tool => tool.featured);
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'live':
+        return <span className="px-2 py-1 text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 rounded-full">Live</span>;
+      case 'beta':
+        return <span className="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 rounded-full">Beta</span>;
+      case 'coming-soon':
+        return <span className="px-2 py-1 text-xs bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 rounded-full">Coming Soon</span>;
+      default:
+        return null;
+    }
+  };
 
   return (
-    <div className={`min-h-screen ${dark ? "bg-gray-900 text-gray-100" : "bg-white text-gray-900"}`}>
-      <header className="max-w-7xl mx-auto p-4 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <a href="#" className="text-2xl font-extrabold tracking-tight">
-            <span className="inline-block mr-2 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">Networkak</span>
-          </a>
-          <div className="hidden md:block">
+    <div className={`min-h-screen transition-colors duration-300 ${darkMode ? 'dark bg-gray-900' : 'bg-gray-50'}`}>
+      {/* Hero Section */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-800 text-white">
+        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="relative max-w-7xl mx-auto px-4 py-20">
+          <div className="text-center">
+            <h1 className="text-5xl md:text-7xl font-bold mb-6">
+              <span className="gradient-text">Networkak</span> Tools
+            </h1>
+            <p className="text-xl md:text-2xl mb-8 text-blue-100 max-w-3xl mx-auto">
+              Discover our collection of powerful, free tools designed to boost your productivity and creativity.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button 
+                onClick={() => document.getElementById('tools-section')?.scrollIntoView({ behavior: 'smooth' })}
+                className="px-8 py-4 bg-white text-blue-600 rounded-lg font-semibold hover:bg-blue-50 transition-colors"
+              >
+                Explore Tools
+              </button>
+              <button className="px-8 py-4 border-2 border-white text-white rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors">
+                Learn More
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Navigation */}
+      <nav className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-6">
+              <h2 className="text-2xl font-bold gradient-text">Tools Directory</h2>
+              <div className="hidden md:block">
+                <input
+                  type="text"
+                  placeholder="Search tools..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="px-4 py-2 w-80 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+              >
+                {categories.map(category => (
+                  <option key={category} value={category}>{category}</option>
+                ))}
+              </select>
+              <button
+                onClick={() => setDarkMode(!darkMode)}
+                className="p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              >
+                {darkMode ? '☀️' : '🌙'}
+              </button>
+            </div>
+          </div>
+          <div className="md:hidden mt-4">
             <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search apps..."
-              className="px-3 py-2 rounded border w-72 dark:bg-gray-800 dark:border-gray-700"
+              type="text"
+              placeholder="Search tools..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
             />
           </div>
         </div>
+      </nav>
 
-        <div className="flex items-center gap-3">
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="px-3 py-2 rounded border dark:bg-gray-800 dark:border-gray-700"
-          >
-            {categories.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-          </select>
-
-          <button
-            onClick={() => setDark((d) => !d)}
-            className="px-3 py-2 rounded border dark:bg-gray-800 dark:border-gray-700"
-            aria-label="Toggle dark mode"
-          >
-            {dark ? "🌙" : "☀️"}
-          </button>
-
-          <div className="relative">
-            <button
-              onClick={() => {
-                // show bookmarks quick list (simple)
-                const list = bookmarks.map((id) => apps.find((a) => a.id === id)).filter((l): l is App => l !== undefined);
-                alert(list.length ? list.map((l) => `${l.icon} ${l.title}`).join("\n") : "No bookmarks yet");
-              }}
-              className="px-3 py-2 rounded border dark:bg-gray-800 dark:border-gray-700"
-              aria-label="Bookmarks"
-            >
-              ⭐ {bookmarks.length}
-            </button>
-          </div>
-        </div>
-      </header>
-
-      <main className="max-w-7xl mx-auto p-4">
-        {/* Mobile search */}
-        <div className="md:hidden mb-4">
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search apps..."
-            className="px-3 py-2 rounded border w-full dark:bg-gray-800 dark:border-gray-700"
-          />
-        </div>
-
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="md:col-span-2">
-            <h2 className="text-xl font-semibold mb-3">Discover</h2>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filtered.map((app) => (
-                <article key={app.id} className="p-4 rounded-lg border dark:border-gray-700 flex flex-col gap-3">
-                  <div className="flex items-start gap-3">
-                    <div className="text-3xl">{app.icon}</div>
-                    <div className="flex-1">
-                      <h3 className="font-bold">{app.title}</h3>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">{app.category} • {app.size}</p>
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <button
-                        onClick={() => toggleBookmark(app.id)}
-                        className="px-2 py-1 border rounded text-sm"
-                      >
-                        {bookmarks.includes(app.id) ? "★" : "☆"}
-                      </button>
-                      <button onClick={() => startDownload(app)} className="px-2 py-1 border rounded text-sm">
-                        ⤓
-                      </button>
-                    </div>
-                  </div>
-
-                  <p className="text-sm flex-1">{app.desc}</p>
-
-                  <div className="flex items-center justify-between">
-                    <button onClick={() => setSelectedApp(app)} className="text-sm underline">
-                      View
-                    </button>
-                    <a href={app.url} className="text-sm opacity-80">
-                      Open
-                    </a>
-                  </div>
-                </article>
-              ))}
-
-              {filtered.length === 0 && (
-                <div className="col-span-full text-center p-8 border rounded dark:border-gray-700">No apps found — try another search.</div>
-              )}
-            </div>
-          </div>
-
-          <aside className="space-y-4">
-            <div className="p-4 border rounded dark:border-gray-700">
-              <h4 className="font-semibold">Top categories</h4>
-              <div className="flex flex-wrap gap-2 mt-2">
-                {categories.map((c) => (
-                  <button
-                    key={c}
-                    onClick={() => setCategory(c)}
-                    className={`px-2 py-1 rounded border text-sm ${category === c ? "bg-gray-100 dark:bg-gray-800" : ""}`}
+      {/* Featured Tools */}
+      <section className="max-w-7xl mx-auto px-4 py-12">
+        <h2 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">Featured Tools</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {featuredTools.map(tool => (
+            <div key={tool.id} className="group bg-white dark:bg-gray-800 rounded-xl shadow-lg card-hover border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <div className="p-6">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="text-4xl">{tool.icon}</div>
+                  {getStatusBadge(tool.status)}
+                </div>
+                <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">{tool.name}</h3>
+                <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">{tool.description}</p>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-blue-600 dark:text-blue-400 font-medium">{tool.category}</span>
+                  <a
+                    href={tool.url}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
                   >
-                    {c}
-                  </button>
-                ))}
+                    Try Now
+                  </a>
+                </div>
               </div>
             </div>
+          ))}
+        </div>
+      </section>
 
-            <div className="p-4 border rounded dark:border-gray-700">
-              <h4 className="font-semibold">Downloads</h4>
-              <div className="space-y-2 mt-2">
-                {downloads.length === 0 && <div className="text-sm text-gray-500">No active downloads</div>}
-                {downloads.map((d: Download) => (
-                  <div key={d.id} className="text-sm">
-                    <div className="flex justify-between">
-                      <div>{d.title}</div>
-                      <div>{d.progress}%</div>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded h-2 mt-1 overflow-hidden dark:bg-gray-700">
-                      <div style={{ width: `${d.progress}%` }} className="h-2 bg-gray-500 dark:bg-gray-300" />
-                    </div>
-                  </div>
-                ))}
+      {/* All Tools */}
+      <section id="tools-section" className="max-w-7xl mx-auto px-4 py-12">
+        <h2 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">All Tools</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {filteredTools.map(tool => (
+            <div key={tool.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md card-hover border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <div className="p-5">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="text-3xl">{tool.icon}</div>
+                  {getStatusBadge(tool.status)}
+                </div>
+                <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">{tool.name}</h3>
+                <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-2">{tool.description}</p>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-blue-600 dark:text-blue-400 font-medium">{tool.category}</span>
+                  <a
+                    href={tool.url}
+                    className="px-3 py-1.5 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 transition-colors"
+                  >
+                    Open
+                  </a>
+                </div>
               </div>
             </div>
+          ))}
+        </div>
+        {filteredTools.length === 0 && (
+          <div className="text-center py-12">
+            <div className="text-6xl mb-4">🔍</div>
+            <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">No tools found</h3>
+            <p className="text-gray-600 dark:text-gray-300">Try adjusting your search or filter criteria.</p>
+          </div>
+        )}
+      </section>
 
-            <div className="p-4 border rounded dark:border-gray-700">
-              <h4 className="font-semibold">Bookmarks</h4>
-              <div className="space-y-2 mt-2">
-                {bookmarks.length === 0 && <div className="text-sm text-gray-500">No bookmarks yet</div>}
-                {bookmarks.map((id) => {
-                  const a = apps.find((x) => x.id === id);
-                  if (!a) return null;
-                  return (
-                    <div key={id} className="flex items-center justify-between">
-                      <div className="text-sm">{a.icon} {a.title}</div>
-                      <div className="flex gap-2">
-                        <button onClick={() => setSelectedApp(a)} className="text-sm underline">View</button>
-                        <button onClick={() => toggleBookmark(id)} className="text-sm">Remove</button>
-                      </div>
-                    </div>
-                  );
-                })}
+      {/* Stats Section */}
+      <section className="bg-blue-600 text-white py-16">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div>
+              <div className="text-4xl font-bold mb-2">{tools.length}+</div>
+              <div className="text-blue-200">Tools Available</div>
+            </div>
+            <div>
+              <div className="text-4xl font-bold mb-2">{categories.length - 1}</div>
+              <div className="text-blue-200">Categories</div>
+            </div>
+            <div>
+              <div className="text-4xl font-bold mb-2">100%</div>
+              <div className="text-blue-200">Free to Use</div>
+            </div>
+            <div>
+              <div className="text-4xl font-bold mb-2">24/7</div>
+              <div className="text-blue-200">Available</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-12">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="md:col-span-2">
+              <h3 className="text-2xl font-bold gradient-text mb-4">Networkak</h3>
+              <p className="text-gray-300 mb-4">
+                Building the future of web tools. Our mission is to provide powerful, accessible tools that enhance productivity and creativity for everyone.
+              </p>
+              <div className="flex gap-4">
+                <a href="#" className="text-gray-400 hover:text-white transition-colors">GitHub</a>
+                <a href="#" className="text-gray-400 hover:text-white transition-colors">Twitter</a>
+                <a href="#" className="text-gray-400 hover:text-white transition-colors">Discord</a>
               </div>
             </div>
-
-            <div className="p-4 border rounded dark:border-gray-700 text-sm">
-              <strong>Quick tips</strong>
-              <ul className="mt-2 list-disc ml-5 text-sm">
-                <li>Add bookmarks for quick access.</li>
-                <li>Use the search bar to find apps by name, category or description.</li>
-                <li>Dark mode is persisted between visits.</li>
+            <div>
+              <h4 className="font-semibold mb-4">Quick Links</h4>
+              <ul className="space-y-2 text-gray-300">
+                <li><a href="#" className="hover:text-white transition-colors">All Tools</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Featured</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Categories</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">API</a></li>
               </ul>
             </div>
-          </aside>
-        </section>
-      </main>
-
-      {/* Modal */}
-      {selectedApp && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-gray-900 rounded-lg max-w-xl w-full p-6">
-            <div className="flex items-start justify-between">
-              <div>
-                <h3 className="text-2xl font-bold">{selectedApp.icon} {selectedApp.title}</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400">{selectedApp.category} • {selectedApp.size}</p>
-              </div>
-              <div className="flex gap-2">
-                <button onClick={() => toggleBookmark(selectedApp.id)} className="px-3 py-1 border rounded">{bookmarks.includes(selectedApp.id) ? '★' : '☆'}</button>
-                <button onClick={() => { startDownload(selectedApp); }} className="px-3 py-1 border rounded">Download</button>
-                <button onClick={() => setSelectedApp(null)} className="px-3 py-1 border rounded">Close</button>
-              </div>
+            <div>
+              <h4 className="font-semibold mb-4">Support</h4>
+              <ul className="space-y-2 text-gray-300">
+                <li><a href="#" className="hover:text-white transition-colors">Documentation</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Bug Reports</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Feature Requests</a></li>
+              </ul>
             </div>
-
-            <div className="mt-4 text-sm">{selectedApp.desc}</div>
-            <div className="mt-4 text-xs text-gray-500">Demo URL: {selectedApp.url}</div>
+          </div>
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+            <p>© {new Date().getFullYear()} Networkak. All rights reserved. Built with ❤️ for the community.</p>
           </div>
         </div>
-      )}
-
-      <footer className="max-w-7xl mx-auto p-4 text-sm text-center text-gray-500">
-        © {new Date().getFullYear()} Networkak — Find anything. Make anything possible.
       </footer>
     </div>
   );
 }
-
-/* README (paste into your project root as README.md):
-
-# Networkak - Single-file React app
-
-This is a single-file React component for a lightweight app directory UI.
-It uses Tailwind CSS utility classes for styling. To run it locally:
-
-1. Create a new React app (Vite or Create React App). Example with Vite:
-   ```bash
-   npm create vite@latest networkak -- --template react
-   cd networkak
-   npm install
-   ```
-
-2. Install Tailwind CSS (optional but recommended):
-   Follow Tailwind docs: https://tailwindcss.com/docs/guides/vite
-
-3. Replace `src/App.jsx` with this file's content and ensure the export is the default App.
-
-4. Run:
-   ```bash
-   npm run dev
-   ```
-
-This demo uses localStorage for bookmarks and dark mode. The download manager is simulated.
-
-*/

@@ -5,22 +5,23 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Networkak - The Best Network for Apps, Custom Tools, Media, Free & Paid Content',
-  description: 'Networkak is the best network offering all apps, custom tools, media content, free and paid stuff. Download Better Notes - cross-platform note-taking tool. MCTiers ranking system.',
+  title: 'Networkak Tools - Free Online Tools & Utilities Directory',
+  description: 'Discover powerful free online tools and utilities built by Networkak. From productivity apps like Better Notes to development tools, design utilities, and AI-powered solutions.',
   keywords: [
     'Networkak',
+    'free online tools',
+    'web utilities',
     'Better Notes',
-    'BetterNotes Networkak',
-    'McNetTiers',
-    'cross-platform apps',
-    'custom tools',
-    'media content',
-    'free apps',
-    'paid tools',
-    'note taking app',
-    'Minecraft ranking',
-
-    'gaming network'
+    'productivity tools',
+    'development tools',
+    'design utilities',
+    'code formatter',
+    'image optimizer',
+    'password generator',
+    'color palette',
+    'JSON validator',
+    'AI tools',
+    'web apps'
   ],
   authors: [{ name: 'Networkak Team' }],
   creator: 'Networkak',
@@ -35,16 +36,16 @@ export const metadata: Metadata = {
     canonical: '/',
   },
   openGraph: {
-    title: 'Networkak - The Best Network for Apps & Tools',
-    description: 'Discover Networkak - the ultimate network for apps, custom tools, media content, and more. Download Better Notes and explore MCTiers ranking system.',
+    title: 'Networkak Tools - Free Online Tools & Utilities',
+    description: 'Discover powerful free online tools and utilities. From Better Notes to development tools, design utilities, and AI-powered solutions.',
     url: 'https://your-domain.com',
-    siteName: 'Networkak',
+    siteName: 'Networkak Tools',
     images: [
       {
         url: '/favicon.png',
         width: 1200,
         height: 630,
-        alt: 'Networkak - Best Network for Apps and Tools',
+        alt: 'Networkak Tools - Free Online Tools Directory',
       },
     ],
     locale: 'en_US',
@@ -52,8 +53,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Networkak - The Best Network for Apps & Tools',
-    description: 'Networkak offers the best apps, custom tools, media content, free and paid stuff. Download Better Notes today!',
+    title: 'Networkak Tools - Free Online Tools & Utilities',
+    description: 'Discover powerful free online tools and utilities. From Better Notes to development tools and AI-powered solutions.',
     images: ['/favicon.png'],
     creator: '@networkak',
   },
@@ -86,8 +87,8 @@ export default function RootLayout({
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "Networkak",
-    "description": "The best network for apps, custom tools, media content, free and paid stuff. Cross-platform note-taking with Better Notes.",
+    "name": "Networkak Tools",
+    "description": "Free online tools and utilities directory. Powerful web-based tools for productivity, development, design, and more.",
     "url": "https://your-domain.com",
     "logo": "https://your-domain.com/favicon.png",
     "sameAs": [
@@ -98,13 +99,15 @@ export default function RootLayout({
         "@type": "SoftwareApplication",
         "name": "Better Notes",
         "description": "Cross-platform note-taking tool for all devices",
-        "operatingSystem": ["macOS", "Windows", "Linux", "Android", "iOS"],
-        "applicationCategory": "ProductivityApplication"
+        "operatingSystem": ["Web", "macOS", "Windows", "Linux", "Android", "iOS"],
+        "applicationCategory": "ProductivityApplication",
+        "price": "0",
+        "priceCurrency": "USD"
       }
     ],
-    "serviceType": "Software Development & Gaming Network",
+    "serviceType": "Online Tools & Web Utilities",
     "areaServed": "Worldwide",
-    "keywords": "Networkak, Better Notes, BetterNotes Networkak, McNetTiers, apps, custom tools, media, free content, paid tools"
+    "keywords": "free online tools, web utilities, productivity tools, development tools, design utilities, Better Notes, code formatter, image optimizer"
   }
 
   return (
