@@ -244,6 +244,56 @@ export default function ToolsDirectory() {
       url: "#",
       status: "coming-soon",
       featured: false
+    },
+    {
+      id: "24",
+      name: "Invoice Generator",
+      description: "Create professional invoices with customizable templates and automatic calculations.",
+      category: "Business",
+      icon: "📊",
+      url: "#",
+      status: "coming-soon",
+      featured: false
+    },
+    {
+      id: "25",
+      name: "Inventory Manager",
+      description: "Track products, stock levels, and manage inventory with real-time updates and alerts.",
+      category: "Business",
+      icon: "📦",
+      url: "#",
+      status: "coming-soon",
+      featured: false
+    },
+    {
+      id: "26",
+      name: "Website Builder",
+      description: "Build professional websites with drag-and-drop editor and responsive templates.",
+      category: "Business",
+      icon: "🏢",
+      url: "#",
+      status: "coming-soon",
+      featured: false
+    },
+    {
+      id: "27",
+      name: "Social Media Post Creator",
+      description: "Design engaging social media posts with templates for Instagram, Facebook, Twitter.",
+      category: "Business",
+      icon: "📱",
+      url: "#",
+      status: "coming-soon",
+      featured: false
+    },
+    {
+      id: "28",
+      name: "Logo Generator",
+      description: "Create professional logos with AI-powered design suggestions and customization options.",
+      category: "Business",
+      icon: "🎨",
+      url: "#",
+      status: "coming-soon",
+      featured: false
     }
   ];
 
