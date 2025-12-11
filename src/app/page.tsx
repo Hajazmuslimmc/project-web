@@ -161,7 +161,7 @@ export default function ToolsDirectory() {
       description: "Enhance audio quality with AI-powered noise reduction and clarity improvement.",
       category: "AI Tools",
       icon: "🔊",
-      url: "#",
+      url: "/audio-enhancer",
       status: "live",
       featured: false
     },
@@ -181,7 +181,7 @@ export default function ToolsDirectory() {
       description: "Fix and enhance photos with AI-powered restoration, denoising, and quality improvement.",
       category: "AI Tools",
       icon: "🖼️",
-      url: "#",
+      url: "/photo-fixer",
       status: "live",
       featured: false
     },
@@ -191,7 +191,7 @@ export default function ToolsDirectory() {
       description: "Generate code snippets and functions using AI for multiple programming languages.",
       category: "Development",
       icon: "🤖",
-      url: "#",
+      url: "/ai-code-generator",
       status: "live",
       featured: false
     },
@@ -201,7 +201,7 @@ export default function ToolsDirectory() {
       description: "Automatically detect and fix common coding errors with AI-powered suggestions.",
       category: "Development",
       icon: "🔧",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: false
     },
@@ -211,7 +211,7 @@ export default function ToolsDirectory() {
       description: "Format and beautify code with proper indentation and styling for better readability.",
       category: "Development",
       icon: "✨",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: false
     },
@@ -221,7 +221,7 @@ export default function ToolsDirectory() {
       description: "Generate CSS, JavaScript, and HTML code templates with modern best practices.",
       category: "Development",
       icon: "🎨",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: false
     },
@@ -231,7 +231,7 @@ export default function ToolsDirectory() {
       description: "Test REST APIs with request builder, response viewer, and automated testing features.",
       category: "Development",
       icon: "🔌",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: false
     },
@@ -241,7 +241,7 @@ export default function ToolsDirectory() {
       description: "Create beautiful UI components and layouts with drag-and-drop design tools.",
       category: "Design",
       icon: "🎨",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: false
     },
@@ -251,7 +251,7 @@ export default function ToolsDirectory() {
       description: "Create professional invoices with customizable templates and automatic calculations.",
       category: "Business",
       icon: "📊",
-      url: "#",
+      url: "/invoice-generator",
       status: "live",
       featured: false
     },
@@ -261,7 +261,7 @@ export default function ToolsDirectory() {
       description: "Track products, stock levels, and manage inventory with real-time updates and alerts.",
       category: "Business",
       icon: "📦",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: false
     },
@@ -271,7 +271,7 @@ export default function ToolsDirectory() {
       description: "Build professional websites with drag-and-drop editor and responsive templates.",
       category: "Business",
       icon: "🏢",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: false
     },
@@ -281,7 +281,7 @@ export default function ToolsDirectory() {
       description: "Design engaging social media posts with templates for Instagram, Facebook, Twitter.",
       category: "Business",
       icon: "📱",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: false
     },
@@ -291,7 +291,7 @@ export default function ToolsDirectory() {
       description: "Create professional logos with AI-powered design suggestions and customization options.",
       category: "Business",
       icon: "🎨",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: false
     },
@@ -301,7 +301,7 @@ export default function ToolsDirectory() {
       description: "Secure your internet connection with encrypted VPN tunneling and IP masking.",
       category: "Security",
       icon: "🔒",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: false
     },
@@ -321,7 +321,7 @@ export default function ToolsDirectory() {
       description: "Encrypt and decrypt files with military-grade AES encryption for maximum security.",
       category: "Security",
       icon: "🔐",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: false
     },
@@ -331,7 +331,7 @@ export default function ToolsDirectory() {
       description: "Scan files and URLs for malware, viruses, and security threats in real-time.",
       category: "Security",
       icon: "🚫",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: false
     },
@@ -341,7 +341,7 @@ export default function ToolsDirectory() {
       description: "Check your IP address, location, ISP information, and detect VPN usage.",
       category: "Security",
       icon: "🌍",
-      url: "#",
+      url: "/ip-checker",
       status: "live",
       featured: false
     },
@@ -351,7 +351,7 @@ export default function ToolsDirectory() {
       description: "Scan your device for security vulnerabilities, open ports, and potential threats.",
       category: "Security",
       icon: "🔍",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: false
     },
@@ -361,7 +361,7 @@ export default function ToolsDirectory() {
       description: "Generate accurate citations in APA, MLA, Chicago, and Harvard formats automatically.",
       category: "Education",
       icon: "📚",
-      url: "#",
+      url: "/citation-generator",
       status: "live",
       featured: true
     },
@@ -371,7 +371,7 @@ export default function ToolsDirectory() {
       description: "Get writing assistance, structure suggestions, and grammar improvements for essays.",
       category: "Education",
       icon: "✍️",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: true
     },
@@ -381,7 +381,7 @@ export default function ToolsDirectory() {
       description: "Solve complex math problems step-by-step with AI-powered explanations and solutions.",
       category: "Education",
       icon: "🔢",
-      url: "#",
+      url: "/math-solver",
       status: "live",
       featured: true
     },
@@ -391,7 +391,7 @@ export default function ToolsDirectory() {
       description: "Check text for plagiarism against billions of sources with detailed similarity reports.",
       category: "Education",
       icon: "🔍",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: true
     },
@@ -401,7 +401,7 @@ export default function ToolsDirectory() {
       description: "Create interactive flashcards with spaced repetition for effective studying and memorization.",
       category: "Education",
       icon: "🃏",
-      url: "#",
+      url: "/flashcard-creator",
       status: "live",
       featured: true
     },
@@ -411,7 +411,7 @@ export default function ToolsDirectory() {
       description: "Create viral memes with popular templates, custom text, and trending formats.",
       category: "Entertainment",
       icon: "😂",
-      url: "#",
+      url: "/meme-generator",
       status: "live",
       featured: true
     },
@@ -421,7 +421,7 @@ export default function ToolsDirectory() {
       description: "Design custom avatars and profile pictures with AI-powered character generation.",
       category: "Entertainment",
       icon: "👤",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: true
     },
@@ -431,7 +431,7 @@ export default function ToolsDirectory() {
       description: "Transform photos into cartoon-style images with AI artistic filters and effects.",
       category: "Entertainment",
       icon: "🎨",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: true
     },
@@ -441,7 +441,7 @@ export default function ToolsDirectory() {
       description: "Swap faces in photos and videos with realistic AI-powered face replacement technology.",
       category: "Entertainment",
       icon: "🔄",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: true
     },
@@ -451,7 +451,7 @@ export default function ToolsDirectory() {
       description: "Transform your voice with AI effects, celebrity impressions, and character voices.",
       category: "Entertainment",
       icon: "🎤",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: true
     },
@@ -461,7 +461,7 @@ export default function ToolsDirectory() {
       description: "Create eye-catching YouTube thumbnails with templates, text effects, and design tools.",
       category: "Creator Tools",
       icon: "🖼️",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: true
     },
@@ -471,7 +471,7 @@ export default function ToolsDirectory() {
       description: "Generate viral YouTube titles and SEO-optimized descriptions with AI assistance.",
       category: "Creator Tools",
       icon: "📝",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: true
     },
@@ -481,7 +481,7 @@ export default function ToolsDirectory() {
       description: "Auto-generate accurate captions and subtitles for videos with AI speech recognition.",
       category: "Creator Tools",
       icon: "💬",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: true
     },
@@ -491,7 +491,7 @@ export default function ToolsDirectory() {
       description: "Remove background music from videos while preserving voice and sound effects.",
       category: "Creator Tools",
       icon: "🎵",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: true
     },
@@ -501,7 +501,7 @@ export default function ToolsDirectory() {
       description: "Browse and download royalty-free sound effects for videos, podcasts, and content.",
       category: "Creator Tools",
       icon: "🔊",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: true
     },
@@ -511,7 +511,7 @@ export default function ToolsDirectory() {
       description: "Chat with PDFs, extract information, and get AI-powered summaries from documents.",
       category: "AI Tools",
       icon: "📄",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: true
     },
@@ -521,7 +521,7 @@ export default function ToolsDirectory() {
       description: "Get step-by-step homework solutions and explanations across all subjects with AI.",
       category: "AI Tools",
       icon: "🎓",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: true
     },
@@ -541,7 +541,7 @@ export default function ToolsDirectory() {
       description: "Create custom AI chatbots for customer service, sales, and business automation.",
       category: "AI Tools",
       icon: "🤖",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: true
     },
@@ -551,7 +551,7 @@ export default function ToolsDirectory() {
       description: "Personal AI voice assistant for tasks, reminders, questions, and smart home control.",
       category: "AI Tools",
       icon: "🎤",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: true
     },
@@ -561,7 +561,7 @@ export default function ToolsDirectory() {
       description: "A fast, real-time chat app built for communities and creators. Enjoy channels, file-sharing, and ultra-low latency messaging.",
       category: "Communication",
       icon: "💬",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: false
     },
@@ -571,7 +571,7 @@ export default function ToolsDirectory() {
       description: "A custom next-gen browser with tabs, bookmarks, extensions, dark mode, developer tools, and a fast minimal UI.",
       category: "Productivity",
       icon: "🌐",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: false
     },
@@ -581,7 +581,7 @@ export default function ToolsDirectory() {
       description: "A powerful Minecraft Java client with mods, FPS boost, UI redesign, and in-game utilities for creators and players.",
       category: "Games",
       icon: "🎮",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: false
     },
@@ -591,7 +591,7 @@ export default function ToolsDirectory() {
       description: "Ultra-fast file downloader with resume support, parallel download acceleration, and smart organization.",
       category: "Utility",
       icon: "⬇️",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: false
     },
@@ -611,7 +611,7 @@ export default function ToolsDirectory() {
       description: "Sync your files across devices with encrypted cloud backup, version history, and smart conflict resolution.",
       category: "Utility",
       icon: "☁️",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: false
     },
@@ -631,7 +631,7 @@ export default function ToolsDirectory() {
       description: "A set of online tools for making thumbnails, logos, and pixel art with drag-and-drop simplicity.",
       category: "Design",
       icon: "🎨",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: false
     },
@@ -641,7 +641,7 @@ export default function ToolsDirectory() {
       description: "Optimize your PC with junk cleanup, RAM management, startup control, and FPS boost for games.",
       category: "Utility",
       icon: "⚡",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: false
     },
@@ -671,7 +671,7 @@ export default function ToolsDirectory() {
       description: "A smart task manager with team collaboration, notifications, deadlines, and visual boards.",
       category: "Productivity",
       icon: "✅",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: false
     },
@@ -681,7 +681,7 @@ export default function ToolsDirectory() {
       description: "A secure calling & messaging app with HD voice, encrypted chats, screen sharing, and voice rooms.",
       category: "Communication",
       icon: "📞",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: false
     },
@@ -691,7 +691,7 @@ export default function ToolsDirectory() {
       description: "A universal media player that supports all major formats, streaming links, subtitles, and playlists.",
       category: "Media",
       icon: "🎥",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: false
     },
@@ -711,7 +711,7 @@ export default function ToolsDirectory() {
       description: "A cross-platform recorder with noise suppression, auto-leveling, transcription, and cloud sync.",
       category: "Media",
       icon: "🎤",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: false
     },
@@ -741,7 +741,7 @@ export default function ToolsDirectory() {
       description: "Record your screen with audio, webcam overlays, drawing tools, and instant share links.",
       category: "Media",
       icon: "📹",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: false
     },
@@ -751,7 +751,7 @@ export default function ToolsDirectory() {
       description: "A cross-platform music player with playlists, cloud backup, offline mode, and lyric syncing.",
       category: "Entertainment",
       icon: "🎵",
-      url: "#",
+      url: "/tool-placeholder",
       status: "live",
       featured: false
     }
