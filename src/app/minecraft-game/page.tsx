@@ -84,10 +84,12 @@ export default function MinecraftGame() {
       return newWorld;
     });
     
-    setInventory(prev => ({
-      ...prev,
-      [block.type]: prev[block.type] + 1
-    }));
+    if (block.type !== 'air') {
+      setInventory(prev => ({
+        ...prev,
+        [block.type]: (prev[block.type as keyof typeof prev] || 0) + 1
+      }));
+    }
   };
 
   const movePlayer = (dx: number, dy: number) => {
