@@ -308,7 +308,7 @@ export default function ToolsDirectory() {
               <div className="text-blue-200">Categories</div>
             </div>
             <div>
-              <div className="text-4xl font-bold mb-2">100%</div>
+              <div className="text-4xl font-bold mb-2">60%</div>
               <div className="text-blue-200">Free to Use</div>
             </div>
             <div>
