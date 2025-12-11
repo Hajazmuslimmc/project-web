@@ -41,7 +41,7 @@ export default function ToolsDirectory() {
       description: "Compress and optimize images without quality loss. Supports WebP, AVIF, and more.",
       category: "Media",
       icon: "🖼️",
-      url: "#",
+      url: "/image-optimizer",
       status: "live",
       featured: false
     },
