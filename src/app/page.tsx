@@ -31,7 +31,7 @@ export default function ToolsDirectory() {
       description: "Beautiful code formatting tool supporting 50+ programming languages with custom themes.",
       category: "Development",
       icon: "💻",
-      url: "#",
+      url: "/code-formatter",
       status: "live",
       featured: true
     },
