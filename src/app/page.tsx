@@ -504,6 +504,56 @@ export default function ToolsDirectory() {
       url: "#",
       status: "coming-soon",
       featured: true
+    },
+    {
+      id: "50",
+      name: "AI PDF Reader",
+      description: "Chat with PDFs, extract information, and get AI-powered summaries from documents.",
+      category: "AI Tools",
+      icon: "📄",
+      url: "#",
+      status: "coming-soon",
+      featured: true
+    },
+    {
+      id: "51",
+      name: "AI Homework Helper",
+      description: "Get step-by-step homework solutions and explanations across all subjects with AI.",
+      category: "AI Tools",
+      icon: "🎓",
+      url: "#",
+      status: "coming-soon",
+      featured: true
+    },
+    {
+      id: "52",
+      name: "AI Writing Helper",
+      description: "Improve writing with AI grammar checking, style suggestions, and content generation.",
+      category: "AI Tools",
+      icon: "✍️",
+      url: "/ai-summarizer",
+      status: "live",
+      featured: true
+    },
+    {
+      id: "53",
+      name: "AI Business Chatbot",
+      description: "Create custom AI chatbots for customer service, sales, and business automation.",
+      category: "AI Tools",
+      icon: "🤖",
+      url: "#",
+      status: "coming-soon",
+      featured: true
+    },
+    {
+      id: "54",
+      name: "AI Voice Assistant",
+      description: "Personal AI voice assistant for tasks, reminders, questions, and smart home control.",
+      category: "AI Tools",
+      icon: "🎤",
+      url: "#",
+      status: "coming-soon",
+      featured: true
     }
   ];
 
