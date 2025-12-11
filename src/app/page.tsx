@@ -91,8 +91,8 @@ export default function ToolsDirectory() {
       description: "Summarize long articles and documents using advanced AI technology.",
       category: "AI Tools",
       icon: "🤖",
-      url: "#",
-      status: "coming-soon",
+      url: "/ai-summarizer",
+      status: "live",
       featured: true
     }
   ];
