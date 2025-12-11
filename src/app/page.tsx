@@ -554,6 +554,106 @@ export default function ToolsDirectory() {
       url: "#",
       status: "coming-soon",
       featured: true
+    },
+    {
+      id: "55",
+      name: "FlowChat",
+      description: "A fast, real-time chat app built for communities and creators. Enjoy channels, file-sharing, and ultra-low latency messaging.",
+      category: "Communication",
+      icon: "💬",
+      url: "#",
+      status: "live",
+      featured: false
+    },
+    {
+      id: "56",
+      name: "Hajcore Browser",
+      description: "A custom next-gen browser with tabs, bookmarks, extensions, dark mode, developer tools, and a fast minimal UI.",
+      category: "Productivity",
+      icon: "🌐",
+      url: "#",
+      status: "live",
+      featured: false
+    },
+    {
+      id: "57",
+      name: "Master Client (Minecraft Client)",
+      description: "A powerful Minecraft Java client with mods, FPS boost, UI redesign, and in-game utilities for creators and players.",
+      category: "Games",
+      icon: "🎮",
+      url: "#",
+      status: "beta",
+      featured: false
+    },
+    {
+      id: "58",
+      name: "Networkak Downloader",
+      description: "Ultra-fast file downloader with resume support, parallel download acceleration, and smart organization.",
+      category: "Utility",
+      icon: "⬇️",
+      url: "#",
+      status: "live",
+      featured: false
+    },
+    {
+      id: "59",
+      name: "CleanVoice AI",
+      description: "AI-powered noise removal that eliminates background sounds, boosts clarity, and exports studio-quality audio.",
+      category: "AI Tools",
+      icon: "🎧",
+      url: "/ai-noise-remover",
+      status: "live",
+      featured: false
+    },
+    {
+      id: "60",
+      name: "Network Drive Sync",
+      description: "Sync your files across devices with encrypted cloud backup, version history, and smart conflict resolution.",
+      category: "Utility",
+      icon: "☁️",
+      url: "#",
+      status: "live",
+      featured: false
+    },
+    {
+      id: "61",
+      name: "ClipForge Editor",
+      description: "A beginner-friendly video editor with transitions, effects, AI auto-cuts, audio cleanup, and fast exporting.",
+      category: "Media",
+      icon: "🎬",
+      url: "/icecut",
+      status: "live",
+      featured: false
+    },
+    {
+      id: "62",
+      name: "PixelCraft Tools",
+      description: "A set of online tools for making thumbnails, logos, and pixel art with drag-and-drop simplicity.",
+      category: "Design",
+      icon: "🎨",
+      url: "#",
+      status: "live",
+      featured: false
+    },
+    {
+      id: "63",
+      name: "SpeedBoost Optimizer",
+      description: "Optimize your PC with junk cleanup, RAM management, startup control, and FPS boost for games.",
+      category: "Utility",
+      icon: "⚡",
+      url: "#",
+      status: "live",
+      featured: false
+    },
+    {
+      id: "64",
+      name: "Networkak DevTools",
+      description: "A full suite of developer utilities including JSON formatting, code minify, hash generators, and HTTP testing.",
+      category: "Development",
+      icon: "🛠️",
+      url: "/json-validator",
+      status: "live",
+      featured: false
     }
   ];
 
