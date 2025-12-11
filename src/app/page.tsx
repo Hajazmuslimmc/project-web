@@ -331,7 +331,7 @@ export default function ToolsDirectory() {
               <div className="flex gap-4">
                 <a href="#" className="text-gray-400 hover:text-white transition-colors">GitHub</a>
                 <a href="#" className="text-gray-400 hover:text-white transition-colors">Twitter</a>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">Discord</a>
+                <a href="/discord" className="text-gray-400 hover:text-white transition-colors">Discord</a>
               </div>
             </div>
             <div>
