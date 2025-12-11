@@ -1,6 +1,21 @@
 User-agent: *
 Allow: /
 
+# Sitemap
+Sitemap: https://networkak.com/sitemap.xml
+
+# Optimize crawling for Networkak brand searches
+Allow: /betternotes
+Allow: /car-race-game
+Allow: /bloxed-io
+Allow: /minecraft-game
+Allow: /icecut
+Allow: /code-formatter
+Allow: /image-optimizer
+Allow: /password-generator
+Allow: /color-palette
+Allow: /ai-summarizer
+
 # Allow all major search engines to crawl the site
 User-agent: Googlebot
 Allow: /

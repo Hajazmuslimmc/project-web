@@ -5,47 +5,50 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Networkak Tools - Free Online Tools & Utilities Directory',
-  description: 'Discover powerful free online tools and utilities built by Networkak. From productivity apps like Better Notes to development tools, design utilities, and AI-powered solutions.',
+  title: 'Networkak.com - Premium Web Gaming Platform & Free Online Tools',
+  description: 'Networkak.com - Your ultimate destination for premium web games and powerful free online tools. Play instantly, no downloads required. Built by Networkak Team.',
   keywords: [
     'Networkak',
+    'Networkak.com',
+    'networkak',
+    'web games',
+    'online games',
+    'premium gaming platform',
     'free online tools',
     'web utilities',
     'Better Notes',
     'productivity tools',
     'development tools',
-    'design utilities',
-    'code formatter',
-    'image optimizer',
-    'password generator',
-    'color palette',
-    'JSON validator',
     'AI tools',
-    'web apps'
+    'instant play games',
+    'browser games',
+    'multiplayer games',
+    'gaming platform'
   ],
-  authors: [{ name: 'Networkak Team' }],
+  authors: [{ name: 'Networkak Team', url: 'https://networkak.com' }],
   creator: 'Networkak',
   publisher: 'Networkak',
+  applicationName: 'Networkak',
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://your-domain.com'), // Replace with your actual domain
+  metadataBase: new URL('https://networkak.com'),
   alternates: {
-    canonical: '/',
+    canonical: 'https://networkak.com',
   },
   openGraph: {
-    title: 'Networkak Tools - Free Online Tools & Utilities',
-    description: 'Discover powerful free online tools and utilities. From Better Notes to development tools, design utilities, and AI-powered solutions.',
-    url: 'https://your-domain.com',
-    siteName: 'Networkak Tools',
+    title: 'Networkak.com - Premium Web Gaming Platform & Free Tools',
+    description: 'Experience the future of web gaming with Networkak.com. Premium games, powerful tools, instant play - no downloads required.',
+    url: 'https://networkak.com',
+    siteName: 'Networkak',
     images: [
       {
-        url: '/favicon.png',
+        url: 'https://networkak.com/favicon.png',
         width: 1200,
         height: 630,
-        alt: 'Networkak Tools - Free Online Tools Directory',
+        alt: 'Networkak.com - Premium Web Gaming Platform',
       },
     ],
     locale: 'en_US',
@@ -53,10 +56,11 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Networkak Tools - Free Online Tools & Utilities',
-    description: 'Discover powerful free online tools and utilities. From Better Notes to development tools and AI-powered solutions.',
-    images: ['/favicon.png'],
+    title: 'Networkak.com - Premium Web Gaming & Tools',
+    description: 'Experience premium web gaming and powerful free tools at Networkak.com. Play instantly, create effortlessly.',
+    images: ['https://networkak.com/favicon.png'],
     creator: '@networkak',
+    site: '@networkak',
   },
   robots: {
     index: true,
@@ -87,14 +91,32 @@ export default function RootLayout({
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "Networkak Tools",
-    "description": "Free online tools and utilities directory. Powerful web-based tools for productivity, development, design, and more.",
-    "url": "https://your-domain.com",
-    "logo": "https://your-domain.com/favicon.png",
+    "name": "Networkak",
+    "alternateName": "Networkak.com",
+    "description": "Premium web gaming platform and free online tools directory. Experience the future of web gaming with stunning graphics, smooth animations, and powerful utilities.",
+    "url": "https://networkak.com",
+    "logo": "https://networkak.com/favicon.png",
+    "image": "https://networkak.com/favicon.png",
     "sameAs": [
-      "https://github.com/Hajazmuslimmc/project-web"
+      "https://github.com/Hajazmuslimmc/project-web",
+      "https://twitter.com/networkak",
+      "https://discord.gg/networkak"
     ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "contact@networkak.com",
+      "contactType": "customer service"
+    },
     "offers": [
+      {
+        "@type": "SoftwareApplication",
+        "name": "Networkak Gaming Platform",
+        "description": "Premium web gaming platform with instant play games",
+        "operatingSystem": ["Web", "macOS", "Windows", "Linux", "Android", "iOS"],
+        "applicationCategory": "GameApplication",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
       {
         "@type": "SoftwareApplication",
         "name": "Better Notes",
@@ -105,9 +127,9 @@ export default function RootLayout({
         "priceCurrency": "USD"
       }
     ],
-    "serviceType": "Online Tools & Web Utilities",
+    "serviceType": "Web Gaming Platform & Online Tools",
     "areaServed": "Worldwide",
-    "keywords": "free online tools, web utilities, productivity tools, development tools, design utilities, Better Notes, code formatter, image optimizer"
+    "keywords": "Networkak, Networkak.com, web games, online games, premium gaming, free online tools, web utilities, instant play, browser games, multiplayer games"
   }
 
   return (
