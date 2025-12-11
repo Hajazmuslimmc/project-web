@@ -184,6 +184,66 @@ export default function ToolsDirectory() {
       url: "#",
       status: "coming-soon",
       featured: false
+    },
+    {
+      id: "18",
+      name: "AI Code Generator",
+      description: "Generate code snippets and functions using AI for multiple programming languages.",
+      category: "Development",
+      icon: "🤖",
+      url: "#",
+      status: "coming-soon",
+      featured: false
+    },
+    {
+      id: "19",
+      name: "Code Error Fixer",
+      description: "Automatically detect and fix common coding errors with AI-powered suggestions.",
+      category: "Development",
+      icon: "🔧",
+      url: "#",
+      status: "coming-soon",
+      featured: false
+    },
+    {
+      id: "20",
+      name: "Code Beautifier",
+      description: "Format and beautify code with proper indentation and styling for better readability.",
+      category: "Development",
+      icon: "✨",
+      url: "#",
+      status: "coming-soon",
+      featured: false
+    },
+    {
+      id: "21",
+      name: "CSS/JS/HTML Generator",
+      description: "Generate CSS, JavaScript, and HTML code templates with modern best practices.",
+      category: "Development",
+      icon: "🎨",
+      url: "#",
+      status: "coming-soon",
+      featured: false
+    },
+    {
+      id: "22",
+      name: "API Testing Tool",
+      description: "Test REST APIs with request builder, response viewer, and automated testing features.",
+      category: "Development",
+      icon: "🔌",
+      url: "#",
+      status: "coming-soon",
+      featured: false
+    },
+    {
+      id: "23",
+      name: "UI Design Assistant",
+      description: "Create beautiful UI components and layouts with drag-and-drop design tools.",
+      category: "Design",
+      icon: "🎨",
+      url: "#",
+      status: "coming-soon",
+      featured: false
     }
   ];
 
