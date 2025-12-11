@@ -124,6 +124,16 @@ export default function ToolsDirectory() {
       url: "/bloxed-io",
       status: "live",
       featured: true
+    },
+    {
+      id: "12",
+      name: "Minecraft 2D",
+      description: "Build and explore in this 2D Minecraft-inspired sandbox game with blocks and crafting.",
+      category: "Games",
+      icon: "⛏️",
+      url: "/minecraft-game",
+      status: "live",
+      featured: true
     }
   ];
 
