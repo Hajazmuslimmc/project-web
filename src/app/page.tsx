@@ -51,7 +51,7 @@ export default function ToolsDirectory() {
       description: "Generate secure passwords with customizable length, characters, and complexity.",
       category: "Security",
       icon: "🔐",
-      url: "#",
+      url: "/password-generator",
       status: "live",
       featured: false
     },
