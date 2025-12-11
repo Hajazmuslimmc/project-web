@@ -14,7 +14,7 @@ export default function MinecraftGame() {
   const [playerX, setPlayerX] = useState(5);
   const [playerY, setPlayerY] = useState(5);
   const [inventory, setInventory] = useState({
-    grass: 10, dirt: 10, stone: 5, wood: 5, water: 3
+    grass: 10, dirt: 10, stone: 5, wood: 5, water: 3, air: 0
   });
 
   const blockColors = {
@@ -56,7 +56,7 @@ export default function MinecraftGame() {
   }, []);
 
   const placeBlock = (x: number, y: number) => {
-    if (inventory[selectedBlock] <= 0) return;
+    if (selectedBlock === 'air' || inventory[selectedBlock] <= 0) return;
     
     setWorld(prev => {
       const newWorld = [...prev];
