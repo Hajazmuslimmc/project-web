@@ -94,6 +94,16 @@ export default function ToolsDirectory() {
       url: "/ai-summarizer",
       status: "live",
       featured: true
+    },
+    {
+      id: "9",
+      name: "QR Code Generator",
+      description: "Generate QR codes for your website links with customizable size and error correction.",
+      category: "Utility",
+      icon: "📱",
+      url: "/qr-generator",
+      status: "live",
+      featured: false
     }
   ];
 
