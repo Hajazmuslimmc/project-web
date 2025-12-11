@@ -294,6 +294,66 @@ export default function ToolsDirectory() {
       url: "#",
       status: "coming-soon",
       featured: false
+    },
+    {
+      id: "29",
+      name: "VPN Service",
+      description: "Secure your internet connection with encrypted VPN tunneling and IP masking.",
+      category: "Security",
+      icon: "🔒",
+      url: "#",
+      status: "coming-soon",
+      featured: false
+    },
+    {
+      id: "30",
+      name: "Password Manager",
+      description: "Store and manage passwords securely with encryption and auto-fill capabilities.",
+      category: "Security",
+      icon: "🔑",
+      url: "/password-generator",
+      status: "live",
+      featured: false
+    },
+    {
+      id: "31",
+      name: "File Encryption Tool",
+      description: "Encrypt and decrypt files with military-grade AES encryption for maximum security.",
+      category: "Security",
+      icon: "🔐",
+      url: "#",
+      status: "coming-soon",
+      featured: false
+    },
+    {
+      id: "32",
+      name: "Anti-virus Checker",
+      description: "Scan files and URLs for malware, viruses, and security threats in real-time.",
+      category: "Security",
+      icon: "🚫",
+      url: "#",
+      status: "coming-soon",
+      featured: false
+    },
+    {
+      id: "33",
+      name: "IP Checker",
+      description: "Check your IP address, location, ISP information, and detect VPN usage.",
+      category: "Security",
+      icon: "🌍",
+      url: "#",
+      status: "coming-soon",
+      featured: false
+    },
+    {
+      id: "34",
+      name: "Device Security Scanner",
+      description: "Scan your device for security vulnerabilities, open ports, and potential threats.",
+      category: "Security",
+      icon: "🔍",
+      url: "#",
+      status: "coming-soon",
+      featured: false
     }
   ];
 
