@@ -1,14 +1,15 @@
-'use client'
+import dynamic from 'next/dynamic';
 
-import React, { useState, useCallback } from 'react';
-import { Document, Page, pdfjs } from 'react-pdf';
-
-// Set up PDF.js worker
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
-
-export const dynamic = 'force-dynamic';
+const PDFConverter = dynamic(() => import('./PDFConverter'), {
+  ssr: false,
+  loading: () => <div className="min-h-screen flex items-center justify-center">Loading...</div>
+});
 
 export default function PDFToPNGConverter() {
+  return <PDFConverter />;
+}
+
+function PDFConverterComponent() {
   const [file, setFile] = useState<File | null>(null);
   const [numPages, setNumPages] = useState<number | null>(null);
   const [pageNumber, setPageNumber] = useState(1);
