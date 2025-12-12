@@ -29,7 +29,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/flashcard-creator',
     '/meme-generator',
     '/invoice-generator',
-    '/ip-checker'
+    '/ip-checker',
+    '/pdf-to-png'
   ]
 
   return routes.map((route) => ({

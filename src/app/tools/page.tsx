@@ -114,6 +114,16 @@ export default function ToolsDirectory() {
       url: "/car-race-game",
       status: "live",
       featured: true
+    },
+    {
+      id: "11",
+      name: "PDF to PNG Converter",
+      description: "Convert PDF pages to high-quality PNG images with adjustable quality settings.",
+      category: "Utility",
+      icon: "📄",
+      url: "/pdf-to-png",
+      status: "live",
+      featured: true
     }
   ];
 
