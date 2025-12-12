@@ -31,7 +31,7 @@ export default function PDFToPNGConverter() {
 
     setConverting(true);
     try {
-      const canvas = document.querySelector(`canvas[data-page="${pageNum}"]`) as HTMLCanvasElement;
+      const canvas = document.querySelector('canvas') as HTMLCanvasElement;
       if (canvas) {
         const link = document.createElement('a');
         link.download = `page-${pageNum}.png`;
@@ -208,9 +208,6 @@ export default function PDFToPNGConverter() {
                         pageNumber={pageNumber}
                         scale={scale}
                         className="shadow-lg"
-                        canvasProps={{
-                          'data-page': pageNumber
-                        }}
                       />
                     </Document>
                   </div>
