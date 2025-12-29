@@ -14,6 +14,8 @@ export default function BoxBuildPage() {
   const [templateName, setTemplateName] = useState('');
   const [templateEmoji, setTemplateEmoji] = useState('');
   const [templateColor, setTemplateColor] = useState('from-blue-500 to-purple-600');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentUser, setCurrentUser] = useState<{name: string, initials: string} | null>(null);
 
   React.useEffect(() => {
     const savedTemplates = JSON.parse(localStorage.getItem('coachlaunch_templates') || '[]');
@@ -73,6 +75,11 @@ export default function BoxBuildPage() {
       
       setTimeout(() => {
         alert(`Welcome ${name}! Account created and saved successfully.`);
+        setCurrentUser({
+          name: name,
+          initials: name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+        });
+        setIsLoggedIn(true);
         setShowSignup(false);
         setPassword('');
         setName('');
@@ -98,6 +105,11 @@ export default function BoxBuildPage() {
       setTimeout(() => {
         if (user) {
           alert(`Welcome back ${name}!`);
+          setCurrentUser({
+            name: name,
+            initials: name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+          });
+          setIsLoggedIn(true);
           setShowSignin(false);
         } else {
           alert('Invalid name or password. Please try again.');
@@ -154,12 +166,30 @@ export default function BoxBuildPage() {
               >
                 {darkMode ? '☀️' : '🌙'}
               </button>
-              <button 
-                onClick={() => setShowSignup(true)}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                Sign Up
-              </button>
+              {!isLoggedIn ? (
+                <button 
+                  onClick={() => setShowSignup(true)}
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  Sign Up
+                </button>
+              ) : (
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+                    {currentUser?.initials}
+                  </div>
+                  <span className="text-gray-900 dark:text-white font-medium">{currentUser?.name}</span>
+                  <button 
+                    onClick={() => {
+                      setIsLoggedIn(false);
+                      setCurrentUser(null);
+                    }}
+                    className="text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 text-sm"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
