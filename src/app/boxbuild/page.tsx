@@ -246,9 +246,12 @@ export default function BoxBuildPage() {
               >
                 🚀 Start 7-Day Free Trial
               </button>
-              <button className="border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                👀 View Templates
-              </button>
+              <a 
+                href="/dashboard"
+                className="border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-center"
+              >
+                👀 View Dashboard
+              </a>
             </div>
 
             <div className="text-sm text-gray-500 dark:text-gray-400 mb-8">
