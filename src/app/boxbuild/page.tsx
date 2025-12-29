@@ -60,8 +60,6 @@ export default function BoxBuildPage() {
     setShowTemplateCreator(false);
   };
 
-  const handleSignup = async (e: React.FormEvent) => {
-
   const handleEditTemplate = (template: any) => {
     setEditingTemplate(template);
     setTemplateName(template.name);
