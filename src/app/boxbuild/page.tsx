@@ -16,6 +16,7 @@ export default function BoxBuildPage() {
   const [templateColor, setTemplateColor] = useState('from-blue-500 to-purple-600');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState<{name: string, initials: string} | null>(null);
+  const [editingTemplate, setEditingTemplate] = useState<any>(null);
 
   React.useEffect(() => {
     const savedTemplates = JSON.parse(localStorage.getItem('coachlaunch_templates') || '[]');
@@ -26,23 +27,56 @@ export default function BoxBuildPage() {
     e.preventDefault();
     if (!templateName || !templateEmoji) return;
     
-    const newTemplate = {
-      name: templateName,
-      image: templateEmoji,
-      color: templateColor,
-      custom: true,
-      id: Date.now().toString()
-    };
-    
-    const updatedTemplates = [...customTemplates, newTemplate];
-    setCustomTemplates(updatedTemplates);
-    localStorage.setItem('coachlaunch_templates', JSON.stringify(updatedTemplates));
+    if (editingTemplate) {
+      // Update existing template
+      const updatedTemplates = customTemplates.map(t => 
+        t.id === editingTemplate.id 
+          ? { ...t, name: templateName, image: templateEmoji, color: templateColor }
+          : t
+      );
+      setCustomTemplates(updatedTemplates);
+      localStorage.setItem('coachlaunch_templates', JSON.stringify(updatedTemplates));
+      alert('Template updated successfully!');
+    } else {
+      // Create new template
+      const newTemplate = {
+        name: templateName,
+        image: templateEmoji,
+        color: templateColor,
+        custom: true,
+        id: Date.now().toString()
+      };
+      
+      const updatedTemplates = [...customTemplates, newTemplate];
+      setCustomTemplates(updatedTemplates);
+      localStorage.setItem('coachlaunch_templates', JSON.stringify(updatedTemplates));
+      alert('Custom template created successfully!');
+    }
     
     setTemplateName('');
     setTemplateEmoji('');
     setTemplateColor('from-blue-500 to-purple-600');
+    setEditingTemplate(null);
     setShowTemplateCreator(false);
-    alert('Custom template created successfully!');
+  };
+
+  const handleSignup = async (e: React.FormEvent) => {
+
+  const handleEditTemplate = (template: any) => {
+    setEditingTemplate(template);
+    setTemplateName(template.name);
+    setTemplateEmoji(template.image);
+    setTemplateColor(template.color);
+    setShowTemplateCreator(true);
+  };
+
+  const handleDeleteTemplate = (templateId: string) => {
+    if (confirm('Are you sure you want to delete this template?')) {
+      const updatedTemplates = customTemplates.filter(t => t.id !== templateId);
+      setCustomTemplates(updatedTemplates);
+      localStorage.setItem('coachlaunch_templates', JSON.stringify(updatedTemplates));
+      alert('Template deleted successfully!');
+    }
   };
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -287,9 +321,27 @@ export default function BoxBuildPage() {
                   <p className="text-gray-600 dark:text-gray-300 mb-4">
                     {template.name === 'Minecraft PVP Server' ? 'Perfect for gaming servers' : `Perfect for ${template.name.toLowerCase()}s`}
                   </p>
-                  <button className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                    Preview Template
-                  </button>
+                  <div className="space-y-2">
+                    <button className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                      Preview Template
+                    </button>
+                    {template.custom && (
+                      <div className="flex gap-2">
+                        <button 
+                          onClick={() => handleEditTemplate(template)}
+                          className="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors text-sm"
+                        >
+                          Edit
+                        </button>
+                        <button 
+                          onClick={() => handleDeleteTemplate(template.id)}
+                          className="flex-1 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition-colors text-sm"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
@@ -722,9 +774,17 @@ export default function BoxBuildPage() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white dark:bg-gray-800 rounded-xl p-8 max-w-md w-full">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Create Custom Template</h2>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                {editingTemplate ? 'Edit Template' : 'Create Custom Template'}
+              </h2>
               <button 
-                onClick={() => setShowTemplateCreator(false)}
+                onClick={() => {
+                  setShowTemplateCreator(false);
+                  setEditingTemplate(null);
+                  setTemplateName('');
+                  setTemplateEmoji('');
+                  setTemplateColor('from-blue-500 to-purple-600');
+                }}
                 className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
               >
                 ✕
@@ -790,7 +850,7 @@ export default function BoxBuildPage() {
                 type="submit"
                 className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold"
               >
-                Create Template
+                {editingTemplate ? 'Update Template' : 'Create Template'}
               </button>
             </form>
           </div>
