@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 export default function BoxBuildPage() {
   const [darkMode, setDarkMode] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
+  const [showSignin, setShowSignin] = useState(false);
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
@@ -13,14 +14,69 @@ export default function BoxBuildPage() {
     e.preventDefault();
     setLoading(true);
     
-    // Simulate signup process
-    setTimeout(() => {
-      alert(`Welcome ${name}! Account created successfully.`);
-      setShowSignup(false);
-      setPassword('');
-      setName('');
+    try {
+      // Get existing users from localStorage
+      const existingUsers = JSON.parse(localStorage.getItem('coachlaunch_users') || '[]');
+      
+      // Check if user already exists
+      const userExists = existingUsers.find((user: any) => user.name === name);
+      if (userExists) {
+        alert('User already exists! Please choose a different name.');
+        setLoading(false);
+        return;
+      }
+      
+      // Create new user
+      const newUser = {
+        id: Date.now().toString(),
+        name,
+        password,
+        createdAt: new Date().toISOString()
+      };
+      
+      // Save to localStorage database
+      existingUsers.push(newUser);
+      localStorage.setItem('coachlaunch_users', JSON.stringify(existingUsers));
+      
+      setTimeout(() => {
+        alert(`Welcome ${name}! Account created and saved successfully.`);
+        setShowSignup(false);
+        setPassword('');
+        setName('');
+        setLoading(false);
+      }, 1500);
+    } catch (error) {
+      alert('Error creating account. Please try again.');
       setLoading(false);
-    }, 1500);
+    }
+  };
+
+  const handleSignin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    try {
+      // Get users from localStorage database
+      const existingUsers = JSON.parse(localStorage.getItem('coachlaunch_users') || '[]');
+      
+      // Find user with matching name and password
+      const user = existingUsers.find((user: any) => user.name === name && user.password === password);
+      
+      setTimeout(() => {
+        if (user) {
+          alert(`Welcome back ${name}!`);
+          setShowSignin(false);
+        } else {
+          alert('Invalid name or password. Please try again.');
+        }
+        setPassword('');
+        setName('');
+        setLoading(false);
+      }, 1500);
+    } catch (error) {
+      alert('Error signing in. Please try again.');
+      setLoading(false);
+    }
   };
 
   const templates = [
@@ -500,8 +556,84 @@ export default function BoxBuildPage() {
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 Already have an account?{' '}
-                <button className="text-blue-600 dark:text-blue-400 hover:underline">
+                <button 
+                  onClick={() => {
+                    setShowSignup(false);
+                    setShowSignin(true);
+                  }}
+                  className="text-blue-600 dark:text-blue-400 hover:underline"
+                >
                   Sign In
+                </button>
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Signin Modal */}
+      {showSignin && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-8 max-w-md w-full">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Sign In</h2>
+              <button 
+                onClick={() => setShowSignin(false)}
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <form onSubmit={handleSignin} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Enter your name"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Enter your password"
+                />
+              </div>
+              
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold"
+              >
+                {loading ? 'Signing In...' : 'Sign In'}
+              </button>
+            </form>
+            
+            <div className="mt-6 text-center">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Don't have an account?{' '}
+                <button 
+                  onClick={() => {
+                    setShowSignin(false);
+                    setShowSignup(true);
+                  }}
+                  className="text-blue-600 dark:text-blue-400 hover:underline"
+                >
+                  Sign Up
                 </button>
               </p>
             </div>
