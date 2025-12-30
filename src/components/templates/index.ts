@@ -1,5 +1,6 @@
 import { Template } from '@/types/website';
 import CoachTemplate from './CoachTemplate';
+import { SchoolTemplate } from './SchoolTemplate';
 
 export const TEMPLATES: Template[] = [
   {
@@ -7,6 +8,12 @@ export const TEMPLATES: Template[] = [
     name: 'Coach Pro',
     preview: '/templates/coach-pro-preview.jpg',
     component: CoachTemplate,
+  },
+  {
+    id: 'school-template',
+    name: 'School Template',
+    preview: '/templates/school-preview.jpg',
+    component: SchoolTemplate,
   },
 ];
 
