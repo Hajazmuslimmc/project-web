@@ -1,29 +1,37 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { GraduationCap, Phone, Mail, MapPin, BookOpen, Users, Award, Calendar } from 'lucide-react';
+import { GraduationCap, Phone, Mail, MapPin, BookOpen, Users, Award } from 'lucide-react';
+import { SiteData } from '@/types/website';
 
 interface SchoolTemplateProps {
-  name: string;
-  tagline: string;
-  description: string;
-  phone: string;
-  email: string;
-  address: string;
-  programs: string[];
-  facilities: string[];
+  data: SiteData;
 }
 
-export function SchoolTemplate({
-  name,
-  tagline,
-  description,
-  phone,
-  email,
-  address,
-  programs,
-  facilities
-}: SchoolTemplateProps) {
+export function SchoolTemplate({ data }: SchoolTemplateProps) {
+  const schoolData = {
+    name: data.content.headline || "Karwan Private High School",
+    tagline: "Excellence in Education, Character in Life",
+    description: data.content.about_text || "Providing quality education and nurturing future leaders since 1995",
+    phone: "+964 750 123 4567",
+    email: data.content.contact_email || "info@karwanschool.edu",
+    address: "Karwan District, Erbil, Kurdistan Region, Iraq",
+    programs: [
+      data.content.service_1 || "Scientific Branch",
+      data.content.service_2 || "Literary Branch", 
+      data.content.service_3 || "English Language Program",
+      "Computer Science Track"
+    ],
+    facilities: [
+      "Modern Classrooms",
+      "Science Laboratories",
+      "Computer Lab",
+      "Library",
+      "Sports Hall",
+      "Cafeteria"
+    ]
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 text-white">
       {/* Header */}
@@ -35,7 +43,7 @@ export function SchoolTemplate({
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <GraduationCap className="h-8 w-8 text-yellow-400" />
-            <h1 className="text-xl font-bold">{name}</h1>
+            <h1 className="text-xl font-bold">{schoolData.name}</h1>
           </div>
           <nav className="hidden md:flex space-x-6">
             <a href="#about" className="hover:text-yellow-400 transition-colors">About</a>
@@ -58,7 +66,7 @@ export function SchoolTemplate({
             animate={{ scale: 1 }}
             className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent"
           >
-            {name}
+            {schoolData.name}
           </motion.h1>
           <motion.p 
             initial={{ y: 20, opacity: 0 }}
@@ -66,7 +74,7 @@ export function SchoolTemplate({
             transition={{ delay: 0.2 }}
             className="text-xl md:text-2xl mb-8 text-blue-100"
           >
-            {tagline}
+            {schoolData.tagline}
           </motion.p>
           <motion.p 
             initial={{ y: 20, opacity: 0 }}
@@ -74,7 +82,7 @@ export function SchoolTemplate({
             transition={{ delay: 0.4 }}
             className="text-lg max-w-2xl mx-auto text-blue-200"
           >
-            {description}
+            {schoolData.description}
           </motion.p>
         </div>
       </motion.section>
@@ -87,7 +95,7 @@ export function SchoolTemplate({
             Academic Programs
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {programs.map((program, index) => (
+            {schoolData.programs.map((program, index) => (
               <motion.div
                 key={program}
                 initial={{ opacity: 0, y: 20 }}
@@ -111,7 +119,7 @@ export function SchoolTemplate({
             School Facilities
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {facilities.map((facility, index) => (
+            {schoolData.facilities.map((facility, index) => (
               <motion.div
                 key={facility}
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -137,7 +145,7 @@ export function SchoolTemplate({
             >
               <Phone className="h-8 w-8 text-yellow-400 mx-auto mb-4" />
               <h3 className="font-semibold mb-2">Phone</h3>
-              <p className="text-blue-200">{phone}</p>
+              <p className="text-blue-200">{schoolData.phone}</p>
             </motion.div>
             <motion.div 
               whileHover={{ scale: 1.05 }}
@@ -145,7 +153,7 @@ export function SchoolTemplate({
             >
               <Mail className="h-8 w-8 text-yellow-400 mx-auto mb-4" />
               <h3 className="font-semibold mb-2">Email</h3>
-              <p className="text-blue-200">{email}</p>
+              <p className="text-blue-200">{schoolData.email}</p>
             </motion.div>
             <motion.div 
               whileHover={{ scale: 1.05 }}
@@ -153,7 +161,7 @@ export function SchoolTemplate({
             >
               <MapPin className="h-8 w-8 text-yellow-400 mx-auto mb-4" />
               <h3 className="font-semibold mb-2">Address</h3>
-              <p className="text-blue-200">{address}</p>
+              <p className="text-blue-200">{schoolData.address}</p>
             </motion.div>
           </div>
         </div>
@@ -162,7 +170,7 @@ export function SchoolTemplate({
       {/* Footer */}
       <footer className="bg-black/20 py-8 text-center">
         <div className="container mx-auto px-6">
-          <p className="text-blue-200">© 2024 {name}. All rights reserved.</p>
+          <p className="text-blue-200">© 2024 {schoolData.name}. All rights reserved.</p>
         </div>
       </footer>
     </div>
