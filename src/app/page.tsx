@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 
 export default function HomePage() {
   const [darkMode, setDarkMode] = useState(() => {
@@ -17,6 +18,22 @@ export default function HomePage() {
     }
   }, [darkMode]);
 
+  const featuredTools = [
+    { name: "AI Code Generator", href: "/ai-code-generator", icon: "🤖", desc: "Generate code with AI" },
+    { name: "Better Notes", href: "/betternotes", icon: "📝", desc: "Advanced note-taking" },
+    { name: "Website Builder", href: "/website-builder", icon: "🌐", desc: "Build websites easily" },
+    { name: "Dashboard", href: "/dashboard", icon: "📊", desc: "Manage your projects" },
+    { name: "AI Voice Assistant", href: "/ai-voice-assistant", icon: "🎤", desc: "Voice-powered AI" },
+    { name: "CodeNest IDE", href: "/codenest-ide", icon: "💻", desc: "Online code editor" }
+  ];
+
+  const gamesList = [
+    { name: "Car Race Game", href: "/car-race-game", icon: "🏎️" },
+    { name: "Minecraft Game", href: "/minecraft-game", icon: "⛏️" },
+    { name: "Bloxed.io", href: "/bloxed-io", icon: "🎮" },
+    { name: "BoxBuild", href: "/boxbuild", icon: "📦" }
+  ];
+
   return (
     <div className={`min-h-screen transition-colors duration-300 ${darkMode ? 'dark bg-gray-900' : 'bg-gray-50'}`}>
       {/* Hero Section */}
@@ -27,24 +44,24 @@ export default function HomePage() {
             <span className="gradient-text">Networkak</span>
           </h1>
           <p className="text-2xl md:text-4xl mb-6 text-blue-100 font-semibold">
-            Anything is Possible
+            The Ultimate Digital Platform
           </p>
           <p className="text-lg md:text-xl mb-12 text-blue-200 max-w-4xl mx-auto">
-            Welcome to Networkak.com - where innovation meets possibility. Experience premium web gaming, powerful productivity tools, and cutting-edge technology that transforms the way you work, play, and create.
+            Access 50+ premium tools, AI-powered utilities, games, and productivity apps. From code generation to website building - everything you need in one place.
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
-            <a 
+            <Link 
               href="/tools"
               className="px-10 py-4 bg-white text-blue-600 rounded-lg font-semibold hover:bg-blue-50 transition-colors text-lg"
             >
-              Explore Tools
-            </a>
-            <a 
-              href="/car-race-game"
+              Explore 50+ Tools
+            </Link>
+            <Link 
+              href="/dashboard"
               className="px-10 py-4 border-2 border-white text-white rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors text-lg"
             >
-              Play Games
-            </a>
+              Get Started
+            </Link>
           </div>
         </div>
         
@@ -57,33 +74,97 @@ export default function HomePage() {
         </button>
       </section>
 
-      {/* Features Section */}
+      {/* Featured Tools Section */}
+      <section className="py-20 bg-white dark:bg-gray-800">
+        <div className="max-w-7xl mx-auto px-4">
+          <h2 className="text-4xl font-bold text-center mb-4 text-gray-900 dark:text-white">
+            Featured Tools
+          </h2>
+          <p className="text-center text-gray-600 dark:text-gray-300 mb-16">
+            Discover our most popular and powerful tools
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {featuredTools.map((tool) => (
+              <Link key={tool.name} href={tool.href} className="group">
+                <div className="p-6 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-700 dark:to-gray-600 hover:shadow-lg transition-all group-hover:scale-105">
+                  <div className="text-4xl mb-4">{tool.icon}</div>
+                  <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">{tool.name}</h3>
+                  <p className="text-gray-600 dark:text-gray-300">{tool.desc}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+          <div className="text-center mt-12">
+            <Link 
+              href="/tools"
+              className="px-8 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+            >
+              View All Tools
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Games Section */}
+      <section className="py-20 bg-gray-100 dark:bg-gray-900">
+        <div className="max-w-7xl mx-auto px-4">
+          <h2 className="text-4xl font-bold text-center mb-4 text-gray-900 dark:text-white">
+            Premium Games
+          </h2>
+          <p className="text-center text-gray-600 dark:text-gray-300 mb-16">
+            Play instantly in your browser - no downloads required
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {gamesList.map((game) => (
+              <Link key={game.name} href={game.href} className="group">
+                <div className="p-6 rounded-xl bg-white dark:bg-gray-800 hover:shadow-lg transition-all group-hover:scale-105">
+                  <div className="text-4xl mb-4 text-center">{game.icon}</div>
+                  <h3 className="text-lg font-bold text-center text-gray-900 dark:text-white">{game.name}</h3>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Categories Section */}
       <section className="py-20 bg-white dark:bg-gray-800">
         <div className="max-w-7xl mx-auto px-4">
           <h2 className="text-4xl font-bold text-center mb-16 text-gray-900 dark:text-white">
-            Endless Possibilities
+            Tool Categories
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center p-8 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-700 dark:to-gray-600">
-              <div className="text-5xl mb-4">🎮</div>
-              <h3 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">Premium Gaming</h3>
-              <p className="text-gray-600 dark:text-gray-300">
-                Experience cutting-edge web games with stunning graphics and smooth gameplay. No downloads required.
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="text-center p-6">
+              <div className="text-5xl mb-4">🤖</div>
+              <h3 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">AI Tools</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4">
+                Code generation, voice assistants, face swap, and more AI-powered utilities.
               </p>
+              <Link href="/ai-code-generator" className="text-blue-600 hover:underline">Explore AI Tools →</Link>
             </div>
-            <div className="text-center p-8 rounded-xl bg-gradient-to-br from-purple-50 to-pink-100 dark:from-gray-700 dark:to-gray-600">
-              <div className="text-5xl mb-4">🛠️</div>
-              <h3 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">Powerful Tools</h3>
-              <p className="text-gray-600 dark:text-gray-300">
-                Access a comprehensive suite of productivity tools, AI-powered utilities, and development resources.
+            <div className="text-center p-6">
+              <div className="text-5xl mb-4">💻</div>
+              <h3 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">Developer Tools</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4">
+                Code formatters, API testing, JSON validators, and development utilities.
               </p>
+              <Link href="/codenest-ide" className="text-blue-600 hover:underline">View Dev Tools →</Link>
             </div>
-            <div className="text-center p-8 rounded-xl bg-gradient-to-br from-green-50 to-emerald-100 dark:from-gray-700 dark:to-gray-600">
-              <div className="text-5xl mb-4">🚀</div>
-              <h3 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">Innovation</h3>
-              <p className="text-gray-600 dark:text-gray-300">
-                Push the boundaries of what's possible with cutting-edge technology and creative solutions.
+            <div className="text-center p-6">
+              <div className="text-5xl mb-4">🎨</div>
+              <h3 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">Creative Tools</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4">
+                Logo generators, meme creators, thumbnail makers, and design utilities.
               </p>
+              <Link href="/logo-generator" className="text-blue-600 hover:underline">Create Now →</Link>
+            </div>
+            <div className="text-center p-6">
+              <div className="text-5xl mb-4">📱</div>
+              <h3 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">Productivity</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4">
+                Note-taking, task management, file tools, and productivity enhancers.
+              </p>
+              <Link href="/betternotes" className="text-blue-600 hover:underline">Boost Productivity →</Link>
             </div>
           </div>
         </div>
@@ -92,23 +173,23 @@ export default function HomePage() {
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold mb-6">Ready to Explore?</h2>
+          <h2 className="text-4xl font-bold mb-6">Ready to Get Started?</h2>
           <p className="text-xl mb-8 opacity-90">
-            Join thousands of users who have discovered that with Networkak, anything is truly possible.
+            Join thousands of users accessing premium tools, games, and AI-powered utilities.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a 
-              href="/tools"
+            <Link 
+              href="/dashboard"
               className="px-8 py-3 bg-white text-blue-600 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
             >
-              Browse All Tools
-            </a>
-            <a 
-              href="/betternotes"
+              Access Dashboard
+            </Link>
+            <Link 
+              href="/karwan-school"
               className="px-8 py-3 border-2 border-white text-white rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors"
             >
-              Try Better Notes
-            </a>
+              View School Site
+            </Link>
           </div>
         </div>
       </section>
@@ -118,37 +199,37 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
-              <h3 className="text-2xl font-bold gradient-text mb-4">Networkak.com</h3>
+              <h3 className="text-2xl font-bold gradient-text mb-4">Networkak</h3>
               <p className="text-gray-300 mb-4">
-                Where anything is possible. Building the future of web gaming and online tools for creators, developers, and innovators worldwide.
+                The ultimate digital platform with 50+ tools, games, and AI utilities. Everything you need for productivity, creativity, and entertainment.
               </p>
               <div className="flex gap-4">
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">GitHub</a>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">Twitter</a>
-                <a href="/discord" className="text-gray-400 hover:text-white transition-colors">Discord</a>
+                <Link href="/discord" className="text-gray-400 hover:text-white transition-colors">Discord</Link>
+                <Link href="/youtube" className="text-gray-400 hover:text-white transition-colors">YouTube</Link>
+                <Link href="/contact" className="text-gray-400 hover:text-white transition-colors">Contact</Link>
               </div>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Explore</h4>
+              <h4 className="font-semibold mb-4">Popular Tools</h4>
               <ul className="space-y-2 text-gray-300">
-                <li><a href="/tools" className="hover:text-white transition-colors">All Tools</a></li>
-                <li><a href="/car-race-game" className="hover:text-white transition-colors">Games</a></li>
-                <li><a href="/betternotes" className="hover:text-white transition-colors">Better Notes</a></li>
-                <li><a href="/youtube" className="hover:text-white transition-colors">YouTube</a></li>
+                <li><Link href="/ai-code-generator" className="hover:text-white transition-colors">AI Code Generator</Link></li>
+                <li><Link href="/website-builder" className="hover:text-white transition-colors">Website Builder</Link></li>
+                <li><Link href="/betternotes" className="hover:text-white transition-colors">Better Notes</Link></li>
+                <li><Link href="/codenest-ide" className="hover:text-white transition-colors">CodeNest IDE</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Support</h4>
+              <h4 className="font-semibold mb-4">Quick Access</h4>
               <ul className="space-y-2 text-gray-300">
-                <li><a href="#" className="hover:text-white transition-colors">Documentation</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Community</a></li>
+                <li><Link href="/tools" className="hover:text-white transition-colors">All Tools</Link></li>
+                <li><Link href="/dashboard" className="hover:text-white transition-colors">Dashboard</Link></li>
+                <li><Link href="/car-race-game" className="hover:text-white transition-colors">Games</Link></li>
+                <li><Link href="/karwan-school" className="hover:text-white transition-colors">School Site</Link></li>
               </ul>
             </div>
           </div>
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>© {new Date().getFullYear()} Networkak. All rights reserved. Anything is possible.</p>
+            <p>© {new Date().getFullYear()} Networkak. All rights reserved. 50+ Tools. Unlimited Possibilities.</p>
           </div>
         </div>
       </footer>
