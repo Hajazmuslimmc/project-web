@@ -293,6 +293,51 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Sponsors Section */}
+      <section className="py-20 bg-[#f7f2ea] dark:bg-[#0f1512]">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
+            <div>
+              <p className="text-xs uppercase tracking-widest text-[#6c756f] dark:text-[#c0d0c8]">Sponsors</p>
+              <h2 className="text-4xl md:text-5xl font-semibold text-[#1d1d1b] dark:text-white font-display">
+                Ad Islands
+              </h2>
+            </div>
+            <p className="max-w-xl text-[#4a4a45] dark:text-[#c6d6cf] text-lg">
+              Premium image slots for sponsors. Replace these with your ad images and links.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { title: "Island A", href: "/contact" },
+              { title: "Island B", href: "/contact" },
+              { title: "Island C", href: "/contact" },
+              { title: "Island D", href: "/contact" }
+            ].map((slot) => (
+              <Link
+                key={slot.title}
+                href={slot.href}
+                className="group"
+              >
+                <div className="rounded-3xl border border-[#1d1d1b]/10 bg-white p-4 shadow-sm transition-all group-hover:-translate-y-1 group-hover:shadow-lg dark:bg-[#16211b] dark:border-white/10">
+                  <div className="relative aspect-[4/3] rounded-2xl bg-[linear-gradient(135deg,#d9f2ff_0%,#ffe3b7_60%,#ffd1a1_100%)] overflow-hidden">
+                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                      <div className="text-sm uppercase tracking-widest text-[#3e5a66] font-semibold">Image Ad</div>
+                      <div className="mt-2 text-lg font-semibold text-[#1d1d1b]">{slot.title}</div>
+                    </div>
+                  </div>
+                  <div className="mt-4 flex items-center justify-between text-sm font-semibold text-[#1d1d1b] dark:text-white">
+                    <span>View sponsor</span>
+                    <span aria-hidden>→</span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-20 bg-[#1a2b23] text-white">
         <div className="max-w-5xl mx-auto px-4 text-center">
