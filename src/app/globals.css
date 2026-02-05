@@ -2,16 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  body {
+    font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  }
+
+  .font-display {
+    font-family: var(--font-display), ui-serif, Georgia, serif;
+  }
+}
+
 @layer components {
   .gradient-text {
-    @apply bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-[#1d1d1b] via-[#2bb673] to-[#1d1d1b] bg-clip-text text-transparent;
   }
   
   .card-hover {
-    @apply transition-all duration-300 hover:shadow-xl hover:scale-105 hover:border-blue-500/50;
+    @apply transition-all duration-300 hover:shadow-xl hover:scale-105 hover:border-[#2bb673]/40;
   }
   
   .glass-effect {
     @apply backdrop-blur-sm bg-white/10 border border-white/20;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
   }
 }
