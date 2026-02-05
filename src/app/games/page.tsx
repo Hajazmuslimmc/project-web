@@ -29,6 +29,20 @@ export default function GamesPage() {
               A playful ocean scene with ad-ready islands and a calm boat route. Perfect for showcasing sponsors
               or featured promos inside your game world.
             </p>
+            <div className="mt-6 flex flex-wrap gap-4">
+              <Link
+                href="/ship-game"
+                className="px-6 py-3 rounded-full bg-[#0f2a35] text-white font-semibold hover:bg-[#0b1f27] transition"
+              >
+                Play Ship Game
+              </Link>
+              <Link
+                href="/car-race-game"
+                className="px-6 py-3 rounded-full border border-[#0f2a35]/20 text-[#0f2a35] font-semibold hover:border-[#0f2a35] hover:bg-white/70 transition dark:text-white dark:border-white/20 dark:hover:bg-white/10"
+              >
+                Try Car Race
+              </Link>
+            </div>
             <div className="mt-8 grid grid-cols-2 gap-4">
               {islandAds.map((slot) => (
                 <Link
