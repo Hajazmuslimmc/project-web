@@ -2,243 +2,249 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-
-type Entity = {
-  x: number;
-  y: number;
-  r: number;
-  speed: number;
-};
+import * as THREE from "three";
 
 const adIslands = [
-  { label: "Ad Island A", href: "/contact", style: "left-6 top-10" },
-  { label: "Ad Island B", href: "/contact", style: "right-8 top-20" },
-  { label: "Ad Island C", href: "/contact", style: "left-1/2 -translate-x-1/2 bottom-8" }
+  { label: "Ad Island A", href: "/contact" },
+  { label: "Ad Island B", href: "/contact" },
+  { label: "Ad Island C", href: "/contact" },
+  { label: "Ad Island D", href: "/contact" }
 ];
+
+type IslandData = {
+  mesh: THREE.Mesh;
+  href: string;
+};
 
 export default function ShipGamePage() {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const animationRef = useRef<number | null>(null);
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+  const islandsRef = useRef<IslandData[]>([]);
+  const boatRef = useRef<THREE.Group | null>(null);
   const keysRef = useRef<Record<string, boolean>>({});
   const [score, setScore] = useState(0);
   const [best, setBest] = useState(0);
   const [gameOver, setGameOver] = useState(false);
+  const scoreRef = useRef(0);
+  const gameOverRef = useRef(false);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
     const container = containerRef.current;
-    if (!canvas || !container) return;
+    if (!container) return;
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.Fog("#bfe9ff", 30, 180);
 
-    const state = {
-      width: 0,
-      height: 0,
-      ship: { x: 0, y: 0, r: 16 },
-      speed: 3.2,
-      islands: [] as Entity[],
-      coins: [] as Entity[],
-      distance: 0,
-      lastSpawn: 0
+    const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 400);
+    camera.position.set(0, 8, 18);
+    camera.lookAt(0, 2, -10);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setClearColor("#bfe9ff", 1);
+    rendererRef.current = renderer;
+    container.appendChild(renderer.domElement);
+
+    const ambient = new THREE.AmbientLight("#ffffff", 0.9);
+    scene.add(ambient);
+
+    const sun = new THREE.DirectionalLight("#fff6d5", 1.2);
+    sun.position.set(30, 40, 20);
+    scene.add(sun);
+
+    const oceanGeometry = new THREE.PlaneGeometry(600, 600, 60, 60);
+    const oceanMaterial = new THREE.MeshPhongMaterial({
+      color: "#4aa3d3",
+      flatShading: true,
+      shininess: 60
+    });
+    const ocean = new THREE.Mesh(oceanGeometry, oceanMaterial);
+    ocean.rotation.x = -Math.PI / 2;
+    ocean.position.y = -1.5;
+    scene.add(ocean);
+
+    const boat = new THREE.Group();
+    const hull = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.9, 1.4, 4, 20, 1, false),
+      new THREE.MeshStandardMaterial({ color: "#1d1d1b", metalness: 0.2, roughness: 0.6 })
+    );
+    hull.rotation.z = Math.PI / 2;
+    hull.position.y = 0.2;
+    const mast = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.08, 0.1, 3, 10),
+      new THREE.MeshStandardMaterial({ color: "#ffffff" })
+    );
+    mast.position.set(0, 2, 0);
+    const sail = new THREE.Mesh(
+      new THREE.BoxGeometry(0.2, 2.2, 2.2),
+      new THREE.MeshStandardMaterial({ color: "#ffffff", transparent: true, opacity: 0.9 })
+    );
+    sail.position.set(0.6, 1.8, 0);
+    boat.add(hull, mast, sail);
+    boat.position.set(0, 0, 4);
+    scene.add(boat);
+    boatRef.current = boat;
+
+    const createIsland = (x: number, z: number, label: string, href: string) => {
+      const island = new THREE.Group();
+      const base = new THREE.Mesh(
+        new THREE.SphereGeometry(2.6, 24, 24),
+        new THREE.MeshStandardMaterial({ color: "#f7d7a1", roughness: 0.9 })
+      );
+      base.scale.set(1.4, 0.55, 1.2);
+      base.position.y = -0.3;
+
+      const palm = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.1, 0.18, 2.2, 8),
+        new THREE.MeshStandardMaterial({ color: "#2f6f45" })
+      );
+      palm.position.set(-0.4, 1.2, 0);
+
+      const crown = new THREE.Mesh(
+        new THREE.SphereGeometry(0.8, 14, 14),
+        new THREE.MeshStandardMaterial({ color: "#2bb673" })
+      );
+      crown.position.set(-0.4, 2.3, 0);
+
+      const sign = new THREE.Mesh(
+        new THREE.BoxGeometry(1.2, 0.5, 0.1),
+        new THREE.MeshStandardMaterial({ color: "#ffffff" })
+      );
+      sign.position.set(0.9, 0.6, 0);
+
+      island.add(base, palm, crown, sign);
+      island.position.set(x, -0.7, z);
+      island.name = label;
+
+      const islandMesh = new THREE.Mesh(
+        new THREE.CircleGeometry(2.6, 18),
+        new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0 })
+      );
+      islandMesh.rotation.x = -Math.PI / 2;
+      islandMesh.position.y = -0.8;
+      islandMesh.name = label;
+      islandMesh.userData = { href };
+
+      scene.add(island, islandMesh);
+      return islandMesh;
     };
+
+    const islandMeshes: IslandData[] = [];
+    const initialPositions = [
+      { x: -10, z: -20 },
+      { x: 8, z: -35 },
+      { x: -6, z: -55 },
+      { x: 12, z: -70 }
+    ];
+
+    adIslands.forEach((ad, idx) => {
+      const pos = initialPositions[idx % initialPositions.length];
+      const mesh = createIsland(pos.x, pos.z, ad.label, ad.href);
+      islandMeshes.push({ mesh, href: ad.href });
+    });
+
+    islandsRef.current = islandMeshes;
+
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
+
+    const handleClick = (event: MouseEvent) => {
+      const rect = renderer.domElement.getBoundingClientRect();
+      pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+      raycaster.setFromCamera(pointer, camera);
+      const intersects = raycaster.intersectObjects(islandsRef.current.map((island) => island.mesh));
+      if (intersects.length > 0) {
+        const hit = intersects[0].object as THREE.Mesh;
+        const href = hit.userData?.href as string | undefined;
+        if (href) window.location.href = href;
+      }
+    };
+
+    renderer.domElement.addEventListener("click", handleClick);
 
     const resize = () => {
-      const nextWidth = Math.min(container.offsetWidth, 900);
-      const nextHeight = 520;
-      canvas.width = nextWidth * window.devicePixelRatio;
-      canvas.height = nextHeight * window.devicePixelRatio;
-      canvas.style.width = `${nextWidth}px`;
-      canvas.style.height = `${nextHeight}px`;
-      ctx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
-      state.width = nextWidth;
-      state.height = nextHeight;
-      state.ship.x = nextWidth / 2;
-      state.ship.y = nextHeight - 90;
-    };
-
-    const spawnEntities = (time: number) => {
-      if (time - state.lastSpawn < 900) return;
-      state.lastSpawn = time;
-
-      const islandCount = Math.random() > 0.6 ? 2 : 1;
-      for (let i = 0; i < islandCount; i += 1) {
-        state.islands.push({
-          x: 60 + Math.random() * (state.width - 120),
-          y: -60 - Math.random() * 120,
-          r: 28 + Math.random() * 18,
-          speed: 1.6 + Math.random() * 1.4
-        });
-      }
-
-      if (Math.random() > 0.35) {
-        state.coins.push({
-          x: 50 + Math.random() * (state.width - 100),
-          y: -30,
-          r: 10,
-          speed: 2.4
-        });
-      }
-    };
-
-    const reset = () => {
-      state.islands = [];
-      state.coins = [];
-      state.distance = 0;
-      state.lastSpawn = 0;
-      state.ship.x = state.width / 2;
-      state.ship.y = state.height - 90;
-      setScore(0);
-      setGameOver(false);
-    };
-
-    const drawWaves = () => {
-      ctx.fillStyle = "#7cc7ec";
-      ctx.fillRect(0, 0, state.width, state.height);
-
-      ctx.fillStyle = "rgba(255,255,255,0.35)";
-      for (let i = 0; i < 6; i += 1) {
-        ctx.beginPath();
-        ctx.ellipse(
-          (state.distance * 0.6 + i * 140) % (state.width + 160) - 80,
-          80 + (i % 2) * 50,
-          70,
-          18,
-          0,
-          0,
-          Math.PI * 2
-        );
-        ctx.fill();
-      }
-    };
-
-    const drawShip = () => {
-      const { x, y, r } = state.ship;
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.fillStyle = "#1d1d1b";
-      ctx.beginPath();
-      ctx.moveTo(-r, r);
-      ctx.lineTo(r, r);
-      ctx.quadraticCurveTo(r - 2, r + 10, 0, r + 12);
-      ctx.quadraticCurveTo(-r + 2, r + 10, -r, r);
-      ctx.closePath();
-      ctx.fill();
-
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(-2, -r - 6, 4, r + 6);
-      ctx.fillStyle = "rgba(255,255,255,0.9)";
-      ctx.beginPath();
-      ctx.moveTo(2, -r - 6);
-      ctx.lineTo(r + 8, -r + 6);
-      ctx.lineTo(2, -r + 18);
-      ctx.closePath();
-      ctx.fill();
-      ctx.restore();
-    };
-
-    const drawIsland = (island: Entity) => {
-      ctx.save();
-      ctx.translate(island.x, island.y);
-      ctx.fillStyle = "#f7d7a1";
-      ctx.beginPath();
-      ctx.ellipse(0, 0, island.r * 1.2, island.r, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = "#2bb673";
-      ctx.beginPath();
-      ctx.ellipse(-island.r * 0.2, -island.r * 0.8, island.r * 0.3, island.r * 0.7, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-    };
-
-    const drawCoin = (coin: Entity) => {
-      ctx.save();
-      ctx.translate(coin.x, coin.y);
-      ctx.fillStyle = "#ffd66b";
-      ctx.beginPath();
-      ctx.arc(0, 0, coin.r, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = "rgba(255,255,255,0.7)";
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.arc(0, 0, coin.r - 3, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.restore();
-    };
-
-    const update = (time: number) => {
-      if (gameOver) return;
-
-      const { ship } = state;
-      const speedBoost = keysRef.current["Shift"] ? 1.35 : 1;
-      if (keysRef.current["ArrowLeft"] || keysRef.current["a"]) ship.x -= state.speed * speedBoost;
-      if (keysRef.current["ArrowRight"] || keysRef.current["d"]) ship.x += state.speed * speedBoost;
-      if (keysRef.current["ArrowUp"] || keysRef.current["w"]) ship.y -= state.speed * speedBoost;
-      if (keysRef.current["ArrowDown"] || keysRef.current["s"]) ship.y += state.speed * speedBoost;
-
-      ship.x = Math.max(26, Math.min(state.width - 26, ship.x));
-      ship.y = Math.max(40, Math.min(state.height - 40, ship.y));
-
-      spawnEntities(time);
-      state.distance += 1.6;
-      setScore((prev) => prev + 1);
-
-      state.islands.forEach((island) => {
-        island.y += island.speed + 0.4;
-      });
-      state.coins.forEach((coin) => {
-        coin.y += coin.speed + 0.6;
-      });
-
-      state.islands = state.islands.filter((island) => island.y < state.height + 80);
-      state.coins = state.coins.filter((coin) => coin.y < state.height + 60);
-
-      for (const island of state.islands) {
-        const dx = ship.x - island.x;
-        const dy = ship.y - island.y;
-        if (Math.hypot(dx, dy) < ship.r + island.r * 0.9) {
-          setGameOver(true);
-          setBest((prev) => Math.max(prev, score));
-          return;
-        }
-      }
-
-      for (let i = state.coins.length - 1; i >= 0; i -= 1) {
-        const coin = state.coins[i];
-        const dx = ship.x - coin.x;
-        const dy = ship.y - coin.y;
-        if (Math.hypot(dx, dy) < ship.r + coin.r) {
-          state.coins.splice(i, 1);
-          setScore((prev) => prev + 120);
-        }
-      }
-    };
-
-    const render = () => {
-      drawWaves();
-      state.islands.forEach(drawIsland);
-      state.coins.forEach(drawCoin);
-      drawShip();
-    };
-
-    const loop = (time: number) => {
-      update(time);
-      render();
-      animationRef.current = requestAnimationFrame(loop);
+      const width = container.clientWidth;
+      const height = Math.min(680, Math.max(520, window.innerHeight * 0.68));
+      renderer.setSize(width, height);
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
     };
 
     resize();
-    reset();
-    animationRef.current = requestAnimationFrame(loop);
     window.addEventListener("resize", resize);
+
+    let frame = 0;
+    let localScore = 0;
+
+    const animate = () => {
+      frame += 1;
+
+      if (!gameOverRef.current) {
+        localScore += 1;
+        if (localScore % 20 === 0) {
+          scoreRef.current += 10;
+          setScore(scoreRef.current);
+        }
+      }
+
+      const boat = boatRef.current;
+      if (boat) {
+        const steer = (keysRef.current["ArrowLeft"] || keysRef.current["a"]) ? -1 : (keysRef.current["ArrowRight"] || keysRef.current["d"]) ? 1 : 0;
+        const forward = (keysRef.current["ArrowUp"] || keysRef.current["w"]) ? 1 : (keysRef.current["ArrowDown"] || keysRef.current["s"]) ? -1 : 0;
+        boat.position.x = THREE.MathUtils.clamp(boat.position.x + steer * 0.35, -12, 12);
+        boat.position.z = THREE.MathUtils.clamp(boat.position.z - forward * 0.35, -6, 8);
+        boat.rotation.z = steer * -0.18;
+        boat.rotation.x = Math.sin(frame * 0.04) * 0.04;
+      }
+
+      oceanGeometry.attributes.position.needsUpdate = true;
+      const positions = oceanGeometry.attributes.position as THREE.BufferAttribute;
+      for (let i = 0; i < positions.count; i += 1) {
+        const y = Math.sin((i + frame) * 0.03) * 0.08;
+        positions.setY(i, y);
+      }
+
+      islandMeshes.forEach((island, idx) => {
+        island.mesh.position.z += 0.25 + idx * 0.02;
+        if (island.mesh.position.z > 14) {
+          island.mesh.position.z = -90 - Math.random() * 60;
+          island.mesh.position.x = -12 + Math.random() * 24;
+        }
+      });
+
+      if (!gameOverRef.current && boat) {
+        for (const island of islandMeshes) {
+          const distance = boat.position.distanceTo(island.mesh.position);
+          if (distance < 3.2) {
+            gameOverRef.current = true;
+            setGameOver(true);
+            setBest((prev) => Math.max(prev, scoreRef.current));
+            break;
+          }
+        }
+      }
+
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    };
 
     const onKeyDown = (event: KeyboardEvent) => {
       keysRef.current[event.key] = true;
-      if (event.key === " " && gameOver) {
-        reset();
+      if (event.key === " " && gameOverRef.current) {
+        gameOverRef.current = false;
+        setGameOver(false);
+        scoreRef.current = 0;
+        setScore(0);
+        localScore = 0;
+        if (boatRef.current) boatRef.current.position.set(0, 0, 4);
+        islandMeshes.forEach((island) => {
+          island.mesh.position.z = -20 - Math.random() * 80;
+          island.mesh.position.x = -12 + Math.random() * 24;
+        });
       }
     };
+
     const onKeyUp = (event: KeyboardEvent) => {
       keysRef.current[event.key] = false;
     };
@@ -246,13 +252,17 @@ export default function ShipGamePage() {
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener("keyup", onKeyUp);
 
+    animate();
+
     return () => {
+      renderer.domElement.removeEventListener("click", handleClick);
       window.removeEventListener("resize", resize);
       window.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("keyup", onKeyUp);
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+      container.removeChild(renderer.domElement);
+      renderer.dispose();
     };
-  }, [gameOver, score]);
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#f6fbff] dark:bg-[#0c1416]">
@@ -260,12 +270,12 @@ export default function ShipGamePage() {
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
             <div>
-              <p className="text-xs uppercase tracking-widest text-[#4f7a8a] dark:text-[#9bc7d6]">Playable game</p>
+              <p className="text-xs uppercase tracking-widest text-[#4f7a8a] dark:text-[#9bc7d6]">3D ship game</p>
               <h1 className="mt-3 text-4xl md:text-5xl font-semibold text-[#0f2a35] dark:text-white font-display">
-                Ship Game: dodge islands, collect coins, claim ads.
+                High‑quality Ship Game with ad islands.
               </h1>
               <p className="mt-4 text-lg text-[#35535f] dark:text-[#c7dbe3] max-w-2xl">
-                Use arrows or WASD. Hold Shift to boost. Collect coins for big points and avoid islands.
+                Steer with arrows or WASD. Click islands to open ad links. Press Space to restart after a crash.
               </p>
             </div>
             <div className="flex gap-4">
@@ -287,20 +297,7 @@ export default function ShipGamePage() {
                 Best: {best}
               </div>
 
-              <div ref={containerRef} className="relative">
-                <canvas ref={canvasRef} className="block rounded-[26px] border border-white/60" />
-                <div className="pointer-events-none absolute inset-0">
-                  {adIslands.map((island) => (
-                    <Link
-                      key={island.label}
-                      href={island.href}
-                      className={`pointer-events-auto absolute ${island.style} rounded-full bg-[#f7d7a1] px-3 py-2 text-[11px] font-semibold text-[#0f2a35] shadow-[inset_0_-4px_0_#dfb57a,0_12px_20px_rgba(18,41,52,0.25)] transition hover:-translate-y-1`}
-                    >
-                      {island.label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
+              <div ref={containerRef} className="relative" />
 
               {gameOver && (
                 <div className="absolute inset-0 flex items-center justify-center rounded-[32px] bg-[#0f2a35]/70 text-white">
@@ -316,7 +313,7 @@ export default function ShipGamePage() {
               <div className="rounded-3xl border border-[#0f2a35]/10 bg-white px-6 py-5 shadow-sm dark:bg-white/10 dark:border-white/10">
                 <h3 className="text-lg font-semibold text-[#0f2a35] dark:text-white">Ad Islands</h3>
                 <p className="mt-2 text-sm text-[#4f7a8a] dark:text-[#b7d6e0]">
-                  Each island is a clickable ad slot. Replace the links with your sponsors or embed ad units.
+                  Each island is clickable in the 3D scene. Replace the links below with your sponsors.
                 </p>
                 <div className="mt-4 grid grid-cols-2 gap-3">
                   {adIslands.map((slot) => (
@@ -332,11 +329,11 @@ export default function ShipGamePage() {
               </div>
 
               <div className="rounded-3xl border border-[#0f2a35]/10 bg-white px-6 py-5 shadow-sm dark:bg-white/10 dark:border-white/10">
-                <h3 className="text-lg font-semibold text-[#0f2a35] dark:text-white">Power Tips</h3>
+                <h3 className="text-lg font-semibold text-[#0f2a35] dark:text-white">Game Tips</h3>
                 <ul className="mt-3 text-sm text-[#4f7a8a] dark:text-[#b7d6e0] space-y-2">
-                  <li>Use boost (Shift) to weave between islands.</li>
-                  <li>Coins stack your score fast, chase the glow.</li>
-                  <li>Stay centered for safer reaction time.</li>
+                  <li>Keep your ship centered for a wider view.</li>
+                  <li>Click islands in the scene to open ads.</li>
+                  <li>Dodge islands to keep your streak going.</li>
                 </ul>
               </div>
             </div>
