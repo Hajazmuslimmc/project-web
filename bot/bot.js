@@ -1,9 +1,15 @@
 const { Client, GatewayIntentBits } = require("discord.js");
 const { MongoClient } = require("mongodb");
+const http = require("http");
+const express = require("express");
+const cors = require("cors");
+const { Server } = require("socket.io");
 
-const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
-});
+const app = express();
+app.use(cors());
+
+const server = http.createServer(app);
+const io = new Server(server, { cors: { origin: "*" } });
 
 const mongo = new MongoClient("YOUR_MONGO_URI");
 let db;
@@ -20,26 +26,45 @@ async function startDB() {
 }
 startDB();
 
+// API
+app.get("/tiers", async (req, res) => {
+  const mode = req.query.mode || "Sword";
+  const data = await db.collection("tiers")
+    .find({ mode })
+    .sort({ points: -1 })
+    .toArray();
+  res.json(data);
+});
+
+io.on("connection", (socket) => {
+  console.log("Client connected");
+});
+
+server.listen(4000, () => console.log("API + Socket running on http://localhost:4000"));
+
+// Discord Bot
+const client = new Client({
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
+});
+
 client.on("messageCreate", async (message) => {
   if (message.channel.id !== "YOUR_RESULTS_CHANNEL_ID") return;
   if (message.author.bot) return;
 
   let ign, tier, region, gamemode;
 
-  // Embed support
   if (message.embeds.length > 0) {
-    const embed = message.embeds[0];
-    const fields = embed.fields;
-    ign      = fields.find(f => f.name.includes("IGN"))?.value;
-    tier     = fields.find(f => f.name.includes("Tier Earned"))?.value;
-    region   = fields.find(f => f.name.includes("Region"))?.value;
-    gamemode = fields.find(f => f.name.includes("Gamemode"))?.value;
+    const fields = message.embeds[0].fields;
+    ign      = fields.find(f => f.name.includes("IGN"))?.value?.trim();
+    tier     = fields.find(f => f.name.includes("Tier Earned"))?.value?.trim();
+    region   = fields.find(f => f.name.includes("Region"))?.value?.trim();
+    gamemode = fields.find(f => f.name.includes("Gamemode"))?.value?.trim();
   } else {
-    const content = message.content;
-    ign      = content.match(/IGN:\s*(.+)/i)?.[1]?.trim();
-    tier     = content.match(/Tier:\s*(HT\d|LT\d)/i)?.[1]?.trim();
-    region   = content.match(/Region:\s*(.+)/i)?.[1]?.trim();
-    gamemode = content.match(/Gamemode:\s*(.+)/i)?.[1]?.trim();
+    const c = message.content;
+    ign      = c.match(/IGN:\s*(.+)/i)?.[1]?.trim();
+    tier     = c.match(/Tier:\s*(HT\d|LT\d)/i)?.[1]?.trim();
+    region   = c.match(/Region:\s*(.+)/i)?.[1]?.trim();
+    gamemode = c.match(/Gamemode:\s*(.+)/i)?.[1]?.trim();
   }
 
   if (!ign || !tier || !tierPoints[tier]) return;
@@ -59,6 +84,7 @@ client.on("messageCreate", async (message) => {
     { upsert: true }
   );
 
+  io.emit("update"); // 🔥 instant push to website
   message.react("✅");
 });
 
