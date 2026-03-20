@@ -3,20 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Networkak Admin Panel</title>
+<title>Networkak Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;600;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg:#0a0c10;--surface:#111318;--surface2:#181c24;--border:#1e2330;
-    --accent:#00e5ff;--accent2:#ff6b35;--gold:#ffd700;--silver:#c0c0c0;
-    --bronze:#cd7f32;--green:#00ff88;--red:#ff4757;--text:#e8eaf0;
-    --muted:#6b7280;--purple:#b06cff;
-  }
+  :root{--bg:#0a0c10;--surface:#111318;--surface2:#181c24;--border:#1e2330;--accent:#00e5ff;--accent2:#ff6b35;--gold:#ffd700;--green:#00ff88;--red:#ff4757;--text:#e8eaf0;--muted:#6b7280;--purple:#b06cff;}
   *{margin:0;padding:0;box-sizing:border-box;}
-  body{background:var(--bg);color:var(--text);font-family:'Exo 2',sans-serif;min-height:100vh;overflow-x:hidden;}
+  body{background:var(--bg);color:var(--text);font-family:'Exo 2',sans-serif;min-height:100vh;}
   body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
-
-  /* ── NAV ── */
   nav{position:sticky;top:0;z-index:100;background:rgba(10,12,16,0.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:64px;}
   .logo{font-family:'Rajdhani',sans-serif;font-size:1.6rem;font-weight:700;letter-spacing:2px;color:var(--accent);text-transform:uppercase;}
   .logo span{color:var(--accent2);}
@@ -25,11 +18,10 @@
   .nav-user strong{color:var(--text);}
   .nav-badge{padding:2px 8px;border-radius:4px;font-size:0.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
   .badge-admin{background:rgba(0,229,255,0.15);color:var(--accent);border:1px solid rgba(0,229,255,0.4);}
-  .badge-pending{background:rgba(255,215,0,0.12);color:var(--gold);border:1px solid rgba(255,215,0,0.3);}
   .badge-superadmin{background:rgba(176,108,255,0.18);color:var(--purple);border:1px solid rgba(176,108,255,0.4);}
-  .btn{padding:0.45rem 1rem;border-radius:8px;font-family:'Exo 2',sans-serif;font-weight:600;font-size:0.8rem;letter-spacing:0.5px;cursor:pointer;border:1px solid var(--border);transition:all 0.2s;}
+  .btn{padding:0.45rem 1rem;border-radius:8px;font-family:'Exo 2',sans-serif;font-weight:600;font-size:0.8rem;cursor:pointer;border:1px solid var(--border);transition:all 0.2s;}
   .btn-ghost{background:var(--surface2);color:var(--muted);}
-  .btn-ghost:hover{color:var(--text);border-color:var(--muted);}
+  .btn-ghost:hover{color:var(--text);}
   .btn-accent{background:rgba(0,229,255,0.12);color:var(--accent);border-color:rgba(0,229,255,0.35);}
   .btn-accent:hover{background:rgba(0,229,255,0.22);}
   .btn-danger{background:rgba(255,71,87,0.12);color:var(--red);border-color:rgba(255,71,87,0.35);}
@@ -37,54 +29,40 @@
   .btn-success{background:rgba(0,255,136,0.12);color:var(--green);border-color:rgba(0,255,136,0.35);}
   .btn-success:hover{background:rgba(0,255,136,0.22);}
   .btn-home{background:var(--surface2);color:var(--muted);text-decoration:none;display:inline-flex;align-items:center;gap:6px;padding:0.45rem 1rem;border-radius:8px;border:1px solid var(--border);font-size:0.8rem;font-weight:600;transition:all 0.2s;}
-  .btn-home:hover{color:var(--accent);border-color:rgba(0,229,255,0.35);}
-
-  /* ── AUTH SCREENS ── */
+  .btn-home:hover{color:var(--accent);}
   .auth-screen{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;padding:2rem;background:rgba(10,12,16,0.98);}
-  .auth-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:2.5rem;width:100%;max-width:420px;position:relative;}
+  .auth-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:2.5rem;width:100%;max-width:420px;}
   .auth-title{font-family:'Rajdhani',sans-serif;font-size:1.8rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:0.25rem;}
-  .auth-sub{font-size:0.8rem;color:var(--muted);letter-spacing:1px;margin-bottom:2rem;}
+  .auth-sub{font-size:0.8rem;color:var(--muted);margin-bottom:2rem;}
   .form-group{margin-bottom:1.2rem;}
   .form-label{display:block;font-size:0.72rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;font-weight:600;}
   .form-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:0.65rem 1rem;color:var(--text);font-family:'Exo 2',sans-serif;font-size:0.9rem;outline:none;transition:border-color 0.2s;}
   .form-input:focus{border-color:var(--accent);}
   .form-input::placeholder{color:var(--muted);}
-  .form-select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:0.65rem 1rem;color:var(--text);font-family:'Exo 2',sans-serif;font-size:0.9rem;outline:none;cursor:pointer;appearance:none;transition:border-color 0.2s;}
-  .form-select:focus{border-color:var(--accent);}
-  .btn-full{width:100%;padding:0.75rem;border-radius:10px;font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border:none;transition:all 0.2s;margin-top:0.5rem;}
+  .form-select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:0.65rem 1rem;color:var(--text);font-family:'Exo 2',sans-serif;font-size:0.9rem;outline:none;cursor:pointer;appearance:none;}
+  .btn-full{width:100%;padding:0.75rem;border-radius:10px;font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;margin-top:0.5rem;}
   .btn-full-accent{background:linear-gradient(135deg,rgba(0,229,255,0.25),rgba(0,229,255,0.1));color:var(--accent);border:1px solid rgba(0,229,255,0.4);}
   .btn-full-accent:hover{background:linear-gradient(135deg,rgba(0,229,255,0.35),rgba(0,229,255,0.18));}
   .auth-switch{text-align:center;margin-top:1.2rem;font-size:0.8rem;color:var(--muted);}
-  .auth-switch a{color:var(--accent);cursor:pointer;text-decoration:none;}
-  .auth-switch a:hover{text-decoration:underline;}
+  .auth-switch a{color:var(--accent);cursor:pointer;}
   .auth-error{background:rgba(255,71,87,0.12);border:1px solid rgba(255,71,87,0.35);border-radius:8px;padding:0.65rem 1rem;font-size:0.8rem;color:var(--red);margin-bottom:1rem;display:none;}
   .auth-info{background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.25);border-radius:8px;padding:0.65rem 1rem;font-size:0.8rem;color:var(--gold);margin-top:1rem;display:none;}
-
-  /* ── PENDING SCREEN ── */
   .pending-screen{position:fixed;inset:0;z-index:400;display:none;align-items:center;justify-content:center;background:rgba(10,12,16,0.98);}
   .pending-card{background:var(--surface);border:1px solid rgba(255,215,0,0.3);border-radius:20px;padding:2.5rem;max-width:420px;width:100%;text-align:center;}
-  .pending-icon{font-size:3rem;margin-bottom:1rem;}
   .pending-title{font-family:'Rajdhani',sans-serif;font-size:1.6rem;font-weight:700;letter-spacing:2px;color:var(--gold);margin-bottom:0.5rem;}
   .pending-text{font-size:0.85rem;color:var(--muted);line-height:1.6;margin-bottom:1.5rem;}
-
-  /* ── ADMIN LAYOUT ── */
   .admin-wrap{display:none;position:relative;z-index:1;}
-  .admin-sidebar{position:fixed;left:0;top:64px;bottom:0;width:220px;background:var(--surface);border-right:1px solid var(--border);padding:1.5rem 0;z-index:50;overflow-y:auto;}
-  .sidebar-section{margin-bottom:0.5rem;}
+  .admin-sidebar{position:fixed;left:0;top:64px;bottom:0;width:220px;background:var(--surface);border-right:1px solid var(--border);padding:1.5rem 0;z-index:50;}
   .sidebar-label{font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:0.5rem 1.5rem;font-weight:600;}
   .sidebar-item{display:flex;align-items:center;gap:10px;padding:0.6rem 1.5rem;cursor:pointer;font-size:0.85rem;font-weight:600;color:var(--muted);transition:all 0.15s;border-left:3px solid transparent;}
   .sidebar-item:hover{color:var(--text);background:rgba(255,255,255,0.03);}
   .sidebar-item.active{color:var(--accent);border-left-color:var(--accent);background:rgba(0,229,255,0.06);}
-  .sidebar-icon{font-size:1rem;width:20px;text-align:center;}
   .sidebar-count{margin-left:auto;background:rgba(255,71,87,0.2);color:var(--red);border-radius:10px;padding:1px 7px;font-size:0.65rem;font-weight:700;}
   .admin-main{margin-left:220px;padding:2rem;min-height:calc(100vh - 64px);}
-  .page-header{margin-bottom:2rem;}
-  .page-title{font-family:'Rajdhani',sans-serif;font-size:1.8rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
-  .page-sub{font-size:0.8rem;color:var(--muted);margin-top:0.2rem;}
+  .page-title{font-family:'Rajdhani',sans-serif;font-size:1.8rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.3rem;}
+  .page-sub{font-size:0.8rem;color:var(--muted);margin-bottom:2rem;}
   .panel{display:none;}
   .panel.active{display:block;}
-
-  /* ── CARDS / TABLE ── */
   .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:1.5rem;}
   .card-header{padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
   .card-title{font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);}
@@ -96,19 +74,10 @@
   .player-cell{display:flex;align-items:center;gap:10px;}
   .player-av{width:32px;height:32px;border-radius:6px;overflow:hidden;background:var(--surface2);image-rendering:pixelated;flex-shrink:0;}
   .player-av img{width:100%;height:100%;object-fit:cover;image-rendering:pixelated;display:block;}
-  .player-ign{font-weight:700;}
-
-  /* ── STATS GRID ── */
   .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:1.5rem;}
   .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.2rem 1.5rem;}
   .stat-label{font-size:0.68rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;font-weight:600;}
   .stat-value{font-family:'Rajdhani',sans-serif;font-size:2rem;font-weight:700;}
-  .stat-accent{color:var(--accent);}
-  .stat-gold{color:var(--gold);}
-  .stat-red{color:var(--red);}
-  .stat-green{color:var(--green);}
-
-  /* ── ADD PLAYER FORM ── */
   .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
   .tiers-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.8rem;margin-top:0.5rem;}
   .tier-input-wrap{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:0.8rem;}
@@ -116,200 +85,131 @@
   .tier-input-label img{width:14px;height:14px;object-fit:contain;image-rendering:pixelated;}
   .form-actions{display:flex;gap:0.8rem;margin-top:1.5rem;}
   .btn-lg{padding:0.7rem 1.8rem;border-radius:10px;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;border:1px solid;transition:all 0.2s;}
-
-  /* ── PENDING APPROVALS ── */
   .approval-card{background:var(--surface);border:1px solid rgba(255,215,0,0.2);border-radius:12px;padding:1.2rem 1.5rem;margin-bottom:0.8rem;display:flex;align-items:center;gap:1rem;}
-  .approval-info{flex:1;min-width:0;}
+  .approval-info{flex:1;}
   .approval-name{font-weight:700;font-size:0.95rem;}
   .approval-meta{font-size:0.75rem;color:var(--muted);margin-top:2px;}
-  .approval-actions{display:flex;gap:0.6rem;flex-shrink:0;}
+  .approval-actions{display:flex;gap:0.6rem;}
   .empty-msg{text-align:center;padding:3rem;color:var(--muted);font-size:0.85rem;}
-
-  /* ── ROLE CHIP ── */
   .role-chip{padding:2px 9px;border-radius:5px;font-size:0.65rem;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;}
-  .role-superadmin{background:rgba(176,108,255,0.18);color:var(--purple);border:1px solid rgba(176,108,255,0.35);}
+  .badge-founder{background:rgba(255,215,0,0.2);color:var(--gold);border:1px solid rgba(255,215,0,0.5);}
+  .role-founder{background:rgba(255,215,0,0.15);color:var(--gold);border:1px solid rgba(255,215,0,0.4);}
   .role-admin{background:rgba(0,229,255,0.12);color:var(--accent);border:1px solid rgba(0,229,255,0.3);}
   .role-pending{background:rgba(255,215,0,0.1);color:var(--gold);border:1px solid rgba(255,215,0,0.25);}
-
-  /* ── TOAST ── */
+  .tier-badge{padding:3px 8px;border-radius:5px;font-size:0.65rem;font-weight:700;letter-spacing:0.5px;}
+  .tier-HT1,.tier-HT2,.tier-HT3,.tier-HT4,.tier-HT5{background:rgba(255,107,53,0.2);color:#ff6b35;border:1px solid rgba(255,107,53,0.4);}
+  .tier-LT1,.tier-LT2,.tier-LT3,.tier-LT4,.tier-LT5{background:rgba(0,170,255,0.15);color:#00aaff;border:1px solid rgba(0,170,255,0.3);}
   .toast{position:fixed;bottom:2rem;right:2rem;z-index:9999;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:0.9rem 1.4rem;font-size:0.85rem;font-weight:600;transform:translateY(100px);opacity:0;transition:all 0.3s;max-width:320px;}
   .toast.show{transform:translateY(0);opacity:1;}
   .toast.success{border-color:rgba(0,255,136,0.4);color:var(--green);}
   .toast.error{border-color:rgba(255,71,87,0.4);color:var(--red);}
   .toast.info{border-color:rgba(0,229,255,0.3);color:var(--accent);}
-
-  /* ── MODAL ── */
   .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:800;display:flex;align-items:center;justify-content:center;padding:2rem;opacity:0;pointer-events:none;transition:opacity 0.3s;}
   .modal-overlay.open{opacity:1;pointer-events:all;}
-  .modal-box{background:var(--surface);border:1px solid var(--border);border-radius:18px;width:100%;max-width:480px;padding:2rem;position:relative;}
-  .modal-title{font-family:'Rajdhani',sans-serif;font-size:1.4rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:1rem;}
-  .modal-close-btn{position:absolute;top:1rem;right:1rem;background:var(--surface2);border:1px solid var(--border);border-radius:50%;width:32px;height:32px;cursor:pointer;color:var(--text);display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+  .modal-box{background:var(--surface);border:1px solid var(--border);border-radius:18px;width:100%;max-width:520px;padding:2rem;position:relative;max-height:90vh;overflow-y:auto;}
+  .modal-close-btn{position:absolute;top:1rem;right:1rem;background:var(--surface2);border:1px solid var(--border);border-radius:50%;width:32px;height:32px;cursor:pointer;color:var(--text);display:flex;align-items:center;justify-content:center;}
   .modal-close-btn:hover{background:var(--red);border-color:var(--red);}
-
-  @media(max-width:768px){
-    .admin-sidebar{display:none;}
-    .admin-main{margin-left:0;}
-    .form-grid{grid-template-columns:1fr;}
-    .tiers-grid{grid-template-columns:repeat(2,1fr);}
-    .stats-grid{grid-template-columns:1fr 1fr;}
-  }
+  .modal-title{font-family:'Rajdhani',sans-serif;font-size:1.4rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:1rem;}
+  @media(max-width:768px){.admin-sidebar{display:none;}.admin-main{margin-left:0;}.form-grid{grid-template-columns:1fr;}.tiers-grid{grid-template-columns:repeat(2,1fr);}}
 </style>
 </head>
 <body>
 
-<!-- ──────────────────── NAV ──────────────────── -->
 <nav id="mainNav" style="display:none;">
   <div class="logo">Networkak <span>Admin</span></div>
   <div class="nav-right">
-    <a class="btn-home" href="homepage.html">← Back to Site</a>
-    <div class="nav-user">
-      <span>Logged in as</span>
-      <strong id="navUsername">—</strong>
-      <span id="navBadge" class="nav-badge badge-admin">ADMIN</span>
-    </div>
+    <a class="btn-home" href="index.html">← Back to Site</a>
+    <div class="nav-user">Logged in as <strong id="navUsername">—</strong> <span id="navBadge" class="nav-badge badge-admin">ADMIN</span></div>
     <button class="btn btn-ghost" onclick="logout()">Log out</button>
   </div>
 </nav>
 
-<!-- ──────────────────── SIGN IN ──────────────────── -->
 <div class="auth-screen" id="signInScreen">
   <div class="auth-card">
     <div class="auth-title">Sign In</div>
     <div class="auth-sub">Networkak Tiers · Admin Access</div>
     <div class="auth-error" id="signinError"></div>
-    <div class="form-group">
-      <label class="form-label">Username</label>
-      <input class="form-input" id="signinUser" placeholder="Your username" autocomplete="username">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Password</label>
-      <input class="form-input" type="password" id="signinPass" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doSignIn()">
-    </div>
+    <div class="form-group"><label class="form-label">Username</label><input class="form-input" id="signinUser" placeholder="Username" onkeydown="if(event.key==='Enter')doSignIn()"></div>
+    <div class="form-group"><label class="form-label">Password</label><input class="form-input" type="password" id="signinPass" placeholder="Password" onkeydown="if(event.key==='Enter')doSignIn()"></div>
     <button class="btn-full btn-full-accent" onclick="doSignIn()">Sign In</button>
-    <div class="auth-switch">Don't have an account? <a onclick="showScreen('signUp')">Sign Up</a></div>
+    <div class="auth-switch">No account? <a onclick="showScreen('signUp')">Sign Up</a></div>
   </div>
 </div>
 
-<!-- ──────────────────── SIGN UP ──────────────────── -->
 <div class="auth-screen" id="signUpScreen" style="display:none;">
   <div class="auth-card">
     <div class="auth-title">Sign Up</div>
-    <div class="auth-sub">Create an account · Approval required for admin</div>
+    <div class="auth-sub">Approval required for admin access</div>
     <div class="auth-error" id="signupError"></div>
-    <div class="form-group">
-      <label class="form-label">Username</label>
-      <input class="form-input" id="signupUser" placeholder="Choose a username" autocomplete="username">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Password</label>
-      <input class="form-input" type="password" id="signupPass" placeholder="Choose a password" autocomplete="new-password">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Confirm Password</label>
-      <input class="form-input" type="password" id="signupPass2" placeholder="Repeat password" autocomplete="new-password" onkeydown="if(event.key==='Enter')doSignUp()">
-    </div>
+    <div class="form-group"><label class="form-label">Username</label><input class="form-input" id="signupUser" placeholder="Username"></div>
+    <div class="form-group"><label class="form-label">Password</label><input class="form-input" type="password" id="signupPass" placeholder="Password"></div>
+    <div class="form-group"><label class="form-label">Confirm Password</label><input class="form-input" type="password" id="signupPass2" placeholder="Repeat password" onkeydown="if(event.key==='Enter')doSignUp()"></div>
     <button class="btn-full btn-full-accent" onclick="doSignUp()">Create Account</button>
-    <div class="auth-info" id="signupInfo">✅ Account created! Your request is pending admin approval.</div>
-    <div class="auth-switch">Already have an account? <a onclick="showScreen('signIn')">Sign In</a></div>
+    <div class="auth-info" id="signupInfo">✅ Account created! Waiting for admin approval.</div>
+    <div class="auth-switch">Have an account? <a onclick="showScreen('signIn')">Sign In</a></div>
   </div>
 </div>
 
-<!-- ──────────────────── PENDING SCREEN ──────────────────── -->
 <div class="pending-screen" id="pendingScreen">
   <div class="pending-card">
-    <div class="pending-icon">⏳</div>
+    <div style="font-size:3rem;margin-bottom:1rem;">⏳</div>
     <div class="pending-title">Awaiting Approval</div>
-    <div class="pending-text">Your account is waiting to be approved by an admin. You'll get access once an admin reviews your request.<br><br>If you were denied, your account has been removed — please sign up again or contact an admin.</div>
-    <button class="btn btn-ghost" onclick="logout()" style="margin-top:0.5rem;width:100%;">Log out</button>
+    <div class="pending-text">An admin needs to approve your account before you can access the panel. If you were denied, your account was deleted.</div>
+    <button class="btn btn-ghost" onclick="logout()" style="width:100%;margin-top:0.5rem;">Log out</button>
   </div>
 </div>
 
-<!-- ──────────────────── ADMIN PANEL ──────────────────── -->
 <div class="admin-wrap" id="adminWrap">
   <div class="admin-sidebar">
-    <div class="sidebar-section">
+    <div style="margin-bottom:0.5rem;">
       <div class="sidebar-label">Dashboard</div>
-      <div class="sidebar-item active" onclick="switchPanel('dashboard',this)">
-        <span class="sidebar-icon">📊</span> Overview
-      </div>
+      <div class="sidebar-item active" onclick="switchPanel('dashboard',this)"><span>📊</span> Overview</div>
     </div>
-    <div class="sidebar-section">
+    <div style="margin-bottom:0.5rem;">
       <div class="sidebar-label">Players</div>
-      <div class="sidebar-item" onclick="switchPanel('addPlayer',this)">
-        <span class="sidebar-icon">➕</span> Add Player
-      </div>
-      <div class="sidebar-item" onclick="switchPanel('managePlayers',this)">
-        <span class="sidebar-icon">🎮</span> Manage Players
-      </div>
+      <div class="sidebar-item" onclick="switchPanel('addPlayer',this)"><span>➕</span> Add Player</div>
+      <div class="sidebar-item" onclick="switchPanel('managePlayers',this)"><span>🎮</span> Manage Players</div>
     </div>
-    <div class="sidebar-section">
+    <div>
       <div class="sidebar-label">Admins</div>
-      <div class="sidebar-item" id="sidebarPending" onclick="switchPanel('pending',this)">
-        <span class="sidebar-icon">⏳</span> Pending Requests
-        <span class="sidebar-count" id="pendingCount" style="display:none">0</span>
-      </div>
-      <div class="sidebar-item" id="sidebarManageAdmins" onclick="switchPanel('manageAdmins',this)" style="display:none;">
-        <span class="sidebar-icon">👑</span> Manage Admins
-      </div>
+      <div class="sidebar-item" onclick="switchPanel('pending',this)"><span>⏳</span> Pending <span class="sidebar-count" id="pendingCount" style="display:none">0</span></div>
+      <div class="sidebar-item" id="sidebarManageAdmins" onclick="switchPanel('manageAdmins',this)" style="display:none;"><span>👑</span> Manage Admins</div>
     </div>
   </div>
 
   <div class="admin-main">
-    <!-- DASHBOARD -->
     <div class="panel active" id="panelDashboard">
-      <div class="page-header">
-        <div class="page-title">Overview</div>
-        <div class="page-sub">Welcome back, <span id="dashUser">—</span></div>
-      </div>
+      <div class="page-title">Overview</div>
+      <div class="page-sub">Welcome back, <span id="dashUser">—</span></div>
       <div class="stats-grid">
-        <div class="stat-card"><div class="stat-label">Total Players</div><div class="stat-value stat-accent" id="statPlayers">0</div></div>
-        <div class="stat-card"><div class="stat-label">Total Admins</div><div class="stat-value stat-gold" id="statAdmins">0</div></div>
-        <div class="stat-card"><div class="stat-label">Pending</div><div class="stat-value stat-red" id="statPending">0</div></div>
-        <div class="stat-card"><div class="stat-label">Gamemodes</div><div class="stat-value stat-green">9</div></div>
+        <div class="stat-card"><div class="stat-label">Total Players</div><div class="stat-value" style="color:var(--accent)" id="statPlayers">0</div></div>
+        <div class="stat-card"><div class="stat-label">Total Admins</div><div class="stat-value" style="color:var(--gold)" id="statAdmins">0</div></div>
+        <div class="stat-card"><div class="stat-label">Pending</div><div class="stat-value" style="color:var(--red)" id="statPending">0</div></div>
+        <div class="stat-card"><div class="stat-label">Gamemodes</div><div class="stat-value" style="color:var(--green)">9</div></div>
       </div>
       <div class="card">
-        <div class="card-header"><span class="card-title">Recent Players Added</span></div>
-        <table class="table">
-          <thead><tr><th>Player</th><th>Region</th><th>Top Tier</th><th>Added By</th></tr></thead>
-          <tbody id="recentPlayersBody"></tbody>
-        </table>
+        <div class="card-header"><span class="card-title">Recent Players</span></div>
+        <table class="table"><thead><tr><th>Player</th><th>Region</th><th>Top Tier</th><th>Added By</th></tr></thead><tbody id="recentPlayersBody"></tbody></table>
       </div>
     </div>
 
-    <!-- ADD PLAYER -->
     <div class="panel" id="panelAddPlayer">
-      <div class="page-header">
-        <div class="page-title">Add Player</div>
-        <div class="page-sub">Add a new player to the tier list</div>
-      </div>
+      <div class="page-title">Add Player</div>
+      <div class="page-sub">Add a new player to the tier list</div>
       <div class="card">
         <div class="card-header"><span class="card-title">Player Info</span></div>
         <div style="padding:1.5rem;">
           <div class="form-grid">
-            <div class="form-group">
-              <label class="form-label">Minecraft IGN</label>
-              <input class="form-input" id="newIGN" placeholder="e.g. JiuJitsuBoy21">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Region</label>
+            <div class="form-group"><label class="form-label">Minecraft IGN</label><input class="form-input" id="newIGN" placeholder="e.g. JiuJitsuBoy21"></div>
+            <div class="form-group"><label class="form-label">Region</label>
               <select class="form-select" id="newRegion">
-                <option value="NA">NA — North America</option>
-                <option value="EU">EU — Europe</option>
-                <option value="AS">AS — Asia</option>
-                <option value="AU">AU — Australia</option>
-                <option value="SA">SA — South America</option>
+                <option value="NA">NA — North America</option><option value="EU">EU — Europe</option>
+                <option value="AS">AS — Asia</option><option value="AU">AU — Australia</option><option value="SA">SA — South America</option>
               </select>
             </div>
           </div>
-          <div class="form-group" style="margin-top:0.5rem;">
-            <label class="form-label" style="display:flex;align-items:center;gap:8px;">
-              <input type="checkbox" id="newRetired" style="accent-color:var(--accent);width:16px;height:16px;"> Mark as Retired
-            </label>
-          </div>
-          <div style="margin-top:1.5rem;">
-            <div class="form-label" style="margin-bottom:0.8rem;">Tier Results by Gamemode <span style="color:var(--muted);font-weight:400;">(leave blank to skip)</span></div>
-            <div class="tiers-grid" id="tierInputsGrid"></div>
-          </div>
+          <div class="form-group" style="margin-top:0.5rem;"><label class="form-label" style="display:flex;align-items:center;gap:8px;"><input type="checkbox" id="newRetired" style="accent-color:var(--accent);width:16px;height:16px;"> Mark as Retired</label></div>
+          <div style="margin-top:1.5rem;"><div class="form-label" style="margin-bottom:0.8rem;">Tier Results by Gamemode <span style="color:var(--muted);font-weight:400;">(leave blank to skip)</span></div><div class="tiers-grid" id="tierInputsGrid"></div></div>
           <div class="form-actions">
             <button class="btn-lg btn-accent" onclick="addPlayer()">Add Player</button>
             <button class="btn-lg btn-ghost" onclick="clearAddForm()">Clear</button>
@@ -318,78 +218,47 @@
       </div>
     </div>
 
-    <!-- MANAGE PLAYERS -->
     <div class="panel" id="panelManagePlayers">
-      <div class="page-header">
-        <div class="page-title">Manage Players</div>
-        <div class="page-sub">Edit or remove players from the tier list</div>
-      </div>
+      <div class="page-title">Manage Players</div>
+      <div class="page-sub">Edit or remove players from the tier list</div>
       <div class="card">
-        <div class="card-header">
-          <span class="card-title">All Players</span>
-          <input class="form-input" style="width:220px;padding:0.4rem 0.8rem;font-size:0.82rem;" placeholder="Search IGN..." oninput="renderManagePlayers(this.value)" id="manageSearch">
-        </div>
-        <table class="table">
-          <thead><tr><th>Player</th><th>Region</th><th>Top Tier</th><th>Status</th><th>Actions</th></tr></thead>
-          <tbody id="managePlayersBody"></tbody>
-        </table>
+        <div class="card-header"><span class="card-title">All Players</span><input class="form-input" style="width:220px;padding:0.4rem 0.8rem;font-size:0.82rem;" placeholder="Search IGN..." oninput="renderManagePlayers(this.value)" id="manageSearch"></div>
+        <table class="table"><thead><tr><th>Player</th><th>Region</th><th>Top Tier</th><th>Status</th><th>Actions</th></tr></thead><tbody id="managePlayersBody"></tbody></table>
       </div>
     </div>
 
-    <!-- PENDING APPROVALS -->
     <div class="panel" id="panelPending">
-      <div class="page-header">
-        <div class="page-title">Pending Requests</div>
-        <div class="page-sub">Approve or deny new admin account requests</div>
-      </div>
+      <div class="page-title">Pending Requests</div>
+      <div class="page-sub">Approve or deny new admin requests</div>
       <div id="pendingList"></div>
     </div>
 
-    <!-- MANAGE ADMINS -->
     <div class="panel" id="panelManageAdmins">
-      <div class="page-header">
-        <div class="page-title">Manage Admins</div>
-        <div class="page-sub">Promote users to admin or revoke access</div>
-      </div>
+      <div class="page-title">Manage Admins</div>
+      <div class="page-sub">Promote or revoke admin access</div>
       <div class="card">
         <div class="card-header"><span class="card-title">Admin Users</span></div>
-        <table class="table">
-          <thead><tr><th>Username</th><th>Role</th><th>Actions</th></tr></thead>
-          <tbody id="adminListBody"></tbody>
-        </table>
+        <table class="table"><thead><tr><th>Username</th><th>Role</th><th>Actions</th></tr></thead><tbody id="adminListBody"></tbody></table>
       </div>
     </div>
   </div>
 </div>
 
-<!-- EDIT PLAYER MODAL -->
 <div class="modal-overlay" id="editModal" onclick="if(event.target===this)closeEdit()">
   <div class="modal-box">
     <button class="modal-close-btn" onclick="closeEdit()">✕</button>
     <div class="modal-title">Edit Player</div>
     <input type="hidden" id="editIGN_orig">
     <div class="form-grid">
-      <div class="form-group">
-        <label class="form-label">IGN</label>
-        <input class="form-input" id="editIGN" placeholder="IGN">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Region</label>
+      <div class="form-group"><label class="form-label">IGN</label><input class="form-input" id="editIGN"></div>
+      <div class="form-group"><label class="form-label">Region</label>
         <select class="form-select" id="editRegion">
-          <option value="NA">NA</option><option value="EU">EU</option>
-          <option value="AS">AS</option><option value="AU">AU</option><option value="SA">SA</option>
+          <option value="NA">NA</option><option value="EU">EU</option><option value="AS">AS</option><option value="AU">AU</option><option value="SA">SA</option>
         </select>
       </div>
     </div>
-    <div class="form-group">
-      <label class="form-label" style="display:flex;align-items:center;gap:8px;">
-        <input type="checkbox" id="editRetired" style="accent-color:var(--accent);width:16px;height:16px;"> Retired
-      </label>
-    </div>
-    <div style="margin-top:1rem;">
-      <div class="form-label" style="margin-bottom:0.8rem;">Tiers by Gamemode</div>
-      <div class="tiers-grid" id="editTiersGrid"></div>
-    </div>
+    <div class="form-group"><label class="form-label" style="display:flex;align-items:center;gap:8px;"><input type="checkbox" id="editRetired" style="accent-color:var(--accent);width:16px;height:16px;"> Retired</label></div>
+    <div style="margin-top:1rem;"><div class="form-label" style="margin-bottom:0.8rem;">Tiers by Gamemode</div><div class="tiers-grid" id="editTiersGrid"></div></div>
     <div class="form-actions" style="margin-top:1.5rem;">
       <button class="btn-lg btn-accent" onclick="saveEdit()">Save Changes</button>
       <button class="btn-lg btn-ghost" onclick="closeEdit()">Cancel</button>
@@ -397,32 +266,40 @@
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ── SUPABASE CONFIG ──
 const SB_URL='https://rljvcykuiswwriwapsgi.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJsanZjeWt1aXN3d3Jpd2Fwc2dpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5NzE1NTUsImV4cCI6MjA4OTU0NzU1NX0.TL2BzGqeb8GsWEsaCTwtzqKaKqB9l8ROdVap7rOPDZI';
-function sbH(){return{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=representation'};}
-async function sbGet(t,q=''){const r=await fetch(`${SB_URL}/rest/v1/${t}?${q}`,{headers:sbH()});if(!r.ok)throw new Error(await r.text());return r.json();}
-async function sbInsert(t,d){const r=await fetch(`${SB_URL}/rest/v1/${t}`,{method:'POST',headers:sbH(),body:JSON.stringify(d)});if(!r.ok)throw new Error(await r.text());return r.json();}
-async function sbUpdate(t,q,d){const r=await fetch(`${SB_URL}/rest/v1/${t}?${q}`,{method:'PATCH',headers:sbH(),body:JSON.stringify(d)});if(!r.ok)throw new Error(await r.text());return r.json();}
-async function sbDelete(t,q){const r=await fetch(`${SB_URL}/rest/v1/${t}?${q}`,{method:'DELETE',headers:sbH()});if(!r.ok)throw new Error(await r.text());}
 
-// ── CONSTANTS ──
 const GAMEMODES=['SMP','Pot','UHC','Vanilla','Sword','Axe','Mace','NethOP','Spear Mace'];
 const GAMEMODE_ICONS={'SMP':'smp.png','Pot':'pot.png','UHC':'uhc.webp','Vanilla':'vanilla.png','Sword':'sword.png','Axe':'axe.png','Mace':'mace.png','NethOP':'nethop.png','Spear Mace':'spearmace.png'};
 const TIER_OPTIONS=['','HT1','HT2','HT3','HT4','HT5','LT1','LT2','LT3','LT4','LT5'];
 const tierPoints={'HT1':60,'HT2':30,'HT3':10,'HT4':4,'HT5':2,'LT1':50,'LT2':10,'LT3':5,'LT4':3,'LT5':1};
 
-// ── STATE ──
 let cachedPlayers=[];
 let currentUser=null;
 
+// ── SUPABASE HELPERS ──
+async function sbFetch(path,method='GET',body=null){
+  const opts={method,headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=representation'}};
+  if(body)opts.body=JSON.stringify(body);
+  const r=await fetch(SB_URL+path,opts);
+  const text=await r.text();
+  if(!r.ok)throw new Error(text);
+  return text?JSON.parse(text):null;
+}
+
+async function loadPlayers(){
+  try{
+    const data=await sbFetch('/rest/v1/players?select=*&order=created_at.asc');
+    cachedPlayers=data||[];
+  }catch(e){console.error('loadPlayers:',e);cachedPlayers=[];}
+}
+
+// ── USERS (localStorage) ──
 function getUsers(){return JSON.parse(localStorage.getItem('nw_users')||'[]');}
 function setUsers(u){localStorage.setItem('nw_users',JSON.stringify(u));}
-function getPlayers(){return cachedPlayers;}
 function getSession(){return JSON.parse(localStorage.getItem('nw_session')||'null');}
 function setSession(s){localStorage.setItem('nw_session',JSON.stringify(s));}
 function clearSession(){localStorage.removeItem('nw_session');}
@@ -430,25 +307,18 @@ function clearSession(){localStorage.removeItem('nw_session');}
 function initUsers(){
   const users=getUsers();
   if(!users.find(u=>u.username==='master_client')){
-    users.push({username:'master_client',password:'master2024',role:'superadmin'});
+    users.push({username:'master_client',password:'KabulKarwan@2013',role:'founder'});
     setUsers(users);
   }
 }
 
-async function loadPlayers(){
-  try{
-    const data=await sbGet('players','select=*&order=created_at.asc');
-    cachedPlayers=data.map(p=>({ign:p.ign,region:p.region||'NA',retired:p.retired||false,results:p.results||[],retirements:p.retirements||[],addedBy:p.added_by||''}));
-  }catch(e){console.error('loadPlayers:',e);cachedPlayers=[];}
-}
-
 // ── AUTH ──
-function showScreen(screen){
-  document.getElementById('signInScreen').style.display=screen==='signIn'?'flex':'none';
-  document.getElementById('signUpScreen').style.display=screen==='signUp'?'flex':'none';
-  document.getElementById('pendingScreen').style.display=screen==='pending'?'flex':'none';
-  document.getElementById('adminWrap').style.display=screen==='admin'?'block':'none';
-  document.getElementById('mainNav').style.display=(screen==='admin'||screen==='pending')?'flex':'none';
+function showScreen(s){
+  document.getElementById('signInScreen').style.display=s==='signIn'?'flex':'none';
+  document.getElementById('signUpScreen').style.display=s==='signUp'?'flex':'none';
+  document.getElementById('pendingScreen').style.display=s==='pending'?'flex':'none';
+  document.getElementById('adminWrap').style.display=s==='admin'?'block':'none';
+  document.getElementById('mainNav').style.display=(s==='admin'||s==='pending')?'flex':'none';
   document.getElementById('signinError').style.display='none';
   document.getElementById('signupError').style.display='none';
 }
@@ -457,12 +327,11 @@ function doSignIn(){
   const username=document.getElementById('signinUser').value.trim();
   const password=document.getElementById('signinPass').value;
   const errEl=document.getElementById('signinError');
-  if(!username||!password){showErr(errEl,'Please fill in all fields.');return;}
-  const users=getUsers();
-  const user=users.find(u=>u.username.toLowerCase()===username.toLowerCase());
+  if(!username||!password){showErr(errEl,'Fill in all fields.');return;}
+  const user=getUsers().find(u=>u.username.toLowerCase()===username.toLowerCase());
   if(!user||user.password!==password){showErr(errEl,'Invalid username or password.');return;}
   if(user.role==='pending'){currentUser=user;setSession(user);updateNav(user);showScreen('pending');return;}
-  if(user.role!=='admin'&&user.role!=='superadmin'){showErr(errEl,'Access denied.');return;}
+  if(user.role!=='admin'&&user.role!=='superadmin'&&user.role!=='founder'){showErr(errEl,'Access denied.');return;}
   currentUser=user;setSession(user);updateNav(user);enterAdmin();
 }
 
@@ -471,19 +340,17 @@ function doSignUp(){
   const password=document.getElementById('signupPass').value;
   const pass2=document.getElementById('signupPass2').value;
   const errEl=document.getElementById('signupError');
-  const infoEl=document.getElementById('signupInfo');
-  if(!username||!password||!pass2){showErr(errEl,'Please fill in all fields.');return;}
+  if(!username||!password||!pass2){showErr(errEl,'Fill in all fields.');return;}
   if(password!==pass2){showErr(errEl,'Passwords do not match.');return;}
-  if(password.length<4){showErr(errEl,'Password must be at least 4 characters.');return;}
-  if(username.length<2){showErr(errEl,'Username too short.');return;}
+  if(password.length<4){showErr(errEl,'Password too short.');return;}
   const users=getUsers();
-  if(users.find(u=>u.username.toLowerCase()===username.toLowerCase())){showErr(errEl,'Username already taken.');return;}
+  if(users.find(u=>u.username.toLowerCase()===username.toLowerCase())){showErr(errEl,'Username taken.');return;}
   users.push({username,password,role:'pending'});
   setUsers(users);
   document.getElementById('signupUser').value='';
   document.getElementById('signupPass').value='';
   document.getElementById('signupPass2').value='';
-  infoEl.style.display='block';
+  document.getElementById('signupInfo').style.display='block';
   errEl.style.display='none';
   updatePendingCount();
 }
@@ -494,20 +361,19 @@ function showErr(el,msg){el.textContent=msg;el.style.display='block';}
 function updateNav(user){
   document.getElementById('navUsername').textContent=user.username;
   const badge=document.getElementById('navBadge');
-  badge.textContent=user.role==='superadmin'?'SUPER ADMIN':'ADMIN';
-  badge.className='nav-badge '+(user.role==='superadmin'?'badge-superadmin':'badge-admin');
+  badge.textContent=user.role==='founder'?'FOUNDER':user.role==='superadmin'?'SUPER ADMIN':'ADMIN';
+  badge.className='nav-badge '+(user.role==='founder'?'badge-founder':user.role==='superadmin'?'badge-superadmin':'badge-admin');
 }
 
 async function enterAdmin(){
   showScreen('admin');
   document.getElementById('dashUser').textContent=currentUser.username;
-  const isSuperAdmin=currentUser.role==='superadmin';
-  document.getElementById('sidebarManageAdmins').style.display=isSuperAdmin?'flex':'none';
+  document.getElementById('sidebarManageAdmins').style.display=(currentUser.role==='founder'||currentUser.role==='superadmin')?'flex':'none';
   await loadPlayers();
   refreshAll();
 }
 
-// ── PANEL ROUTING ──
+// ── PANELS ──
 function switchPanel(name,el){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('active'));
@@ -521,24 +387,16 @@ function switchPanel(name,el){
 
 // ── DASHBOARD ──
 function refreshDashboard(){
-  const players=getPlayers();
   const users=getUsers();
-  const pending=users.filter(u=>u.role==='pending');
-  const admins=users.filter(u=>u.role==='admin'||u.role==='superadmin');
-  document.getElementById('statPlayers').textContent=players.length;
-  document.getElementById('statAdmins').textContent=admins.length;
-  document.getElementById('statPending').textContent=pending.length;
-  const recent=[...players].reverse().slice(0,5);
+  document.getElementById('statPlayers').textContent=cachedPlayers.length;
+  document.getElementById('statAdmins').textContent=users.filter(u=>u.role==='admin'||u.role==='superadmin'||u.role==='founder').length;
+  document.getElementById('statPending').textContent=users.filter(u=>u.role==='pending').length;
   const tbody=document.getElementById('recentPlayersBody');
+  const recent=[...cachedPlayers].reverse().slice(0,5);
   if(!recent.length){tbody.innerHTML='<tr><td colspan="4" class="empty-msg">No players yet</td></tr>';return;}
   tbody.innerHTML=recent.map(p=>{
     const top=topTier(p);
-    return `<tr>
-      <td><div class="player-cell"><div class="player-av"><img src="https://mc-heads.net/avatar/${encodeURIComponent(p.ign)}/32" onerror="this.src='https://mc-heads.net/avatar/Steve/32'"></div><span class="player-ign">${p.ign}</span></div></td>
-      <td>${p.region||'—'}</td>
-      <td>${top?`<span class="tier-badge tier-${top}">${top}</span>`:'—'}</td>
-      <td style="color:var(--muted);font-size:0.8rem">${p.addedBy||'—'}</td>
-    </tr>`;
+    return `<tr><td><div class="player-cell"><div class="player-av"><img src="https://mc-heads.net/avatar/${encodeURIComponent(p.ign)}/32" onerror="this.src='https://mc-heads.net/avatar/Steve/32'"></div><strong>${p.ign}</strong></div></td><td style="color:var(--muted)">${p.region||'—'}</td><td>${top?`<span class="tier-badge tier-${top}">${top}</span>`:'—'}</td><td style="color:var(--muted);font-size:0.8rem">${p.added_by||'—'}</td></tr>`;
   }).join('');
 }
 
@@ -549,23 +407,19 @@ function topTier(p){
 }
 
 // ── TIER INPUTS ──
-function buildTierInputs(containerId,existing={}){
-  const grid=document.getElementById(containerId);
-  grid.innerHTML=GAMEMODES.map(gm=>{
+function buildTierInputs(id,existing={}){
+  document.getElementById(id).innerHTML=GAMEMODES.map(gm=>{
     const icon=GAMEMODE_ICONS[gm]?`<img src="${GAMEMODE_ICONS[gm]}" onerror="this.style.display='none'">`:'';
     const val=existing[gm]||'';
     const opts=TIER_OPTIONS.map(t=>`<option value="${t}" ${t===val?'selected':''}>${t||'— None —'}</option>`).join('');
-    return `<div class="tier-input-wrap"><div class="tier-input-label">${icon} ${gm}</div><select class="form-select" id="tier_${containerId}_${gm.replace(/ /g,'_')}" style="padding:0.4rem 0.6rem;font-size:0.8rem;">${opts}</select></div>`;
+    return `<div class="tier-input-wrap"><div class="tier-input-label">${icon} ${gm}</div><select class="form-select" id="tier_${id}_${gm.replace(/ /g,'_')}" style="padding:0.4rem 0.6rem;font-size:0.8rem;">${opts}</select></div>`;
   }).join('');
 }
 
-function getTierValues(containerId){
-  const result={};
-  GAMEMODES.forEach(gm=>{
-    const el=document.getElementById(`tier_${containerId}_${gm.replace(/ /g,'_')}`);
-    if(el&&el.value)result[gm]=el.value;
-  });
-  return result;
+function getTierValues(id){
+  const r={};
+  GAMEMODES.forEach(gm=>{const el=document.getElementById(`tier_${id}_${gm.replace(/ /g,'_')}`);if(el&&el.value)r[gm]=el.value;});
+  return r;
 }
 
 // ── ADD PLAYER ──
@@ -579,9 +433,9 @@ async function addPlayer(){
   const results=Object.entries(tiers).map(([gm,tier])=>({tierEarned:tier,gamemode:gm}));
   const retirements=retired?results.map(r=>({gamemode:r.gamemode,tier:r.tierEarned})):[];
   try{
-    await sbInsert('players',{ign,region,retired,results,retirements,added_by:currentUser.username});
+    await sbFetch('/rest/v1/players','POST',{ign,region,retired,results,retirements,added_by:currentUser.username});
     await loadPlayers();
-    showToast(`✅ ${ign} added!`,'success');
+    showToast('✅ '+ign+' added!','success');
     clearAddForm();
     refreshAll();
   }catch(e){showToast('Error: '+e.message,'error');}
@@ -596,39 +450,29 @@ function clearAddForm(){
 
 // ── MANAGE PLAYERS ──
 function renderManagePlayers(search=''){
-  const players=getPlayers();
   const tbody=document.getElementById('managePlayersBody');
   const q=(search||'').toLowerCase();
-  const filtered=q?players.filter(p=>p.ign.toLowerCase().includes(q)):players;
-  if(!filtered.length){tbody.innerHTML=`<tr><td colspan="5" class="empty-msg">No players found</td></tr>`;return;}
+  const filtered=q?cachedPlayers.filter(p=>p.ign.toLowerCase().includes(q)):cachedPlayers;
+  if(!filtered.length){tbody.innerHTML='<tr><td colspan="5" class="empty-msg">No players found</td></tr>';return;}
   tbody.innerHTML=filtered.map(p=>{
     const top=topTier(p);
-    const ret=p.retired?`<span class="role-chip" style="background:rgba(107,114,128,0.15);color:var(--muted);border:1px solid rgba(107,114,128,0.3);">RETIRED</span>`:`<span style="color:var(--green);font-size:0.75rem;font-weight:600;">Active</span>`;
-    return `<tr>
-      <td><div class="player-cell"><div class="player-av"><img src="https://mc-heads.net/avatar/${encodeURIComponent(p.ign)}/32" onerror="this.src='https://mc-heads.net/avatar/Steve/32'"></div><span class="player-ign">${p.ign}</span></div></td>
-      <td><span style="color:var(--muted)">${p.region||'—'}</span></td>
-      <td>${top?`<span class="tier-badge tier-${top}">${top}</span>`:'—'}</td>
-      <td>${ret}</td>
-      <td style="display:flex;gap:6px;flex-wrap:wrap;">
-        <button class="btn btn-accent" style="font-size:0.75rem;padding:4px 10px;" onclick="openEdit('${p.ign}')">Edit</button>
-        <button class="btn btn-danger" style="font-size:0.75rem;padding:4px 10px;" onclick="removePlayer('${p.ign}')">Remove</button>
-      </td>
-    </tr>`;
+    const ret=p.retired?'<span class="role-chip" style="background:rgba(107,114,128,0.15);color:var(--muted);border:1px solid rgba(107,114,128,0.3);">RETIRED</span>':'<span style="color:var(--green);font-size:0.75rem;font-weight:600;">Active</span>';
+    return `<tr><td><div class="player-cell"><div class="player-av"><img src="https://mc-heads.net/avatar/${encodeURIComponent(p.ign)}/32" onerror="this.src='https://mc-heads.net/avatar/Steve/32'"></div><strong>${p.ign}</strong></div></td><td style="color:var(--muted)">${p.region||'—'}</td><td>${top?`<span class="tier-badge tier-${top}">${top}</span>`:'—'}</td><td>${ret}</td><td style="display:flex;gap:6px;"><button class="btn btn-accent" style="font-size:0.75rem;padding:4px 10px;" onclick="openEdit('${p.ign}')">Edit</button><button class="btn btn-danger" style="font-size:0.75rem;padding:4px 10px;" onclick="removePlayer('${p.ign}')">Remove</button></td></tr>`;
   }).join('');
 }
 
 async function removePlayer(ign){
-  if(!confirm(`Remove ${ign} from the tier list?`))return;
+  if(!confirm('Remove '+ign+' from the tier list?'))return;
   try{
-    await sbDelete('players',`ign=eq.${encodeURIComponent(ign)}`);
+    await sbFetch('/rest/v1/players?ign=eq.'+encodeURIComponent(ign),'DELETE');
     await loadPlayers();
-    showToast(`🗑 ${ign} removed`,'info');
+    showToast('🗑 '+ign+' removed','info');
     renderManagePlayers(document.getElementById('manageSearch')?.value||'');
     refreshAll();
   }catch(e){showToast('Error: '+e.message,'error');}
 }
 
-// ── EDIT PLAYER ──
+// ── EDIT ──
 function openEdit(ign){
   const p=cachedPlayers.find(x=>x.ign===ign);
   if(!p)return;
@@ -654,34 +498,29 @@ async function saveEdit(){
   const results=Object.entries(tiers).map(([gm,tier])=>({tierEarned:tier,gamemode:gm}));
   const retirements=retired?results.map(r=>({gamemode:r.gamemode,tier:r.tierEarned})):[];
   try{
-    await sbUpdate('players',`ign=eq.${encodeURIComponent(origIGN)}`,{ign:newIGN,region,retired,results,retirements});
+    await sbFetch('/rest/v1/players?ign=eq.'+encodeURIComponent(origIGN),'PATCH',{ign:newIGN,region,retired,results,retirements});
     await loadPlayers();
     closeEdit();
-    showToast(`✅ ${newIGN} updated`,'success');
+    showToast('✅ '+newIGN+' updated','success');
     renderManagePlayers(document.getElementById('manageSearch')?.value||'');
     refreshAll();
   }catch(e){showToast('Error: '+e.message,'error');}
 }
 
-// ── PENDING APPROVALS ──
+// ── PENDING ──
 function renderPending(){
-  const users=getUsers();
-  const pending=users.filter(u=>u.role==='pending');
+  const pending=getUsers().filter(u=>u.role==='pending');
   const list=document.getElementById('pendingList');
   if(!pending.length){list.innerHTML='<div class="empty-msg">🎉 No pending requests</div>';return;}
   list.innerHTML=pending.map(u=>`
-    <div class="approval-card" id="pendingCard_${u.username}">
+    <div class="approval-card">
       <div style="width:42px;height:42px;border-radius:10px;background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.25);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;">👤</div>
-      <div class="approval-info">
-        <div class="approval-name">${u.username}</div>
-        <div class="approval-meta">Requesting admin access · <span class="role-chip role-pending">PENDING</span></div>
-      </div>
+      <div class="approval-info"><div class="approval-name">${u.username}</div><div class="approval-meta">Requesting admin access · <span class="role-chip role-pending">PENDING</span></div></div>
       <div class="approval-actions">
         <button class="btn btn-success" onclick="approveUser('${u.username}')">✅ Approve</button>
         <button class="btn btn-danger" onclick="denyUser('${u.username}')">❌ Deny</button>
       </div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
 function approveUser(username){
@@ -690,15 +529,14 @@ function approveUser(username){
   if(idx===-1)return;
   users[idx].role='admin';
   setUsers(users);
-  showToast(`✅ ${username} is now an admin`,'success');
+  showToast('✅ '+username+' is now an admin','success');
   renderPending();updatePendingCount();renderAdminList();refreshDashboard();
 }
 
 function denyUser(username){
-  if(!confirm(`Deny and delete account for ${username}?`))return;
-  let users=getUsers().filter(u=>u.username!==username);
-  setUsers(users);
-  showToast(`🗑 ${username} denied & deleted`,'info');
+  if(!confirm('Deny and delete account for '+username+'?'))return;
+  setUsers(getUsers().filter(u=>u.username!==username));
+  showToast('🗑 '+username+' denied & deleted','info');
   renderPending();updatePendingCount();refreshDashboard();
 }
 
@@ -710,24 +548,21 @@ function updatePendingCount(){
 
 // ── MANAGE ADMINS ──
 function renderAdminList(){
-  const users=getUsers().filter(u=>u.role==='admin'||u.role==='superadmin');
-  const tbody=document.getElementById('adminListBody');
-  tbody.innerHTML=users.map(u=>{
+  const users=getUsers().filter(u=>u.role==='admin'||u.role==='superadmin'||u.role==='founder');
+  document.getElementById('adminListBody').innerHTML=users.map(u=>{
     const isSelf=u.username===currentUser.username;
+    const isFounder=u.role==='founder';
     const isSuper=u.role==='superadmin';
-    const actions=isSelf?`<span style="color:var(--muted);font-size:0.75rem;">You</span>`
-      :isSuper?`<span style="color:var(--muted);font-size:0.75rem;">Protected</span>`
-      :`<button class="btn btn-danger" style="font-size:0.75rem;padding:4px 10px;" onclick="revokeAdmin('${u.username}')">Revoke</button>`;
-    const chip=isSuper?`<span class="role-chip role-superadmin">SUPER ADMIN</span>`:`<span class="role-chip role-admin">ADMIN</span>`;
+    const actions=isSelf?'<span style="color:var(--muted);font-size:0.75rem;">You</span>':isFounder?'<span style="color:var(--muted);font-size:0.75rem;">Protected</span>':`<button class="btn btn-danger" style="font-size:0.75rem;padding:4px 10px;" onclick="revokeAdmin('${u.username}')">Revoke</button>`;
+    const chip=isFounder?'<span class="role-chip role-founder">FOUNDER</span>':isSuper?'<span class="role-chip role-superadmin">SUPER ADMIN</span>':'<span class="role-chip role-admin">ADMIN</span>';
     return `<tr><td style="font-weight:700">${u.username}</td><td>${chip}</td><td>${actions}</td></tr>`;
   }).join('');
 }
 
 function revokeAdmin(username){
-  if(!confirm(`Revoke admin from ${username}? Their account will be deleted.`))return;
-  let users=getUsers().filter(u=>u.username!==username);
-  setUsers(users);
-  showToast(`${username} revoked`,'info');
+  if(!confirm('Revoke admin from '+username+'?'))return;
+  setUsers(getUsers().filter(u=>u.username!==username));
+  showToast(username+' revoked','info');
   renderAdminList();refreshDashboard();
 }
 
@@ -735,12 +570,12 @@ function revokeAdmin(username){
 let toastTimer;
 function showToast(msg,type='info'){
   const t=document.getElementById('toast');
-  t.textContent=msg;t.className=`toast ${type} show`;
+  t.textContent=msg;t.className='toast '+type+' show';
   clearTimeout(toastTimer);
   toastTimer=setTimeout(()=>t.classList.remove('show'),3000);
 }
 
-// ── REFRESH ALL ──
+// ── REFRESH ──
 function refreshAll(){
   refreshDashboard();
   updatePendingCount();
@@ -753,18 +588,14 @@ buildTierInputs('tierInputsGrid');
 
 const sess=getSession();
 if(sess){
-  const users=getUsers();
-  const user=users.find(u=>u.username===sess.username);
+  const user=getUsers().find(u=>u.username===sess.username);
   if(user){
-    currentUser=user;
-    updateNav(user);
+    currentUser=user;updateNav(user);
     if(user.role==='pending')showScreen('pending');
-    else if(user.role==='admin'||user.role==='superadmin')enterAdmin();
+    else if(user.role==='admin'||user.role==='superadmin'||user.role==='founder')enterAdmin();
     else showScreen('signIn');
-  }else{showScreen('signIn');}
-}else{showScreen('signIn');}
-
-document.getElementById('editModal').addEventListener('click',()=>{});
+  }else showScreen('signIn');
+}else showScreen('signIn');
 </script>
 </body>
 </html>
