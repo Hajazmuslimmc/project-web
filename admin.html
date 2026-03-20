@@ -403,7 +403,7 @@
 <script>
 // ── SUPABASE CONFIG ──
 const SB_URL='https://rljvcykuiswwriwapsgi.supabase.co';
-const SB_KEY='sb_publishable_1Xm_yUEgGvO0y9rhAj5ucg_trJh3S1j';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJsanZjeWt1aXN3d3Jpd2Fwc2dpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5NzE1NTUsImV4cCI6MjA4OTU0NzU1NX0.TL2BzGqeb8GsWEsaCTwtzqKaKqB9l8ROdVap7rOPDZI';
 function sbH(){return{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=representation'};}
 async function sbGet(t,q=''){const r=await fetch(`${SB_URL}/rest/v1/${t}?${q}`,{headers:sbH()});if(!r.ok)throw new Error(await r.text());return r.json();}
 async function sbInsert(t,d){const r=await fetch(`${SB_URL}/rest/v1/${t}`,{method:'POST',headers:sbH(),body:JSON.stringify(d)});if(!r.ok)throw new Error(await r.text());return r.json();}
