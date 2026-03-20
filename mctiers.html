@@ -454,7 +454,7 @@ function buildOverall(){
   ranked.sort((a,b)=>b.total-a.total);
   function reg(n){for(const td of Object.values(DATA))for(const pl of Object.values(td)){const p=pl.find(x=>x.name===n);if(p)return p.region||'NA';}return'NA';}
   let html='<div class="overall-list">';
-  ranked.slice(0,100000).forEach((p,i)=>{
+  ranked.slice(0,150).forEach((p,i)=>{
     const rc=i===0?'r1':i===1?'r2':i===2?'r3':'';
     const region=reg(p.name);
     const badges=GM_ORDER.map(gm=>{
