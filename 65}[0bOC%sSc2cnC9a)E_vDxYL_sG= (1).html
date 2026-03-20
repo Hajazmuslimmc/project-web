@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Networkak Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Exo+2:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0a0c10; --surface:#111318; --surface2:#181c24; --border:#1e2330;
+    --accent:#00e5ff; --accent2:#ff6b35; --green:#00ff88; --red:#ff4757;
+    --gold:#ffd700; --text:#e8eaf0; --muted:#6b7280;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'Exo 2',sans-serif;min-height:100vh;}
+  body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+
+  /* LOGIN */
+  .login-page{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:var(--bg);}
+  .login-box{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:2.5rem;width:100%;max-width:420px;animation:fadeUp 0.4s ease;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  .login-logo{font-family:'Rajdhani',sans-serif;font-size:1.4rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);text-align:center;margin-bottom:0.2rem;}
+  .login-logo span{color:var(--accent2);}
+  .login-subtitle{text-align:center;color:var(--muted);font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.5rem;}
+  .auth-tabs{display:flex;gap:0;margin-bottom:1.5rem;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+  .auth-tab{flex:1;padding:0.65rem;border:none;font-family:'Exo 2',sans-serif;font-weight:700;font-size:0.78rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
+  .auth-tab.on{background:var(--accent);color:#000;}
+  .auth-tab.off{background:var(--surface2);color:var(--muted);}
+  .form-group{margin-bottom:1.1rem;}
+  .form-group label{display:block;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem;font-weight:600;}
+  .form-group input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:0.75rem 1rem;color:var(--text);font-family:'Exo 2',sans-serif;font-size:0.9rem;outline:none;transition:border-color 0.2s;}
+  .form-group input:focus{border-color:var(--accent);}
+  .btn-main{width:100%;padding:0.85rem;border:none;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:0.88rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;background:var(--accent);color:#000;transition:all 0.2s;margin-top:0.3rem;}
+  .btn-main:hover{background:#00c8e0;}
+  .auth-msg{font-size:0.78rem;text-align:center;margin-top:0.8rem;display:none;padding:0.5rem;border-radius:8px;}
+  .auth-msg.err{color:var(--red);background:rgba(255,71,87,0.1);border:1px solid rgba(255,71,87,0.3);}
+  .auth-msg.ok{color:var(--green);background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.3);}
+  .pending-box{text-align:center;padding:1.5rem 0;}
+  .pending-icon{font-size:2.5rem;margin-bottom:0.8rem;}
+  .pending-box h3{font-family:'Rajdhani',sans-serif;font-size:1.2rem;letter-spacing:1px;margin-bottom:0.5rem;}
+  .pending-box p{color:var(--muted);font-size:0.82rem;line-height:1.6;}
+
+  /* PANEL */
+  .panel{display:none;min-height:100vh;}
+  .panel.visible{display:block;}
+  nav{position:sticky;top:0;z-index:50;background:rgba(10,12,16,0.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .nav-logo{font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;letter-spacing:2px;color:var(--accent);text-transform:uppercase;}
+  .nav-logo span{color:var(--accent2);}
+  .nav-right{display:flex;align-items:center;gap:1rem;}
+  .role-badge{padding:3px 12px;border-radius:20px;font-size:0.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+  .role-admin{background:rgba(255,215,0,0.15);color:var(--gold);border:1px solid rgba(255,215,0,0.4);}
+  .role-tester{background:rgba(0,229,255,0.1);color:var(--accent);border:1px solid rgba(0,229,255,0.3);}
+  .logout-btn{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:0.4rem 1rem;color:var(--muted);font-family:'Exo 2',sans-serif;font-size:0.8rem;cursor:pointer;transition:all 0.2s;}
+  .logout-btn:hover{color:var(--red);border-color:var(--red);}
+  .container{max-width:1100px;margin:0 auto;padding:2rem;position:relative;z-index:1;}
+  .tabs{display:flex;gap:0.5rem;border-bottom:1px solid var(--border);margin-bottom:2rem;}
+  .tab-btn{padding:0.7rem 1.4rem;background:none;border:none;color:var(--muted);font-family:'Exo 2',sans-serif;font-weight:600;font-size:0.82rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;}
+  .tab-btn:hover{color:var(--text);}
+  .tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+  .tab-content{display:none;}
+  .tab-content.active{display:block;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;}
+  .card h3{font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:1.2rem;}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+  .form-grid.three{grid-template-columns:1fr 1fr 1fr;}
+  .field label{display:block;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem;font-weight:600;}
+  .field input,.field select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:0.7rem 0.9rem;color:var(--text);font-family:'Exo 2',sans-serif;font-size:0.88rem;outline:none;transition:border-color 0.2s;}
+  .field input:focus,.field select:focus{border-color:var(--accent);}
+  .field select option{background:var(--surface2);}
+  .action-btn{padding:0.7rem 1.5rem;border:none;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:0.82rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
+  .cyan{background:rgba(0,229,255,0.15);color:var(--accent);border:1px solid rgba(0,229,255,0.3);}
+  .cyan:hover{background:var(--accent);color:#000;}
+  .orange{background:rgba(255,107,53,0.15);color:var(--accent2);border:1px solid rgba(255,107,53,0.3);}
+  .orange:hover{background:var(--accent2);color:#fff;}
+  .red-btn{background:rgba(255,71,87,0.15);color:var(--red);border:1px solid rgba(255,71,87,0.3);}
+  .red-btn:hover{background:var(--red);color:#fff;}
+  .green-btn{background:rgba(0,255,136,0.15);color:var(--green);border:1px solid rgba(0,255,136,0.3);}
+  .green-btn:hover{background:var(--green);color:#000;}
+  .sm{padding:0.35rem 0.9rem;font-size:0.72rem;}
+  .toast{position:fixed;bottom:2rem;right:2rem;z-index:999;padding:0.8rem 1.5rem;border-radius:10px;font-size:0.85rem;font-weight:600;display:none;}
+  .toast.success{background:rgba(0,255,136,0.15);color:var(--green);border:1px solid rgba(0,255,136,0.4);}
+  .toast.error{background:rgba(255,71,87,0.15);color:var(--red);border:1px solid rgba(255,71,87,0.4);}
+  .players-table{width:100%;border-collapse:collapse;}
+  .players-table th{text-align:left;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);padding:0.6rem 1rem;border-bottom:1px solid var(--border);}
+  .players-table td{padding:0.7rem 1rem;border-bottom:1px solid var(--border);font-size:0.85rem;}
+  .players-table tr:hover td{background:var(--surface2);}
+  .tier-pill{padding:2px 8px;border-radius:4px;font-size:0.68rem;font-weight:700;}
+  .ht{background:rgba(255,107,53,0.2);color:#ff6b35;border:1px solid rgba(255,107,53,0.4);}
+  .lt{background:rgba(0,170,255,0.15);color:#00aaff;border:1px solid rgba(0,170,255,0.3);}
+  .tester-item{display:flex;align-items:center;justify-content:space-between;padding:0.8rem 1rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px;margin-bottom:0.5rem;}
+  .tester-info{display:flex;align-items:center;gap:10px;}
+  .tester-avatar{width:36px;height:36px;border-radius:8px;overflow:hidden;background:var(--border);image-rendering:pixelated;}
+  .tester-avatar img{width:100%;height:100%;object-fit:cover;}
+  .search-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:0.6rem 1rem;color:var(--text);font-family:'Exo 2',sans-serif;font-size:0.85rem;outline:none;margin-bottom:1rem;transition:border-color 0.2s;}
+  .search-input:focus{border-color:var(--accent);}
+  .hidden{display:none!important;}
+  .pending-tag{background:rgba(255,215,0,0.1);color:var(--gold);border:1px solid rgba(255,215,0,0.3);padding:2px 8px;border-radius:4px;font-size:0.65rem;font-weight:700;}
+  @media(max-width:600px){.form-grid,.form-grid.three{grid-template-columns:1fr;}.container{padding:1rem;}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN PAGE -->
+<div class="login-page" id="loginPage">
+  <div class="login-box">
+    <div class="login-logo">Networkak <span>Tiers</span></div>
+    <div class="login-subtitle">Tester Panel</div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab on" id="tabIn">Sign In</button>
+      <button class="auth-tab off" id="tabUp">Sign Up</button>
+    </div>
+
+    <!-- SIGN IN -->
+    <div id="formSignIn">
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="siUser" placeholder="Your username">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="siPass" placeholder="••••••••">
+      </div>
+      <button class="btn-main" id="btnSignIn">Sign In</button>
+      <div class="auth-msg err" id="siErr">Invalid username or password</div>
+    </div>
+
+    <!-- SIGN UP -->
+    <div id="formSignUp" style="display:none">
+      <div class="form-group">
+        <label>Display Name / IGN</label>
+        <input type="text" id="suName" placeholder="e.g. JiuJitsuBoy21">
+      </div>
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="suUser" placeholder="Choose a username">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="suPass" placeholder="Min 8 characters">
+      </div>
+      <div class="form-group">
+        <label>Confirm Password</label>
+        <input type="password" id="suConfirm" placeholder="Repeat password">
+      </div>
+      <button class="btn-main" id="btnSignUp">Create Account</button>
+      <div class="auth-msg err" id="suErr"></div>
+      <div class="auth-msg ok" id="suOk">Account created! Waiting for admin verification.</div>
+    </div>
+
+    <!-- PENDING STATE -->
+    <div id="formPending" style="display:none">
+      <div class="pending-box">
+        <div class="pending-icon">⏳</div>
+        <h3>Account Pending</h3>
+        <p>Your account has been created but needs to be verified by an Admin before you can access the panel.<br><br>Contact an admin on Discord to get approved.</p>
+      </div>
+      <button class="btn-main" style="margin-top:1rem" id="btnBackLogin">Back to Sign In</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- MAIN PANEL -->
+<div class="panel" id="mainPanel">
+  <nav>
+    <div class="nav-logo">Networkak <span>Admin</span></div>
+    <div class="nav-right">
+      <span class="role-badge" id="roleBadge"></span>
+      <span style="color:var(--muted);font-size:0.82rem" id="loggedInAs"></span>
+      <button class="logout-btn" id="btnLogout">Logout</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="tabs" id="tabsBar">
+      <button class="tab-btn active" id="tabSetTier">Set Tier</button>
+      <button class="tab-btn" id="tabSubmit">📋 Submit Result</button>
+      <button class="tab-btn" id="tabRetire">Retire Player</button>
+      <button class="tab-btn" id="tabReset">Reset Tiers</button>
+      <button class="tab-btn" id="tabPlayers">View Players</button>
+      <button class="tab-btn hidden admin-only" id="tabTesters">Manage Testers</button>
+    </div>
+
+    <!-- SUBMIT RESULT -->
+    <div class="tab-content" id="tab-submit">
+      <div class="card">
+        <h3>📋 Submit Test Result</h3>
+        <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1.5rem;">Fill in the test result and submit — it will appear on the website instantly.</p>
+        <div class="form-grid three">
+          <div class="field"><label>Player IGN</label><input type="text" id="sub-ign" placeholder="e.g. JiuJitsuBoy21"></div>
+          <div class="field"><label>Gamemode</label>
+            <select id="sub-gm"><option value="">Select gamemode</option>
+              <option>SMP</option><option>Pot</option><option>UHC</option><option>Vanilla</option>
+              <option>Sword</option><option>Axe</option><option>Mace</option><option>NethOP</option><option>Spear Mace</option>
+            </select></div>
+          <div class="field"><label>Region</label>
+            <select id="sub-region"><option value="">Select region</option>
+              <option>NA</option><option>EU</option><option>AS</option><option>AU</option><option>SA</option>
+            </select></div>
+          <div class="field"><label>Tier Before</label>
+            <select id="sub-before"><option value="">Select tier</option>
+              <option>HT1</option><option>HT2</option><option>HT3</option><option>HT4</option><option>HT5</option>
+              <option>LT1</option><option>LT2</option><option>LT3</option><option>LT4</option><option>LT5</option>
+            </select></div>
+          <div class="field"><label>Tier Earned</label>
+            <select id="sub-earned"><option value="">Select tier</option>
+              <option>HT1</option><option>HT2</option><option>HT3</option><option>HT4</option><option>HT5</option>
+              <option>LT1</option><option>LT2</option><option>LT3</option><option>LT4</option><option>LT5</option>
+            </select></div>
+        </div>
+        <br><button class="action-btn cyan" id="btnSubmit">📤 Submit Result</button>
+      </div>
+
+      <!-- Recent submissions by this tester -->
+      <div class="card">
+        <h3>Your Recent Submissions</h3>
+        <div id="recentSubmissions" style="color:var(--muted);font-size:0.85rem">No submissions yet this session.</div>
+      </div>
+    </div>
+
+    <!-- SET TIER -->
+    <div class="tab-content active" id="tab-setTier">
+      <div class="card">
+        <h3>Set Player Tier</h3>
+        <div class="form-grid three">
+          <div class="field"><label>Player IGN</label><input type="text" id="st-ign" placeholder="e.g. JiuJitsuBoy21"></div>
+          <div class="field"><label>Gamemode</label>
+            <select id="st-gm"><option value="">Select gamemode</option>
+              <option>SMP</option><option>Pot</option><option>UHC</option><option>Vanilla</option>
+              <option>Sword</option><option>Axe</option><option>Mace</option><option>NethOP</option><option>Spear Mace</option>
+            </select></div>
+          <div class="field"><label>Region</label>
+            <select id="st-region"><option value="">Select region</option>
+              <option>NA</option><option>EU</option><option>AS</option><option>AU</option><option>SA</option>
+            </select></div>
+          <div class="field"><label>Tier Before</label>
+            <select id="st-before"><option value="">Select tier</option>
+              <option>HT1</option><option>HT2</option><option>HT3</option><option>HT4</option><option>HT5</option>
+              <option>LT1</option><option>LT2</option><option>LT3</option><option>LT4</option><option>LT5</option>
+            </select></div>
+          <div class="field"><label>Tier Earned</label>
+            <select id="st-earned"><option value="">Select tier</option>
+              <option>HT1</option><option>HT2</option><option>HT3</option><option>HT4</option><option>HT5</option>
+              <option>LT1</option><option>LT2</option><option>LT3</option><option>LT4</option><option>LT5</option>
+            </select></div>
+        </div>
+        <br><button class="action-btn cyan" id="btnSetTier">✅ Set Tier</button>
+      </div>
+    </div>
+
+    <!-- RETIRE -->
+    <div class="tab-content" id="tab-retire">
+      <div class="card">
+        <h3>Retire a Player</h3>
+        <div class="form-grid">
+          <div class="field"><label>Player IGN</label><input type="text" id="ret-ign" placeholder="e.g. Master_client"></div>
+          <div class="field"><label>Retired Tier</label>
+            <select id="ret-tier"><option value="">Select tier</option>
+              <option>HT1</option><option>HT2</option><option>HT3</option><option>HT4</option><option>HT5</option>
+              <option>LT1</option><option>LT2</option><option>LT3</option><option>LT4</option><option>LT5</option>
+            </select></div>
+        </div>
+        <br><button class="action-btn orange" id="btnRetire">🏁 Retire Player</button>
+      </div>
+    </div>
+
+    <!-- RESET -->
+    <div class="tab-content" id="tab-reset">
+      <div class="card">
+        <h3>Reset Player Tiers</h3>
+        <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1.2rem;">This removes ALL tiers and results for this player. Cannot be undone.</p>
+        <div class="form-grid">
+          <div class="field"><label>Player IGN</label><input type="text" id="res-ign" placeholder="e.g. JiuJitsuBoy21"></div>
+        </div>
+        <br><button class="action-btn red-btn" id="btnReset">🗑️ Reset All Tiers</button>
+      </div>
+    </div>
+
+    <!-- VIEW PLAYERS -->
+    <div class="tab-content" id="tab-players">
+      <div class="card">
+        <h3>All Players</h3>
+        <input type="text" class="search-input" id="playerSearch" placeholder="🔍 Search player...">
+        <div style="overflow-x:auto">
+          <table class="players-table">
+            <thead><tr><th>#</th><th>IGN</th><th>Region</th><th>Points</th><th>Tiers</th><th>Status</th></tr></thead>
+            <tbody id="playersBody"><tr><td colspan="6" style="text-align:center;color:var(--muted);padding:2rem">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- MANAGE TESTERS (ADMIN ONLY) -->
+    <div class="tab-content hidden admin-only" id="tab-testers">
+      <div class="card">
+        <h3>Pending Verification</h3>
+        <div id="pendingList"><div style="color:var(--muted);font-size:0.85rem">No pending accounts</div></div>
+      </div>
+      <div class="card">
+        <h3>Active Testers</h3>
+        <div id="testersList"><div style="color:var(--muted);font-size:0.85rem">Loading...</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = 'https://your-bot.railway.app';
+
+// User store — change these default credentials!
+const USERS = [
+  { username:'Admin',  password:'Admin1234!', name:'Admin',  role:'admin',   verified:true  },
+  { username:'Tester', password:'Tester1234!', name:'Tester', role:'tester', verified:true  },
+];
+
+const tierPoints = {'HT1':60,'HT2':30,'HT3':10,'HT4':4,'HT5':2,'LT1':50,'LT2':10,'LT3':5,'LT4':3,'LT5':1};
+function getTierPts(t){ return tierPoints[t]||0; }
+function calcPoints(p){
+  const m={};
+  (p.results||[]).forEach(r=>{ m[r.gamemode]=r.tierEarned; });
+  return Object.values(m).reduce((s,t)=>s+getTierPts(t),0);
+}
+
+let currentUser=null;
+let allPlayers=[];
+
+// ── HELPERS ──
+function show(id){ document.getElementById(id).style.display='block'; }
+function hide(id){ document.getElementById(id).style.display='none'; }
+function val(id){ return document.getElementById(id).value.trim(); }
+function toast(msg,type){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast '+type; t.style.display='block';
+  setTimeout(()=>t.style.display='none',3000);
+}
+
+// ── AUTH TABS ──
+document.getElementById('tabIn').addEventListener('click', function(){
+  this.className='auth-tab on';
+  document.getElementById('tabUp').className='auth-tab off';
+  show('formSignIn'); hide('formSignUp'); hide('formPending');
+  hide('siErr');
+});
+document.getElementById('tabUp').addEventListener('click', function(){
+  this.className='auth-tab on';
+  document.getElementById('tabIn').className='auth-tab off';
+  hide('formSignIn'); show('formSignUp'); hide('formPending');
+  hide('suErr'); hide('suOk');
+});
+document.getElementById('btnBackLogin').addEventListener('click', function(){
+  document.getElementById('tabIn').click();
+});
+
+// ── SIGN IN ──
+document.getElementById('btnSignIn').addEventListener('click', function(){
+  const username = val('siUser').toLowerCase();
+  const pass     = document.getElementById('siPass').value;
+  const user     = USERS.find(u => u.username.toLowerCase()===username && u.password===pass);
+  hide('siErr');
+
+  if(!user){
+    show('siErr'); return;
+  }
+  if(!user.verified){
+    hide('formSignIn');
+    show('formPending');
+    return;
+  }
+
+  currentUser=user;
+  hide('loginPage'); // hide login
+  document.getElementById('loginPage').style.display='none';
+  document.getElementById('mainPanel').classList.add('visible');
+  document.getElementById('loggedInAs').textContent=user.name;
+  const rb=document.getElementById('roleBadge');
+  rb.textContent=user.role.toUpperCase();
+  rb.className='role-badge role-'+user.role;
+
+  if(user.role==='admin'){
+    document.querySelectorAll('.admin-only').forEach(el=>{
+      el.classList.remove('hidden');
+      el.style.display='';
+    });
+  }
+  loadPlayers();
+});
+
+// Enter key on sign in
+document.getElementById('siPass').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('btnSignIn').click(); });
+document.getElementById('siUser').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('btnSignIn').click(); });
+
+// ── SIGN UP ──
+document.getElementById('btnSignUp').addEventListener('click', function(){
+  const name     = val('suName');
+  const username = val('suUser');
+  const pass     = document.getElementById('suPass').value;
+  const confirm  = document.getElementById('suConfirm').value;
+  const errEl    = document.getElementById('suErr');
+  hide('suErr'); hide('suOk');
+
+  if(!name||!username||!pass||!confirm){
+    errEl.textContent='Please fill in all fields.'; show('suErr'); return;
+  }
+  if(pass.length<8){
+    errEl.textContent='Password must be at least 8 characters.'; show('suErr'); return;
+  }
+  if(pass!==confirm){
+    errEl.textContent='Passwords do not match.'; show('suErr'); return;
+  }
+  if(USERS.find(u=>u.username.toLowerCase()===username.toLowerCase())){
+    errEl.textContent='That username is already taken.'; show('suErr'); return;
+  }
+
+  // Add as unverified tester — admin must verify
+  USERS.push({ username, password:pass, name, role:'tester', verified:false });
+
+  document.getElementById('suName').value='';
+  document.getElementById('suUser').value='';
+  document.getElementById('suPass').value='';
+  document.getElementById('suConfirm').value='';
+  show('suOk');
+
+  // After 2s show pending screen
+  setTimeout(()=>{
+    hide('formSignUp');
+    show('formPending');
+    document.getElementById('tabIn').className='auth-tab on';
+    document.getElementById('tabUp').className='auth-tab off';
+  }, 2000);
+});
+
+// ── LOGOUT ──
+document.getElementById('btnLogout').addEventListener('click', function(){
+  currentUser=null;
+  document.getElementById('mainPanel').classList.remove('visible');
+  document.getElementById('loginPage').style.display='flex';
+  document.getElementById('siUser').value='';
+  document.getElementById('siPass').value='';
+  document.getElementById('tabIn').click();
+});
+
+// ── PANEL TABS ──
+function switchTab(name){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  const btnMap={setTier:'tabSetTier',submit:'tabSubmit',retire:'tabRetire',reset:'tabReset',players:'tabPlayers',testers:'tabTesters'};
+  if(btnMap[name]) document.getElementById(btnMap[name]).classList.add('active');
+  if(name==='players') loadPlayers();
+  if(name==='testers') loadTesters();
+}
+
+// ── SUBMIT RESULT ──
+// Store submissions in sessionStorage so they show on the website
+function getResults(){ return JSON.parse(sessionStorage.getItem('nw_results')||'[]'); }
+function saveResults(r){ sessionStorage.setItem('nw_results',JSON.stringify(r)); }
+
+let mySubmissions=[];
+
+document.getElementById('btnSubmit').addEventListener('click',function(){
+  const ign     = document.getElementById('sub-ign').value.trim();
+  const gm      = document.getElementById('sub-gm').value;
+  const region  = document.getElementById('sub-region').value;
+  const before  = document.getElementById('sub-before').value;
+  const earned  = document.getElementById('sub-earned').value;
+
+  if(!ign||!gm||!region||!earned){
+    toast('Please fill in IGN, Gamemode, Region and Tier Earned','error'); return;
+  }
+
+  const result={
+    ign, gamemode:gm, region,
+    tierBefore:before||'—',
+    tierEarned:earned,
+    tester:currentUser?currentUser.name:'Unknown',
+    date:new Date().toLocaleDateString(),
+    time:new Date().toLocaleTimeString()
+  };
+
+  // Save to shared results store
+  const all=getResults();
+  // Remove old entry for same player+gamemode and replace with new
+  const idx=all.findIndex(r=>r.ign.toLowerCase()===ign.toLowerCase()&&r.gamemode===gm);
+  if(idx>-1) all.splice(idx,1);
+  all.push(result);
+  saveResults(all);
+
+  // Track in this session
+  mySubmissions.unshift(result);
+
+  // Clear form
+  document.getElementById('sub-ign').value='';
+  document.getElementById('sub-gm').value='';
+  document.getElementById('sub-region').value='';
+  document.getElementById('sub-before').value='';
+  document.getElementById('sub-earned').value='';
+
+  toast('✅ Result submitted for '+ign+' — '+earned+' in '+gm,'success');
+  renderMySubmissions();
+});
+
+function renderMySubmissions(){
+  const el=document.getElementById('recentSubmissions');
+  if(!mySubmissions.length){ el.innerHTML='<div style="color:var(--muted);font-size:0.85rem">No submissions yet this session.</div>'; return; }
+  el.innerHTML=mySubmissions.slice(0,10).map(r=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:0.7rem 1rem;background:var(--surface2);border:1px solid var(--border);border-radius:8px;margin-bottom:0.5rem;flex-wrap:wrap;gap:0.5rem;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <img src="https://mc-heads.net/avatar/${r.ign}/32" style="width:32px;height:32px;border-radius:6px;image-rendering:pixelated;" onerror="this.src='https://mc-heads.net/avatar/Steve/32'">
+        <div>
+          <div style="font-weight:700;font-size:0.88rem">${r.ign}</div>
+          <div style="font-size:0.72rem;color:var(--muted)">${r.gamemode} • ${r.region} • ${r.date}</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span style="font-size:0.72rem;color:var(--muted)">${r.tierBefore}</span>
+        <span style="color:var(--muted)">→</span>
+        <span class="tier-pill ${r.tierEarned.startsWith('HT')?'ht':'lt'}">${r.tierEarned}</span>
+      </div>
+    </div>`).join('');
+}
+
+document.getElementById('tabSetTier').addEventListener('click', ()=>switchTab('setTier'));
+document.getElementById('tabSubmit').addEventListener('click',  ()=>switchTab('submit'));
+document.getElementById('tabRetire').addEventListener('click',  ()=>switchTab('retire'));
+document.getElementById('tabReset').addEventListener('click',   ()=>switchTab('reset'));
+document.getElementById('tabPlayers').addEventListener('click', ()=>switchTab('players'));
+document.getElementById('tabTesters').addEventListener('click', ()=>switchTab('testers'));
+
+// ── LOAD PLAYERS ──
+async function loadPlayers(){
+  try{
+    // TODO: const res=await fetch(API+'/players'); allPlayers=await res.json();
+    allPlayers=[
+      {ign:'JiuJitsuBoy21',region:'NA',retired:false,results:[{tierEarned:'HT2',gamemode:'SMP'},{tierEarned:'LT1',gamemode:'Pot'}],retirements:[]},
+      {ign:'Master_client',region:'NA',retired:true,results:[{tierEarned:'HT1',gamemode:'SMP'}],retirements:[{tier:'HT1'}]}
+    ];
+    renderTable(allPlayers);
+  }catch(e){console.error(e);}
+}
+
+function renderTable(players){
+  const sorted=[...players].sort((a,b)=>calcPoints(b)-calcPoints(a));
+  const body=document.getElementById('playersBody');
+  if(!sorted.length){ body.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:2rem">No players</td></tr>'; return; }
+  body.innerHTML=sorted.map((p,i)=>{
+    const pts=calcPoints(p);
+    const m={};(p.results||[]).forEach(r=>{ m[r.gamemode]=r.tierEarned; });
+    const badges=Object.entries(m).map(([gm,t])=>'<span class="tier-pill '+(t.startsWith('HT')?'ht':'lt')+'" title="'+gm+'">'+t+'</span>').join(' ');
+    const status=p.retired?'<span style="color:var(--muted);font-size:0.75rem">RETIRED</span>':'<span style="color:var(--green);font-size:0.75rem">● Active</span>';
+    return '<tr><td style="color:var(--muted)">'+(i+1)+'</td><td><strong>'+p.ign+'</strong></td><td>'+(p.region||'—')+'</td><td style="color:var(--accent);font-weight:700">'+pts+'</td><td>'+(badges||'—')+'</td><td>'+status+'</td></tr>';
+  }).join('');
+}
+
+document.getElementById('playerSearch').addEventListener('input', function(){
+  renderTable(allPlayers.filter(p=>p.ign.toLowerCase().includes(this.value.toLowerCase())));
+});
+
+// ── SET TIER ──
+document.getElementById('btnSetTier').addEventListener('click', function(){
+  const ign=val('st-ign'), gm=val('st-gm'), region=val('st-region'), before=val('st-before'), earned=val('st-earned');
+  if(!ign||!gm||!earned){ toast('Fill in IGN, Gamemode and Tier Earned','error'); return; }
+  // TODO: await fetch(API+'/admin/set-tier', {method:'POST',...})
+  toast('✅ Tier set: '+ign+' → '+earned+' in '+gm,'success');
+  document.getElementById('st-ign').value='';
+  document.getElementById('st-gm').value='';
+  document.getElementById('st-before').value='';
+  document.getElementById('st-earned').value='';
+});
+
+// ── RETIRE ──
+document.getElementById('btnRetire').addEventListener('click', function(){
+  const ign=val('ret-ign'), tier=val('ret-tier');
+  if(!ign||!tier){ toast('Fill in IGN and Retired Tier','error'); return; }
+  // TODO: await fetch(API+'/admin/retire', {method:'POST',...})
+  toast('🏁 '+ign+' retired at '+tier,'success');
+  document.getElementById('ret-ign').value='';
+  document.getElementById('ret-tier').value='';
+});
+
+// ── RESET ──
+document.getElementById('btnReset').addEventListener('click', function(){
+  const ign=val('res-ign');
+  if(!ign){ toast('Enter a player IGN','error'); return; }
+  if(!confirm('Reset ALL tiers for '+ign+'? This cannot be undone.')) return;
+  // TODO: await fetch(API+'/admin/reset', {method:'POST',...})
+  toast('🗑️ All tiers reset for '+ign,'success');
+  document.getElementById('res-ign').value='';
+});
+
+// ── LOAD TESTERS (ADMIN) ──
+function loadTesters(){
+  // Pending
+  const pending=USERS.filter(u=>!u.verified);
+  const pl=document.getElementById('pendingList');
+  pl.innerHTML=pending.length?pending.map(u=>`
+    <div class="tester-item">
+      <div class="tester-info">
+        <div class="tester-avatar"><img src="https://mc-heads.net/avatar/${u.name}/36" onerror="this.src='https://mc-heads.net/avatar/Steve/36'"></div>
+        <div><div style="font-weight:700">${u.name}</div><div style="font-size:0.72rem;color:var(--muted)">@${u.username}</div></div>
+        <span class="pending-tag" style="margin-left:0.5rem">PENDING</span>
+      </div>
+      <div style="display:flex;gap:0.5rem">
+        <button class="action-btn green-btn sm" onclick="verifyUser('${u.username}')">✅ Verify</button>
+        <button class="action-btn red-btn sm" onclick="denyUser('${u.username}')">❌ Deny</button>
+      </div>
+    </div>`).join('')
+    :'<div style="color:var(--muted);font-size:0.85rem">No pending accounts 🎉</div>';
+
+  // Active testers
+  const active=USERS.filter(u=>u.verified);
+  const tl=document.getElementById('testersList');
+  tl.innerHTML=active.length?active.map(u=>`
+    <div class="tester-item">
+      <div class="tester-info">
+        <div class="tester-avatar"><img src="https://mc-heads.net/avatar/${u.name}/36" onerror="this.src='https://mc-heads.net/avatar/Steve/36'"></div>
+        <div><div style="font-weight:700">${u.name}</div><div style="font-size:0.72rem;color:var(--muted)">@${u.username}</div></div>
+        <span class="role-badge role-${u.role}" style="margin-left:0.5rem">${u.role.toUpperCase()}</span>
+      </div>
+      ${currentUser&&u.username!==currentUser.username?`<button class="action-btn red-btn sm" onclick="removeUser('${u.username}')">Remove</button>`:''}
+    </div>`).join('')
+    :'<div style="color:var(--muted);font-size:0.85rem">No active testers</div>';
+}
+
+function verifyUser(username){
+  const u=USERS.find(u=>u.username===username);
+  if(u){ u.verified=true; toast('✅ '+u.name+' verified!','success'); loadTesters(); }
+}
+function denyUser(username){
+  if(!confirm('Deny and remove this account?')) return;
+  const idx=USERS.findIndex(u=>u.username===username);
+  if(idx>-1){ USERS.splice(idx,1); toast('Account denied','error'); loadTesters(); }
+}
+function removeUser(username){
+  if(!confirm('Remove this tester?')) return;
+  const idx=USERS.findIndex(u=>u.username===username);
+  if(idx>-1){ USERS.splice(idx,1); toast('Tester removed','error'); loadTesters(); }
+}
+</script>
+</body>
+</html>

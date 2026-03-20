@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Networkak Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Exo+2:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0a0c10; --surface:#111318; --surface2:#181c24; --border:#1e2330;
+    --accent:#00e5ff; --accent2:#ff6b35; --green:#00ff88; --red:#ff4757;
+    --gold:#ffd700; --purple:#b06cff; --dev:#ff2d6b; --text:#e8eaf0; --muted:#6b7280;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'Exo 2',sans-serif;min-height:100vh;}
+  body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(255,45,107,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,45,107,0.04) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+
+  /* LOGIN */
+  .login-page{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:var(--bg);}
+  .login-box{background:var(--surface);border:1px solid rgba(255,45,107,0.3);border-radius:20px;padding:2.5rem;width:100%;max-width:420px;animation:fadeUp 0.4s ease;box-shadow:0 0 40px rgba(255,45,107,0.1);}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  .login-logo{font-family:'Rajdhani',sans-serif;font-size:1.4rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--dev);text-align:center;margin-bottom:0.2rem;}
+  .login-logo span{color:var(--accent2);}
+  .login-subtitle{text-align:center;color:var(--muted);font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.5rem;}
+  .auth-tabs{display:flex;gap:0;margin-bottom:1.5rem;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+  .auth-tab{flex:1;padding:0.65rem;border:none;font-family:'Exo 2',sans-serif;font-weight:700;font-size:0.78rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
+  .auth-tab.on{background:var(--dev);color:#fff;}
+  .auth-tab.off{background:var(--surface2);color:var(--muted);}
+  .form-group{margin-bottom:1.1rem;}
+  .form-group label{display:block;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem;font-weight:600;}
+  .form-group input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:0.75rem 1rem;color:var(--text);font-family:'Exo 2',sans-serif;font-size:0.9rem;outline:none;transition:border-color 0.2s;}
+  .form-group input:focus{border-color:var(--dev);}
+  .btn-main{width:100%;padding:0.85rem;border:none;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:0.88rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;background:var(--dev);color:#fff;transition:all 0.2s;margin-top:0.3rem;}
+  .btn-main:hover{background:#e0245e;}
+  .auth-msg{font-size:0.78rem;text-align:center;margin-top:0.8rem;display:none;padding:0.5rem;border-radius:8px;}
+  .auth-msg.err{color:var(--red);background:rgba(255,71,87,0.1);border:1px solid rgba(255,71,87,0.3);}
+  .auth-msg.ok{color:var(--green);background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.3);}
+  .pending-box{text-align:center;padding:1.5rem 0;}
+  .pending-icon{font-size:2.5rem;margin-bottom:0.8rem;}
+  .pending-box h3{font-family:'Rajdhani',sans-serif;font-size:1.2rem;letter-spacing:1px;margin-bottom:0.5rem;}
+  .pending-box p{color:var(--muted);font-size:0.82rem;line-height:1.6;}
+
+  /* PANEL */
+  .panel{display:none;min-height:100vh;}
+  .panel.visible{display:block;}
+  nav{position:sticky;top:0;z-index:50;background:rgba(10,12,16,0.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,45,107,0.2);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .nav-logo{font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;letter-spacing:2px;color:var(--dev);text-transform:uppercase;}
+  .nav-logo span{color:var(--accent2);}
+  .nav-right{display:flex;align-items:center;gap:1rem;}
+  .role-badge{padding:3px 12px;border-radius:20px;font-size:0.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+  .role-developer{background:rgba(255,45,107,0.15);color:var(--dev);border:1px solid rgba(255,45,107,0.4);}
+  .role-manager{background:rgba(176,108,255,0.15);color:var(--purple);border:1px solid rgba(176,108,255,0.4);}
+  .role-admin{background:rgba(255,215,0,0.15);color:var(--gold);border:1px solid rgba(255,215,0,0.4);}
+  .role-tester{background:rgba(0,229,255,0.1);color:var(--accent);border:1px solid rgba(0,229,255,0.3);}
+  .logout-btn{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:0.4rem 1rem;color:var(--muted);font-family:'Exo 2',sans-serif;font-size:0.8rem;cursor:pointer;transition:all 0.2s;}
+  .logout-btn:hover{color:var(--red);border-color:var(--red);}
+  .container{max-width:1100px;margin:0 auto;padding:2rem;position:relative;z-index:1;}
+  .tabs{display:flex;gap:0.5rem;border-bottom:1px solid var(--border);margin-bottom:2rem;flex-wrap:wrap;}
+  .tab-btn{padding:0.7rem 1.2rem;background:none;border:none;color:var(--muted);font-family:'Exo 2',sans-serif;font-weight:600;font-size:0.78rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;}
+  .tab-btn:hover{color:var(--text);}
+  .tab-btn.active{color:var(--dev);border-bottom-color:var(--dev);}
+  .tab-content{display:none;}
+  .tab-content.active{display:block;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;}
+  .card h3{font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:1.2rem;}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+  .form-grid.three{grid-template-columns:1fr 1fr 1fr;}
+  .field label{display:block;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem;font-weight:600;}
+  .field input,.field select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:0.7rem 0.9rem;color:var(--text);font-family:'Exo 2',sans-serif;font-size:0.88rem;outline:none;transition:border-color 0.2s;}
+  .field input:focus,.field select:focus{border-color:var(--dev);}
+  .field select option{background:var(--surface2);}
+  .action-btn{padding:0.7rem 1.5rem;border:none;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:0.82rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
+  .cyan{background:rgba(0,229,255,0.15);color:var(--accent);border:1px solid rgba(0,229,255,0.3);}
+  .cyan:hover{background:var(--accent);color:#000;}
+  .orange{background:rgba(255,107,53,0.15);color:var(--accent2);border:1px solid rgba(255,107,53,0.3);}
+  .orange:hover{background:var(--accent2);color:#fff;}
+  .red-btn{background:rgba(255,71,87,0.15);color:var(--red);border:1px solid rgba(255,71,87,0.3);}
+  .red-btn:hover{background:var(--red);color:#fff;}
+  .green-btn{background:rgba(0,255,136,0.15);color:var(--green);border:1px solid rgba(0,255,136,0.3);}
+  .green-btn:hover{background:var(--green);color:#000;}
+  .purple-btn{background:rgba(176,108,255,0.15);color:var(--purple);border:1px solid rgba(176,108,255,0.3);}
+  .purple-btn:hover{background:var(--purple);color:#fff;}
+  .gold-btn{background:rgba(255,215,0,0.15);color:var(--gold);border:1px solid rgba(255,215,0,0.3);}
+  .gold-btn:hover{background:var(--gold);color:#000;}
+  .dev-btn{background:rgba(255,45,107,0.15);color:var(--dev);border:1px solid rgba(255,45,107,0.3);}
+  .dev-btn:hover{background:var(--dev);color:#fff;}
+  .sm{padding:0.35rem 0.85rem;font-size:0.72rem;}
+  .toast{position:fixed;bottom:2rem;right:2rem;z-index:999;padding:0.8rem 1.5rem;border-radius:10px;font-size:0.85rem;font-weight:600;display:none;}
+  .toast.success{background:rgba(0,255,136,0.15);color:var(--green);border:1px solid rgba(0,255,136,0.4);}
+  .toast.error{background:rgba(255,71,87,0.15);color:var(--red);border:1px solid rgba(255,71,87,0.4);}
+  .players-table{width:100%;border-collapse:collapse;}
+  .players-table th{text-align:left;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);padding:0.6rem 1rem;border-bottom:1px solid var(--border);}
+  .players-table td{padding:0.7rem 1rem;border-bottom:1px solid var(--border);font-size:0.85rem;}
+  .players-table tr:hover td{background:var(--surface2);}
+  .tier-pill{padding:2px 8px;border-radius:4px;font-size:0.68rem;font-weight:700;}
+  .ht{background:rgba(255,107,53,0.2);color:#ff6b35;border:1px solid rgba(255,107,53,0.4);}
+  .lt{background:rgba(0,170,255,0.15);color:#00aaff;border:1px solid rgba(0,170,255,0.3);}
+  .user-item{display:flex;align-items:center;justify-content:space-between;padding:0.8rem 1rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px;margin-bottom:0.5rem;flex-wrap:wrap;gap:0.5rem;}
+  .user-info{display:flex;align-items:center;gap:10px;}
+  .user-avatar{width:36px;height:36px;border-radius:8px;overflow:hidden;background:var(--border);image-rendering:pixelated;}
+  .user-avatar img{width:100%;height:100%;object-fit:cover;}
+  .user-actions{display:flex;gap:0.4rem;flex-wrap:wrap;}
+  .search-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:0.6rem 1rem;color:var(--text);font-family:'Exo 2',sans-serif;font-size:0.85rem;outline:none;margin-bottom:1rem;transition:border-color 0.2s;}
+  .search-input:focus{border-color:var(--dev);}
+  .pending-tag{background:rgba(255,215,0,0.1);color:var(--gold);border:1px solid rgba(255,215,0,0.3);padding:2px 8px;border-radius:4px;font-size:0.65rem;font-weight:700;}
+  .divider{height:1px;background:var(--border);margin:1.2rem 0;}
+  .section-label{font-size:0.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:0.8rem;}
+  .dev-banner{background:rgba(255,45,107,0.08);border:1px solid rgba(255,45,107,0.2);border-radius:10px;padding:0.8rem 1.2rem;margin-bottom:1.5rem;font-size:0.82rem;color:var(--dev);display:flex;align-items:center;gap:0.6rem;}
+  @media(max-width:600px){.form-grid,.form-grid.three{grid-template-columns:1fr;}.container{padding:1rem;}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN PAGE -->
+<div class="login-page" id="loginPage">
+  <div class="login-box">
+    <div class="login-logo">Networkak <span>Tiers</span></div>
+    <div class="login-subtitle">Developer Panel</div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab on" id="tabIn">Sign In</button>
+      <button class="auth-tab off" id="tabUp">Sign Up</button>
+    </div>
+
+    <!-- SIGN IN -->
+    <div id="formSignIn">
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="siUser" placeholder="Developer username">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="siPass" placeholder="••••••••">
+      </div>
+      <button class="btn-main" id="btnSignIn">Sign In</button>
+      <div class="auth-msg err" id="siErr">Invalid username or password</div>
+    </div>
+
+    <!-- SIGN UP -->
+    <div id="formSignUp" style="display:none">
+      <div class="form-group">
+        <label>Display Name / IGN</label>
+        <input type="text" id="suName" placeholder="e.g. JiuJitsuBoy21">
+      </div>
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="suUser" placeholder="Choose a username">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="suPass" placeholder="Min 8 characters">
+      </div>
+      <div class="form-group">
+        <label>Confirm Password</label>
+        <input type="password" id="suConfirm" placeholder="Repeat password">
+      </div>
+      <button class="btn-main" id="btnSignUp">Create Account</button>
+      <div class="auth-msg err" id="suErr"></div>
+      <div class="auth-msg ok" id="suOk">Account created! Waiting for verification.</div>
+    </div>
+
+    <!-- PENDING -->
+    <div id="formPending" style="display:none">
+      <div class="pending-box">
+        <div class="pending-icon">⏳</div>
+        <h3>Account Pending</h3>
+        <p>Your developer account needs to be verified by an existing Developer before you can access the panel.<br><br>Contact a developer on Discord to get approved.</p>
+      </div>
+      <button class="btn-main" style="margin-top:1rem" id="btnBackLogin">Back to Sign In</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN PANEL -->
+<div class="panel" id="mainPanel">
+  <nav>
+    <div class="nav-logo">Networkak <span>Dev</span></div>
+    <div class="nav-right">
+      <span class="role-badge role-developer">DEVELOPER</span>
+      <span style="color:var(--muted);font-size:0.82rem" id="loggedInAs"></span>
+      <button class="logout-btn" id="btnLogout">Logout</button>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <div class="dev-banner">
+      ⚡ Developer Mode — Full access to all users, roles and data
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" id="tabSetTier">Set Tier</button>
+      <button class="tab-btn" id="tabRetire">Retire Player</button>
+      <button class="tab-btn" id="tabReset">Reset Tiers</button>
+      <button class="tab-btn" id="tabPlayers">View Players</button>
+      <button class="tab-btn" id="tabUsers">Manage Users</button>
+    </div>
+
+    <!-- SET TIER -->
+    <div class="tab-content active" id="tab-setTier">
+      <div class="card">
+        <h3>Set Player Tier</h3>
+        <div class="form-grid three">
+          <div class="field"><label>Player IGN</label><input type="text" id="st-ign" placeholder="e.g. JiuJitsuBoy21"></div>
+          <div class="field"><label>Gamemode</label>
+            <select id="st-gm"><option value="">Select gamemode</option>
+              <option>SMP</option><option>Pot</option><option>UHC</option><option>Vanilla</option>
+              <option>Sword</option><option>Axe</option><option>Mace</option><option>NethOP</option><option>Spear Mace</option>
+            </select></div>
+          <div class="field"><label>Region</label>
+            <select id="st-region"><option value="">Select region</option>
+              <option>NA</option><option>EU</option><option>AS</option><option>AU</option><option>SA</option>
+            </select></div>
+          <div class="field"><label>Tier Before</label>
+            <select id="st-before"><option value="">Select tier</option>
+              <option>HT1</option><option>HT2</option><option>HT3</option><option>HT4</option><option>HT5</option>
+              <option>LT1</option><option>LT2</option><option>LT3</option><option>LT4</option><option>LT5</option>
+            </select></div>
+          <div class="field"><label>Tier Earned</label>
+            <select id="st-earned"><option value="">Select tier</option>
+              <option>HT1</option><option>HT2</option><option>HT3</option><option>HT4</option><option>HT5</option>
+              <option>LT1</option><option>LT2</option><option>LT3</option><option>LT4</option><option>LT5</option>
+            </select></div>
+        </div>
+        <br><button class="action-btn cyan" id="btnSetTier">✅ Set Tier</button>
+      </div>
+    </div>
+
+    <!-- RETIRE -->
+    <div class="tab-content" id="tab-retire">
+      <div class="card">
+        <h3>Retire a Player</h3>
+        <div class="form-grid">
+          <div class="field"><label>Player IGN</label><input type="text" id="ret-ign" placeholder="e.g. Master_client"></div>
+          <div class="field"><label>Retired Tier</label>
+            <select id="ret-tier"><option value="">Select tier</option>
+              <option>HT1</option><option>HT2</option><option>HT3</option><option>HT4</option><option>HT5</option>
+              <option>LT1</option><option>LT2</option><option>LT3</option><option>LT4</option><option>LT5</option>
+            </select></div>
+        </div>
+        <br><button class="action-btn orange" id="btnRetire">🏁 Retire Player</button>
+      </div>
+    </div>
+
+    <!-- RESET -->
+    <div class="tab-content" id="tab-reset">
+      <div class="card">
+        <h3>Reset Player Tiers</h3>
+        <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1.2rem;">Removes ALL tiers and results. Cannot be undone.</p>
+        <div class="form-grid">
+          <div class="field"><label>Player IGN</label><input type="text" id="res-ign" placeholder="e.g. JiuJitsuBoy21"></div>
+        </div>
+        <br><button class="action-btn red-btn" id="btnReset">🗑️ Reset All Tiers</button>
+      </div>
+    </div>
+
+    <!-- VIEW PLAYERS -->
+    <div class="tab-content" id="tab-players">
+      <div class="card">
+        <h3>All Players</h3>
+        <input type="text" class="search-input" id="playerSearch" placeholder="🔍 Search player...">
+        <div style="overflow-x:auto">
+          <table class="players-table">
+            <thead><tr><th>#</th><th>IGN</th><th>Region</th><th>Points</th><th>Tiers</th><th>Status</th></tr></thead>
+            <tbody id="playersBody"><tr><td colspan="6" style="text-align:center;color:var(--muted);padding:2rem">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- MANAGE USERS — FULL DEV ACCESS -->
+    <div class="tab-content" id="tab-users">
+
+      <div class="card">
+        <h3>⏳ Pending Verification</h3>
+        <div id="pendingList"><div style="color:var(--muted);font-size:0.85rem">No pending accounts 🎉</div></div>
+      </div>
+
+      <div class="card">
+        <h3>👥 All Users</h3>
+        <p style="color:var(--muted);font-size:0.82rem;margin-bottom:1rem;">As Developer you have full control over every user at every level.</p>
+        <div class="divider"></div>
+        <div class="section-label">Developers</div>
+        <div id="devsList"></div>
+        <div class="divider"></div>
+        <div class="section-label">Managers</div>
+        <div id="managersList"></div>
+        <div class="divider"></div>
+        <div class="section-label">Admins</div>
+        <div id="adminsList"></div>
+        <div class="divider"></div>
+        <div class="section-label">Testers</div>
+        <div id="testersList"></div>
+      </div>
+
+      <div class="card">
+        <h3>➕ Add User Manually</h3>
+        <div class="form-grid">
+          <div class="field"><label>Display Name / IGN</label><input type="text" id="nu-name" placeholder="e.g. JiuJitsuBoy21"></div>
+          <div class="field"><label>Username</label><input type="text" id="nu-user" placeholder="Login username"></div>
+          <div class="field"><label>Password</label><input type="password" id="nu-pass" placeholder="Min 8 characters"></div>
+          <div class="field"><label>Role</label>
+            <select id="nu-role">
+              <option value="tester">Tester</option>
+              <option value="admin">Admin</option>
+              <option value="manager">Manager</option>
+              <option value="developer">Developer</option>
+            </select>
+          </div>
+        </div>
+        <br><button class="action-btn dev-btn" id="btnAddUser">➕ Add User</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = 'https://your-bot.railway.app';
+
+const USERS = [
+  { username:'Developer', password:'Dev1234!!',    name:'Developer', role:'developer', verified:true  },
+  { username:'Manager',   password:'Manager1234!', name:'Manager',   role:'manager',   verified:true  },
+  { username:'Admin',     password:'Admin1234!',   name:'Admin',     role:'admin',     verified:true  },
+  { username:'Tester',    password:'Tester1234!',  name:'Tester',    role:'tester',    verified:true  },
+];
+
+const tierPoints = {'HT1':60,'HT2':30,'HT3':10,'HT4':4,'HT5':2,'LT1':50,'LT2':10,'LT3':5,'LT4':3,'LT5':1};
+function getTierPts(t){ return tierPoints[t]||0; }
+function calcPoints(p){
+  const m={};
+  (p.results||[]).forEach(r=>{ m[r.gamemode]=r.tierEarned; });
+  return Object.values(m).reduce((s,t)=>s+getTierPts(t),0);
+}
+
+let currentUser=null;
+let allPlayers=[];
+
+function show(id){ const el=document.getElementById(id); if(el) el.style.display='block'; }
+function hide(id){ const el=document.getElementById(id); if(el) el.style.display='none'; }
+function val(id){ return document.getElementById(id).value.trim(); }
+function toast(msg,type){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast '+type; t.style.display='block';
+  setTimeout(()=>t.style.display='none',3000);
+}
+
+// ── AUTH TABS ──
+document.getElementById('tabIn').addEventListener('click', function(){
+  this.className='auth-tab on';
+  document.getElementById('tabUp').className='auth-tab off';
+  show('formSignIn'); hide('formSignUp'); hide('formPending'); hide('siErr');
+});
+document.getElementById('tabUp').addEventListener('click', function(){
+  this.className='auth-tab on';
+  document.getElementById('tabIn').className='auth-tab off';
+  hide('formSignIn'); show('formSignUp'); hide('formPending');
+  hide('suErr'); hide('suOk');
+});
+document.getElementById('btnBackLogin').addEventListener('click', function(){
+  document.getElementById('tabIn').click();
+});
+
+// ── SIGN IN (DEVELOPER ONLY) ──
+document.getElementById('btnSignIn').addEventListener('click', function(){
+  const username=val('siUser').toLowerCase();
+  const pass=document.getElementById('siPass').value;
+  const user=USERS.find(u=>u.username.toLowerCase()===username && u.password===pass);
+  hide('siErr');
+  if(!user){ show('siErr'); return; }
+  if(user.role!=='developer'){ document.getElementById('siErr').textContent='Access denied — developers only.'; show('siErr'); return; }
+  if(!user.verified){ hide('formSignIn'); show('formPending'); return; }
+  currentUser=user;
+  document.getElementById('loginPage').style.display='none';
+  document.getElementById('mainPanel').classList.add('visible');
+  document.getElementById('loggedInAs').textContent=user.name;
+  loadPlayers();
+});
+document.getElementById('siPass').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('btnSignIn').click(); });
+document.getElementById('siUser').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('btnSignIn').click(); });
+
+// ── SIGN UP ──
+document.getElementById('btnSignUp').addEventListener('click', function(){
+  const name=val('suName'), username=val('suUser');
+  const pass=document.getElementById('suPass').value;
+  const confirm=document.getElementById('suConfirm').value;
+  const errEl=document.getElementById('suErr');
+  hide('suErr'); hide('suOk');
+  if(!name||!username||!pass||!confirm){ errEl.textContent='Please fill in all fields.'; show('suErr'); return; }
+  if(pass.length<8){ errEl.textContent='Password must be at least 8 characters.'; show('suErr'); return; }
+  if(pass!==confirm){ errEl.textContent='Passwords do not match.'; show('suErr'); return; }
+  if(USERS.find(u=>u.username.toLowerCase()===username.toLowerCase())){ errEl.textContent='Username already taken.'; show('suErr'); return; }
+  USERS.push({ username, password:pass, name, role:'developer', verified:false });
+  document.getElementById('suName').value='';
+  document.getElementById('suUser').value='';
+  document.getElementById('suPass').value='';
+  document.getElementById('suConfirm').value='';
+  show('suOk');
+  setTimeout(()=>{ hide('formSignUp'); show('formPending'); document.getElementById('tabIn').className='auth-tab on'; document.getElementById('tabUp').className='auth-tab off'; }, 2000);
+});
+
+// ── LOGOUT ──
+document.getElementById('btnLogout').addEventListener('click', function(){
+  currentUser=null;
+  document.getElementById('mainPanel').classList.remove('visible');
+  document.getElementById('loginPage').style.display='flex';
+  document.getElementById('siUser').value='';
+  document.getElementById('siPass').value='';
+  document.getElementById('tabIn').click();
+});
+
+// ── PANEL TABS ──
+const tabMap = { setTier:'tabSetTier', retire:'tabRetire', reset:'tabReset', players:'tabPlayers', users:'tabUsers' };
+function switchTab(name){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  document.getElementById(tabMap[name]).classList.add('active');
+  if(name==='players') loadPlayers();
+  if(name==='users') loadUsers();
+}
+Object.keys(tabMap).forEach(name=>{
+  document.getElementById(tabMap[name]).addEventListener('click', ()=>switchTab(name));
+});
+
+// ── LOAD PLAYERS ──
+async function loadPlayers(){
+  try{
+    allPlayers=[
+      {ign:'JiuJitsuBoy21',region:'NA',retired:false,results:[{tierEarned:'HT2',gamemode:'SMP'},{tierEarned:'LT1',gamemode:'Pot'}],retirements:[]},
+      {ign:'Master_client',region:'NA',retired:true,results:[{tierEarned:'HT1',gamemode:'SMP'}],retirements:[{tier:'HT1'}]}
+    ];
+    renderTable(allPlayers);
+  }catch(e){console.error(e);}
+}
+
+function renderTable(players){
+  const sorted=[...players].sort((a,b)=>calcPoints(b)-calcPoints(a));
+  const body=document.getElementById('playersBody');
+  if(!sorted.length){ body.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:2rem">No players</td></tr>'; return; }
+  body.innerHTML=sorted.map((p,i)=>{
+    const pts=calcPoints(p);
+    const m={};(p.results||[]).forEach(r=>{ m[r.gamemode]=r.tierEarned; });
+    const badges=Object.entries(m).map(([gm,t])=>'<span class="tier-pill '+(t.startsWith('HT')?'ht':'lt')+'" title="'+gm+'">'+t+'</span>').join(' ');
+    const status=p.retired?'<span style="color:var(--muted);font-size:0.75rem">RETIRED</span>':'<span style="color:var(--green);font-size:0.75rem">● Active</span>';
+    return '<tr><td style="color:var(--muted)">'+(i+1)+'</td><td><strong>'+p.ign+'</strong></td><td>'+(p.region||'—')+'</td><td style="color:var(--dev);font-weight:700">'+pts+'</td><td>'+(badges||'—')+'</td><td>'+status+'</td></tr>';
+  }).join('');
+}
+document.getElementById('playerSearch').addEventListener('input', function(){
+  renderTable(allPlayers.filter(p=>p.ign.toLowerCase().includes(this.value.toLowerCase())));
+});
+
+// ── LOAD USERS ──
+function loadUsers(){
+  const pending  = USERS.filter(u=>!u.verified);
+  const devs     = USERS.filter(u=>u.verified && u.role==='developer');
+  const managers = USERS.filter(u=>u.verified && u.role==='manager');
+  const admins   = USERS.filter(u=>u.verified && u.role==='admin');
+  const testers  = USERS.filter(u=>u.verified && u.role==='tester');
+
+  document.getElementById('pendingList').innerHTML = pending.length
+    ? pending.map(u=>userCard(u,['verify','deny'])).join('')
+    : '<div style="color:var(--muted);font-size:0.85rem">No pending accounts 🎉</div>';
+
+  document.getElementById('devsList').innerHTML = devs.length
+    ? devs.map(u=>userCard(u, currentUser&&u.username!==currentUser.username ? ['demote-manager','remove'] : [])).join('')
+    : '<div style="color:var(--muted);font-size:0.82rem;margin-bottom:0.5rem">No other developers</div>';
+
+  document.getElementById('managersList').innerHTML = managers.length
+    ? managers.map(u=>userCard(u,['promote-dev','demote-admin','remove'])).join('')
+    : '<div style="color:var(--muted);font-size:0.82rem;margin-bottom:0.5rem">No managers</div>';
+
+  document.getElementById('adminsList').innerHTML = admins.length
+    ? admins.map(u=>userCard(u,['promote-manager','demote-tester','remove'])).join('')
+    : '<div style="color:var(--muted);font-size:0.82rem;margin-bottom:0.5rem">No admins</div>';
+
+  document.getElementById('testersList').innerHTML = testers.length
+    ? testers.map(u=>userCard(u,['promote-admin','remove'])).join('')
+    : '<div style="color:var(--muted);font-size:0.82rem;margin-bottom:0.5rem">No testers</div>';
+}
+
+function userCard(u, actions){
+  const btns=actions.map(a=>{
+    if(a==='verify')          return `<button class="action-btn green-btn sm" onclick="doAction('verify','${u.username}')">✅ Verify</button>`;
+    if(a==='deny')            return `<button class="action-btn red-btn sm" onclick="doAction('deny','${u.username}')">❌ Deny</button>`;
+    if(a==='promote-dev')     return `<button class="action-btn dev-btn sm" onclick="doAction('promote-dev','${u.username}')">⬆ Make Dev</button>`;
+    if(a==='promote-manager') return `<button class="action-btn purple-btn sm" onclick="doAction('promote-manager','${u.username}')">⬆ Make Manager</button>`;
+    if(a==='promote-admin')   return `<button class="action-btn gold-btn sm" onclick="doAction('promote-admin','${u.username}')">⬆ Make Admin</button>`;
+    if(a==='demote-manager')  return `<button class="action-btn purple-btn sm" onclick="doAction('demote-manager','${u.username}')">⬇ Make Manager</button>`;
+    if(a==='demote-admin')    return `<button class="action-btn gold-btn sm" onclick="doAction('demote-admin','${u.username}')">⬇ Make Admin</button>`;
+    if(a==='demote-tester')   return `<button class="action-btn cyan sm" onclick="doAction('demote-tester','${u.username}')">⬇ Make Tester</button>`;
+    if(a==='remove')          return `<button class="action-btn red-btn sm" onclick="doAction('remove','${u.username}')">🗑 Remove</button>`;
+    return '';
+  }).join('');
+  const roleBadge=`<span class="role-badge role-${u.role}" style="margin-left:0.5rem">${u.role.toUpperCase()}</span>`;
+  const pendingBadge=!u.verified?`<span class="pending-tag" style="margin-left:0.4rem">PENDING</span>`:'';
+  return `<div class="user-item">
+    <div class="user-info">
+      <div class="user-avatar"><img src="https://mc-heads.net/avatar/${u.name}/36" onerror="this.src='https://mc-heads.net/avatar/Steve/36'"></div>
+      <div><div style="font-weight:700">${u.name}${pendingBadge}</div><div style="font-size:0.72rem;color:var(--muted)">@${u.username}</div></div>
+      ${roleBadge}
+    </div>
+    <div class="user-actions">${btns}</div>
+  </div>`;
+}
+
+function doAction(action,username){
+  const u=USERS.find(x=>x.username===username); if(!u) return;
+  if(action==='verify')           { u.verified=true; toast('✅ '+u.name+' verified!','success'); }
+  else if(action==='deny')        { if(!confirm('Deny and remove '+u.name+'?')) return; USERS.splice(USERS.indexOf(u),1); toast('Account denied','error'); }
+  else if(action==='remove')      { if(!confirm('Remove '+u.name+'? Cannot be undone.')) return; USERS.splice(USERS.indexOf(u),1); toast(u.name+' removed','error'); }
+  else if(action==='promote-dev')     { u.role='developer'; toast('⬆ '+u.name+' → Developer','success'); }
+  else if(action==='promote-manager') { u.role='manager';   toast('⬆ '+u.name+' → Manager','success'); }
+  else if(action==='promote-admin')   { u.role='admin';     toast('⬆ '+u.name+' → Admin','success'); }
+  else if(action==='demote-manager')  { u.role='manager';   toast('⬇ '+u.name+' → Manager','success'); }
+  else if(action==='demote-admin')    { u.role='admin';     toast('⬇ '+u.name+' → Admin','success'); }
+  else if(action==='demote-tester')   { u.role='tester';    toast('⬇ '+u.name+' → Tester','success'); }
+  loadUsers();
+}
+
+// ── ADD USER MANUALLY ──
+document.getElementById('btnAddUser').addEventListener('click', function(){
+  const name=val('nu-name'), username=val('nu-user');
+  const pass=document.getElementById('nu-pass').value;
+  const role=val('nu-role');
+  if(!name||!username||!pass){ toast('Fill in all fields','error'); return; }
+  if(pass.length<8){ toast('Password must be 8+ characters','error'); return; }
+  if(USERS.find(u=>u.username.toLowerCase()===username.toLowerCase())){ toast('Username already exists','error'); return; }
+  USERS.push({ username, password:pass, name, role, verified:true });
+  toast('✅ '+name+' added as '+role,'success');
+  document.getElementById('nu-name').value='';
+  document.getElementById('nu-user').value='';
+  document.getElementById('nu-pass').value='';
+  loadUsers();
+});
+
+// ── SET TIER ──
+document.getElementById('btnSetTier').addEventListener('click', function(){
+  const ign=val('st-ign'), gm=val('st-gm'), earned=val('st-earned');
+  if(!ign||!gm||!earned){ toast('Fill in IGN, Gamemode and Tier Earned','error'); return; }
+  toast('✅ Tier set: '+ign+' → '+earned+' in '+gm,'success');
+  document.getElementById('st-ign').value='';
+  document.getElementById('st-gm').value='';
+  document.getElementById('st-before').value='';
+  document.getElementById('st-earned').value='';
+});
+
+// ── RETIRE ──
+document.getElementById('btnRetire').addEventListener('click', function(){
+  const ign=val('ret-ign'), tier=val('ret-tier');
+  if(!ign||!tier){ toast('Fill in IGN and Retired Tier','error'); return; }
+  toast('🏁 '+ign+' retired at '+tier,'success');
+  document.getElementById('ret-ign').value='';
+  document.getElementById('ret-tier').value='';
+});
+
+// ── RESET ──
+document.getElementById('btnReset').addEventListener('click', function(){
+  const ign=val('res-ign');
+  if(!ign){ toast('Enter a player IGN','error'); return; }
+  if(!confirm('Reset ALL tiers for '+ign+'? Cannot be undone.')) return;
+  toast('🗑️ All tiers reset for '+ign,'success');
+  document.getElementById('res-ign').value='';
+});
+</script>
+</body>
+</html>
