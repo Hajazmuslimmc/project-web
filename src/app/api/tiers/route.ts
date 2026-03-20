@@ -1,28 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
-import { MongoClient } from "mongodb";
+import { supabase } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
-let client: MongoClient | null = null;
+export async function GET(req: NextRequest) {
+  const mode = req.nextUrl.searchParams.get("mode") || "DiaPot";
 
-async function getDB() {
-  if (!client) {
-    client = new MongoClient(process.env.MONGO_URI!);
-    await client.connect();
-  }
-  return client.db("mctiers");
+  const { data, error } = await supabase
+    .from("tiers")
+    .select("*")
+    .eq("mode", mode)
+    .order("points", { ascending: false });
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  return NextResponse.json(data);
 }
 
-export async function GET(req: NextRequest) {
-  try {
-    const mode = req.nextUrl.searchParams.get("mode") || "DiaPot";
-    const db = await getDB();
-    const data = await db.collection("tiers")
-      .find({ mode })
-      .sort({ points: -1 })
-      .toArray();
-    return NextResponse.json(data);
-  } catch (err) {
-    return NextResponse.json({ error: "Database unavailable" }, { status: 500 });
-  }
+export async function POST(req: NextRequest) {
+  const body = await req.json();
+  const { username, tier, points, region, mode } = body;
+
+  const { error } = await supabase
+    .from("tiers")
+    .upsert({ username, tier, points, region, mode }, { onConflict: "username,mode" });
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  return NextResponse.json({ success: true });
 }
