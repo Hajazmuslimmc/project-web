@@ -419,36 +419,40 @@ function openProfile(ign){
 function closeModal(e){ if(e.target===document.getElementById('modalOverlay')) closeModalBtn(); }
 function closeModalBtn(){ document.getElementById('modalOverlay').classList.remove('open'); }
 
+const SUPABASE_URL='https://rljvcykuiswwriwapsgi.supabase.co';
+const SUPABASE_KEY='sb_publishable_1Xm_yUEgGvO0y9rhAj5ucg_trJh3S1j';
+
 async function fetchPlayers(){
   try{
-    // TODO: Replace with your Railway URL after deploying
-    // const res=await fetch('https://your-bot.railway.app/players');
-    // allPlayers=await res.json();
-
-    // Read players saved by the admin panel (localStorage)
-    const adminPlayers=JSON.parse(localStorage.getItem('nw_players')||'null');
-
-    if(adminPlayers && adminPlayers.length>0){
-      // Use admin-managed player list directly
-      allPlayers=adminPlayers;
+    const res=await fetch(SUPABASE_URL+'/rest/v1/players?select=*&order=created_at.asc',{
+      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}
+    });
+    if(!res.ok) throw new Error('Supabase fetch failed: '+res.status);
+    const data=await res.json();
+    if(data && data.length>0){
+      allPlayers=data.map(function(p){
+        return {
+          ign:p.ign,
+          region:p.region||'NA',
+          retired:p.retired||false,
+          results:p.results||[],
+          retirements:p.retirements||[]
+        };
+      });
     } else {
-      // Fall back to demo data if admin panel has never been used
-      allPlayers=[
-        {ign:'JiuJitsuBoy21',region:'NA',retired:false,
-          results:[{tierEarned:'HT2',gamemode:'SMP',region:'NA'},{tierEarned:'LT1',gamemode:'Pot',region:'NA'}],retirements:[]},
-        {ign:'Master_client',region:'NA',retired:true,
-          results:[{tierEarned:'HT1',gamemode:'SMP',region:'NA'}],retirements:[{gamemode:'SMP',tier:'HT1'}]}
-      ];
+      allPlayers=[];
     }
-
     if(currentTab==='Overall') renderOverall(allPlayers);
     else renderLeaderboard(allPlayers,currentTab);
-  } catch(e){ console.error(e); }
+  } catch(e){
+    console.error('Error loading players:',e);
+    document.getElementById('leaderboard').innerHTML='<div class="empty-state"><div class="icon">⚠️</div><h3>Could not load players</h3><p>Check your connection and try again.</p></div>';
+  }
 }
 
 fetchPlayers();
-// Refresh every 10 seconds to pick up new tester submissions
-setInterval(fetchPlayers,10000);
+// Refresh every 15 seconds
+setInterval(fetchPlayers,15000);
 </script>
 </body>
 </html>

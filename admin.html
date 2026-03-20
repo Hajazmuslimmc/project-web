@@ -401,92 +401,83 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// ─────────────────────────────────────────────
-//  DATA HELPERS (localStorage)
-// ─────────────────────────────────────────────
-const GAMEMODES = ['SMP','Pot','UHC','Vanilla','Sword','Axe','Mace','NethOP','Spear Mace'];
-const GAMEMODE_ICONS = {
-  'SMP':'smp.png','Pot':'pot.png','UHC':'uhc.webp','Vanilla':'vanilla.png',
-  'Sword':'sword.png','Axe':'axe.png','Mace':'mace.png','NethOP':'nethop.png','Spear Mace':'spearmace.png'
-};
-const TIER_OPTIONS = ['','HT1','HT2','HT3','HT4','HT5','LT1','LT2','LT3','LT4','LT5'];
-const tierPoints = {'HT1':60,'HT2':30,'HT3':10,'HT4':4,'HT5':2,'LT1':50,'LT2':10,'LT3':5,'LT4':3,'LT5':1};
+// ── SUPABASE CONFIG ──
+const SB_URL='https://rljvcykuiswwriwapsgi.supabase.co';
+const SB_KEY='sb_publishable_1Xm_yUEgGvO0y9rhAj5ucg_trJh3S1j';
+function sbH(){return{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=representation'};}
+async function sbGet(t,q=''){const r=await fetch(`${SB_URL}/rest/v1/${t}?${q}`,{headers:sbH()});if(!r.ok)throw new Error(await r.text());return r.json();}
+async function sbInsert(t,d){const r=await fetch(`${SB_URL}/rest/v1/${t}`,{method:'POST',headers:sbH(),body:JSON.stringify(d)});if(!r.ok)throw new Error(await r.text());return r.json();}
+async function sbUpdate(t,q,d){const r=await fetch(`${SB_URL}/rest/v1/${t}?${q}`,{method:'PATCH',headers:sbH(),body:JSON.stringify(d)});if(!r.ok)throw new Error(await r.text());return r.json();}
+async function sbDelete(t,q){const r=await fetch(`${SB_URL}/rest/v1/${t}?${q}`,{method:'DELETE',headers:sbH()});if(!r.ok)throw new Error(await r.text());}
 
-function getUsers(){ return JSON.parse(localStorage.getItem('nw_users')||'[]'); }
-function setUsers(u){ localStorage.setItem('nw_users',JSON.stringify(u)); }
-function getPlayers(){ return JSON.parse(localStorage.getItem('nw_players')||'[]'); }
-function setPlayers(p){ localStorage.setItem('nw_players',JSON.stringify(p)); }
-function getSession(){ return JSON.parse(localStorage.getItem('nw_session')||'null'); }
-function setSession(s){ localStorage.setItem('nw_session',JSON.stringify(s)); }
-function clearSession(){ localStorage.removeItem('nw_session'); }
+// ── CONSTANTS ──
+const GAMEMODES=['SMP','Pot','UHC','Vanilla','Sword','Axe','Mace','NethOP','Spear Mace'];
+const GAMEMODE_ICONS={'SMP':'smp.png','Pot':'pot.png','UHC':'uhc.webp','Vanilla':'vanilla.png','Sword':'sword.png','Axe':'axe.png','Mace':'mace.png','NethOP':'nethop.png','Spear Mace':'spearmace.png'};
+const TIER_OPTIONS=['','HT1','HT2','HT3','HT4','HT5','LT1','LT2','LT3','LT4','LT5'];
+const tierPoints={'HT1':60,'HT2':30,'HT3':10,'HT4':4,'HT5':2,'LT1':50,'LT2':10,'LT3':5,'LT4':3,'LT5':1};
 
-// Init master_client superadmin if not present
+// ── STATE ──
+let cachedPlayers=[];
+let currentUser=null;
+
+function getUsers(){return JSON.parse(localStorage.getItem('nw_users')||'[]');}
+function setUsers(u){localStorage.setItem('nw_users',JSON.stringify(u));}
+function getPlayers(){return cachedPlayers;}
+function getSession(){return JSON.parse(localStorage.getItem('nw_session')||'null');}
+function setSession(s){localStorage.setItem('nw_session',JSON.stringify(s));}
+function clearSession(){localStorage.removeItem('nw_session');}
+
 function initUsers(){
-  const users = getUsers();
+  const users=getUsers();
   if(!users.find(u=>u.username==='master_client')){
     users.push({username:'master_client',password:'master2024',role:'superadmin'});
     setUsers(users);
   }
 }
 
-// Init demo players if none
-function initPlayers(){
-  if(getPlayers().length===0){
-    setPlayers([
-      {ign:'JiuJitsuBoy21',region:'NA',retired:false,
-       results:[{tierEarned:'HT2',gamemode:'SMP'},{tierEarned:'LT1',gamemode:'Pot'}],
-       retirements:[],addedBy:'master_client'},
-      {ign:'Master_client',region:'NA',retired:true,
-       results:[{tierEarned:'HT1',gamemode:'SMP'}],
-       retirements:[{gamemode:'SMP',tier:'HT1'}],addedBy:'master_client'}
-    ]);
-  }
+async function loadPlayers(){
+  try{
+    const data=await sbGet('players','select=*&order=created_at.asc');
+    cachedPlayers=data.map(p=>({ign:p.ign,region:p.region||'NA',retired:p.retired||false,results:p.results||[],retirements:p.retirements||[],addedBy:p.added_by||''}));
+  }catch(e){console.error('loadPlayers:',e);cachedPlayers=[];}
 }
 
-// ─────────────────────────────────────────────
-//  AUTH
-// ─────────────────────────────────────────────
-let currentUser = null;
-
+// ── AUTH ──
 function showScreen(screen){
-  document.getElementById('signInScreen').style.display = screen==='signIn' ? 'flex' : 'none';
-  document.getElementById('signUpScreen').style.display = screen==='signUp' ? 'flex' : 'none';
-  document.getElementById('pendingScreen').style.display = screen==='pending' ? 'flex' : 'none';
-  document.getElementById('adminWrap').style.display = screen==='admin' ? 'block' : 'none';
-  document.getElementById('mainNav').style.display = (screen==='admin'||screen==='pending') ? 'flex' : 'none';
-  document.getElementById('signinError').style.display = 'none';
-  document.getElementById('signupError').style.display = 'none';
+  document.getElementById('signInScreen').style.display=screen==='signIn'?'flex':'none';
+  document.getElementById('signUpScreen').style.display=screen==='signUp'?'flex':'none';
+  document.getElementById('pendingScreen').style.display=screen==='pending'?'flex':'none';
+  document.getElementById('adminWrap').style.display=screen==='admin'?'block':'none';
+  document.getElementById('mainNav').style.display=(screen==='admin'||screen==='pending')?'flex':'none';
+  document.getElementById('signinError').style.display='none';
+  document.getElementById('signupError').style.display='none';
 }
 
 function doSignIn(){
-  const username = document.getElementById('signinUser').value.trim();
-  const password = document.getElementById('signinPass').value;
-  const errEl = document.getElementById('signinError');
-  if(!username||!password){ showErr(errEl,'Please fill in all fields.'); return; }
-  const users = getUsers();
-  const user = users.find(u=>u.username.toLowerCase()===username.toLowerCase());
-  if(!user||user.password!==password){ showErr(errEl,'Invalid username or password.'); return; }
-  if(user.role==='pending'){ 
-    currentUser=user; setSession(user);
-    updateNav(user); showScreen('pending'); return;
-  }
-  if(user.role!=='admin'&&user.role!=='superadmin'){ showErr(errEl,'Access denied.'); return; }
-  currentUser=user; setSession(user);
-  updateNav(user); enterAdmin();
+  const username=document.getElementById('signinUser').value.trim();
+  const password=document.getElementById('signinPass').value;
+  const errEl=document.getElementById('signinError');
+  if(!username||!password){showErr(errEl,'Please fill in all fields.');return;}
+  const users=getUsers();
+  const user=users.find(u=>u.username.toLowerCase()===username.toLowerCase());
+  if(!user||user.password!==password){showErr(errEl,'Invalid username or password.');return;}
+  if(user.role==='pending'){currentUser=user;setSession(user);updateNav(user);showScreen('pending');return;}
+  if(user.role!=='admin'&&user.role!=='superadmin'){showErr(errEl,'Access denied.');return;}
+  currentUser=user;setSession(user);updateNav(user);enterAdmin();
 }
 
 function doSignUp(){
-  const username = document.getElementById('signupUser').value.trim();
-  const password = document.getElementById('signupPass').value;
-  const pass2    = document.getElementById('signupPass2').value;
-  const errEl    = document.getElementById('signupError');
-  const infoEl   = document.getElementById('signupInfo');
-  if(!username||!password||!pass2){ showErr(errEl,'Please fill in all fields.'); return; }
-  if(password!==pass2){ showErr(errEl,'Passwords do not match.'); return; }
-  if(password.length<4){ showErr(errEl,'Password must be at least 4 characters.'); return; }
-  if(username.length<2){ showErr(errEl,'Username too short.'); return; }
-  const users = getUsers();
-  if(users.find(u=>u.username.toLowerCase()===username.toLowerCase())){ showErr(errEl,'Username already taken.'); return; }
+  const username=document.getElementById('signupUser').value.trim();
+  const password=document.getElementById('signupPass').value;
+  const pass2=document.getElementById('signupPass2').value;
+  const errEl=document.getElementById('signupError');
+  const infoEl=document.getElementById('signupInfo');
+  if(!username||!password||!pass2){showErr(errEl,'Please fill in all fields.');return;}
+  if(password!==pass2){showErr(errEl,'Passwords do not match.');return;}
+  if(password.length<4){showErr(errEl,'Password must be at least 4 characters.');return;}
+  if(username.length<2){showErr(errEl,'Username too short.');return;}
+  const users=getUsers();
+  if(users.find(u=>u.username.toLowerCase()===username.toLowerCase())){showErr(errEl,'Username already taken.');return;}
   users.push({username,password,role:'pending'});
   setUsers(users);
   document.getElementById('signupUser').value='';
@@ -497,12 +488,8 @@ function doSignUp(){
   updatePendingCount();
 }
 
-function logout(){
-  clearSession(); currentUser=null;
-  showScreen('signIn');
-}
-
-function showErr(el,msg){ el.textContent=msg; el.style.display='block'; }
+function logout(){clearSession();currentUser=null;showScreen('signIn');}
+function showErr(el,msg){el.textContent=msg;el.style.display='block';}
 
 function updateNav(user){
   document.getElementById('navUsername').textContent=user.username;
@@ -511,32 +498,28 @@ function updateNav(user){
   badge.className='nav-badge '+(user.role==='superadmin'?'badge-superadmin':'badge-admin');
 }
 
-function enterAdmin(){
+async function enterAdmin(){
   showScreen('admin');
   document.getElementById('dashUser').textContent=currentUser.username;
-  // Show/hide superadmin-only things
-  const isSuperAdmin = currentUser.role==='superadmin';
-  document.getElementById('sidebarManageAdmins').style.display = isSuperAdmin ? 'flex' : 'none';
+  const isSuperAdmin=currentUser.role==='superadmin';
+  document.getElementById('sidebarManageAdmins').style.display=isSuperAdmin?'flex':'none';
+  await loadPlayers();
   refreshAll();
 }
 
-// ─────────────────────────────────────────────
-//  PANEL ROUTING
-// ─────────────────────────────────────────────
-function switchPanel(name, el){
+// ── PANEL ROUTING ──
+function switchPanel(name,el){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('active'));
   document.getElementById('panel'+name.charAt(0).toUpperCase()+name.slice(1)).classList.add('active');
-  if(el) el.classList.add('active');
-  if(name==='managePlayers') renderManagePlayers('');
-  if(name==='pending') renderPending();
-  if(name==='manageAdmins') renderAdminList();
-  if(name==='dashboard') refreshDashboard();
+  if(el)el.classList.add('active');
+  if(name==='managePlayers')renderManagePlayers('');
+  if(name==='pending')renderPending();
+  if(name==='manageAdmins')renderAdminList();
+  if(name==='dashboard')refreshDashboard();
 }
 
-// ─────────────────────────────────────────────
-//  DASHBOARD
-// ─────────────────────────────────────────────
+// ── DASHBOARD ──
 function refreshDashboard(){
   const players=getPlayers();
   const users=getUsers();
@@ -545,17 +528,13 @@ function refreshDashboard(){
   document.getElementById('statPlayers').textContent=players.length;
   document.getElementById('statAdmins').textContent=admins.length;
   document.getElementById('statPending').textContent=pending.length;
-  // Recent 5
   const recent=[...players].reverse().slice(0,5);
   const tbody=document.getElementById('recentPlayersBody');
-  if(!recent.length){ tbody.innerHTML='<tr><td colspan="4" class="empty-msg">No players yet</td></tr>'; return; }
+  if(!recent.length){tbody.innerHTML='<tr><td colspan="4" class="empty-msg">No players yet</td></tr>';return;}
   tbody.innerHTML=recent.map(p=>{
     const top=topTier(p);
     return `<tr>
-      <td><div class="player-cell">
-        <div class="player-av"><img src="https://mc-heads.net/avatar/${encodeURIComponent(p.ign)}/32" onerror="this.src='https://mc-heads.net/avatar/Steve/32'"></div>
-        <span class="player-ign">${p.ign}</span>
-      </div></td>
+      <td><div class="player-cell"><div class="player-av"><img src="https://mc-heads.net/avatar/${encodeURIComponent(p.ign)}/32" onerror="this.src='https://mc-heads.net/avatar/Steve/32'"></div><span class="player-ign">${p.ign}</span></div></td>
       <td>${p.region||'—'}</td>
       <td>${top?`<span class="tier-badge tier-${top}">${top}</span>`:'—'}</td>
       <td style="color:var(--muted);font-size:0.8rem">${p.addedBy||'—'}</td>
@@ -565,23 +544,18 @@ function refreshDashboard(){
 
 function topTier(p){
   const tiers=(p.results||[]).map(r=>r.tierEarned).filter(Boolean);
-  if(!tiers.length) return null;
+  if(!tiers.length)return null;
   return tiers.sort((a,b)=>(tierPoints[b]||0)-(tierPoints[a]||0))[0];
 }
 
-// ─────────────────────────────────────────────
-//  TIER INPUTS BUILDER
-// ─────────────────────────────────────────────
-function buildTierInputs(containerId, existing={}){
+// ── TIER INPUTS ──
+function buildTierInputs(containerId,existing={}){
   const grid=document.getElementById(containerId);
   grid.innerHTML=GAMEMODES.map(gm=>{
-    const icon=GAMEMODE_ICONS[gm]?`<img src="${GAMEMODE_ICONS[gm]}" onerror="this.style.display='none'">`:''
+    const icon=GAMEMODE_ICONS[gm]?`<img src="${GAMEMODE_ICONS[gm]}" onerror="this.style.display='none'">`:'';
     const val=existing[gm]||'';
     const opts=TIER_OPTIONS.map(t=>`<option value="${t}" ${t===val?'selected':''}>${t||'— None —'}</option>`).join('');
-    return `<div class="tier-input-wrap">
-      <div class="tier-input-label">${icon} ${gm}</div>
-      <select class="form-select" id="tier_${containerId}_${gm.replace(/ /g,'_')}" style="padding:0.4rem 0.6rem;font-size:0.8rem;">${opts}</select>
-    </div>`;
+    return `<div class="tier-input-wrap"><div class="tier-input-label">${icon} ${gm}</div><select class="form-select" id="tier_${containerId}_${gm.replace(/ /g,'_')}" style="padding:0.4rem 0.6rem;font-size:0.8rem;">${opts}</select></div>`;
   }).join('');
 }
 
@@ -589,30 +563,28 @@ function getTierValues(containerId){
   const result={};
   GAMEMODES.forEach(gm=>{
     const el=document.getElementById(`tier_${containerId}_${gm.replace(/ /g,'_')}`);
-    if(el&&el.value) result[gm]=el.value;
+    if(el&&el.value)result[gm]=el.value;
   });
   return result;
 }
 
-// ─────────────────────────────────────────────
-//  ADD PLAYER
-// ─────────────────────────────────────────────
-function addPlayer(){
+// ── ADD PLAYER ──
+async function addPlayer(){
   const ign=document.getElementById('newIGN').value.trim();
   const region=document.getElementById('newRegion').value;
   const retired=document.getElementById('newRetired').checked;
-  if(!ign){ showToast('Enter a player IGN','error'); return; }
-  const players=getPlayers();
-  if(players.find(p=>p.ign.toLowerCase()===ign.toLowerCase())){ showToast('Player already exists','error'); return; }
+  if(!ign){showToast('Enter a player IGN','error');return;}
+  if(cachedPlayers.find(p=>p.ign.toLowerCase()===ign.toLowerCase())){showToast('Player already exists','error');return;}
   const tiers=getTierValues('tierInputsGrid');
   const results=Object.entries(tiers).map(([gm,tier])=>({tierEarned:tier,gamemode:gm}));
   const retirements=retired?results.map(r=>({gamemode:r.gamemode,tier:r.tierEarned})):[];
-  players.push({ign,region,retired,results,retirements,addedBy:currentUser.username});
-  setPlayers(players);
-  syncToSession(players);
-  showToast(`✅ ${ign} added to tier list`,'success');
-  clearAddForm();
-  refreshAll();
+  try{
+    await sbInsert('players',{ign,region,retired,results,retirements,added_by:currentUser.username});
+    await loadPlayers();
+    showToast(`✅ ${ign} added!`,'success');
+    clearAddForm();
+    refreshAll();
+  }catch(e){showToast('Error: '+e.message,'error');}
 }
 
 function clearAddForm(){
@@ -622,23 +594,18 @@ function clearAddForm(){
   buildTierInputs('tierInputsGrid');
 }
 
-// ─────────────────────────────────────────────
-//  MANAGE PLAYERS
-// ─────────────────────────────────────────────
+// ── MANAGE PLAYERS ──
 function renderManagePlayers(search=''){
   const players=getPlayers();
   const tbody=document.getElementById('managePlayersBody');
   const q=(search||'').toLowerCase();
   const filtered=q?players.filter(p=>p.ign.toLowerCase().includes(q)):players;
-  if(!filtered.length){ tbody.innerHTML=`<tr><td colspan="5" class="empty-msg">No players found</td></tr>`; return; }
+  if(!filtered.length){tbody.innerHTML=`<tr><td colspan="5" class="empty-msg">No players found</td></tr>`;return;}
   tbody.innerHTML=filtered.map(p=>{
     const top=topTier(p);
     const ret=p.retired?`<span class="role-chip" style="background:rgba(107,114,128,0.15);color:var(--muted);border:1px solid rgba(107,114,128,0.3);">RETIRED</span>`:`<span style="color:var(--green);font-size:0.75rem;font-weight:600;">Active</span>`;
     return `<tr>
-      <td><div class="player-cell">
-        <div class="player-av"><img src="https://mc-heads.net/avatar/${encodeURIComponent(p.ign)}/32" onerror="this.src='https://mc-heads.net/avatar/Steve/32'"></div>
-        <span class="player-ign">${p.ign}</span>
-      </div></td>
+      <td><div class="player-cell"><div class="player-av"><img src="https://mc-heads.net/avatar/${encodeURIComponent(p.ign)}/32" onerror="this.src='https://mc-heads.net/avatar/Steve/32'"></div><span class="player-ign">${p.ign}</span></div></td>
       <td><span style="color:var(--muted)">${p.region||'—'}</span></td>
       <td>${top?`<span class="tier-badge tier-${top}">${top}</span>`:'—'}</td>
       <td>${ret}</td>
@@ -650,62 +617,58 @@ function renderManagePlayers(search=''){
   }).join('');
 }
 
-function removePlayer(ign){
-  if(!confirm(`Remove ${ign} from the tier list?`)) return;
-  let players=getPlayers().filter(p=>p.ign!==ign);
-  setPlayers(players); syncToSession(players);
-  showToast(`🗑 ${ign} removed`,'info');
-  renderManagePlayers(document.getElementById('manageSearch')?.value||'');
-  refreshAll();
+async function removePlayer(ign){
+  if(!confirm(`Remove ${ign} from the tier list?`))return;
+  try{
+    await sbDelete('players',`ign=eq.${encodeURIComponent(ign)}`);
+    await loadPlayers();
+    showToast(`🗑 ${ign} removed`,'info');
+    renderManagePlayers(document.getElementById('manageSearch')?.value||'');
+    refreshAll();
+  }catch(e){showToast('Error: '+e.message,'error');}
 }
 
-// ─────────────────────────────────────────────
-//  EDIT PLAYER MODAL
-// ─────────────────────────────────────────────
+// ── EDIT PLAYER ──
 function openEdit(ign){
-  const p=getPlayers().find(x=>x.ign===ign);
-  if(!p) return;
+  const p=cachedPlayers.find(x=>x.ign===ign);
+  if(!p)return;
   document.getElementById('editIGN_orig').value=p.ign;
   document.getElementById('editIGN').value=p.ign;
   document.getElementById('editRegion').value=p.region||'NA';
   document.getElementById('editRetired').checked=p.retired||false;
-  // Build existing tiers map
   const existing={};
-  (p.results||[]).forEach(r=>{ existing[r.gamemode]=r.tierEarned; });
+  (p.results||[]).forEach(r=>{existing[r.gamemode]=r.tierEarned;});
   buildTierInputs('editTiersGrid',existing);
   document.getElementById('editModal').classList.add('open');
 }
 
-function closeEdit(){ document.getElementById('editModal').classList.remove('open'); }
+function closeEdit(){document.getElementById('editModal').classList.remove('open');}
 
-function saveEdit(){
+async function saveEdit(){
   const origIGN=document.getElementById('editIGN_orig').value;
   const newIGN=document.getElementById('editIGN').value.trim();
   const region=document.getElementById('editRegion').value;
   const retired=document.getElementById('editRetired').checked;
-  if(!newIGN){ showToast('IGN cannot be empty','error'); return; }
-  const players=getPlayers();
-  const idx=players.findIndex(p=>p.ign===origIGN);
-  if(idx===-1) return;
+  if(!newIGN){showToast('IGN cannot be empty','error');return;}
   const tiers=getTierValues('editTiersGrid');
   const results=Object.entries(tiers).map(([gm,tier])=>({tierEarned:tier,gamemode:gm}));
   const retirements=retired?results.map(r=>({gamemode:r.gamemode,tier:r.tierEarned})):[];
-  players[idx]={...players[idx],ign:newIGN,region,retired,results,retirements};
-  setPlayers(players); syncToSession(players);
-  closeEdit();
-  showToast(`✅ ${newIGN} updated`,'success');
-  renderManagePlayers(document.getElementById('manageSearch')?.value||'');
-  refreshAll();
+  try{
+    await sbUpdate('players',`ign=eq.${encodeURIComponent(origIGN)}`,{ign:newIGN,region,retired,results,retirements});
+    await loadPlayers();
+    closeEdit();
+    showToast(`✅ ${newIGN} updated`,'success');
+    renderManagePlayers(document.getElementById('manageSearch')?.value||'');
+    refreshAll();
+  }catch(e){showToast('Error: '+e.message,'error');}
 }
 
-// ─────────────────────────────────────────────
-//  PENDING APPROVALS
-// ─────────────────────────────────────────────
+// ── PENDING APPROVALS ──
 function renderPending(){
   const users=getUsers();
   const pending=users.filter(u=>u.role==='pending');
   const list=document.getElementById('pendingList');
-  if(!pending.length){ list.innerHTML='<div class="empty-msg">🎉 No pending requests</div>'; return; }
+  if(!pending.length){list.innerHTML='<div class="empty-msg">🎉 No pending requests</div>';return;}
   list.innerHTML=pending.map(u=>`
     <div class="approval-card" id="pendingCard_${u.username}">
       <div style="width:42px;height:42px;border-radius:10px;background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.25);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;">👤</div>
@@ -724,30 +687,28 @@ function renderPending(){
 function approveUser(username){
   const users=getUsers();
   const idx=users.findIndex(u=>u.username===username);
-  if(idx===-1) return;
+  if(idx===-1)return;
   users[idx].role='admin';
   setUsers(users);
   showToast(`✅ ${username} is now an admin`,'success');
-  renderPending(); updatePendingCount(); renderAdminList(); refreshDashboard();
+  renderPending();updatePendingCount();renderAdminList();refreshDashboard();
 }
 
 function denyUser(username){
-  if(!confirm(`Deny and delete account for ${username}?`)) return;
+  if(!confirm(`Deny and delete account for ${username}?`))return;
   let users=getUsers().filter(u=>u.username!==username);
   setUsers(users);
   showToast(`🗑 ${username} denied & deleted`,'info');
-  renderPending(); updatePendingCount(); refreshDashboard();
+  renderPending();updatePendingCount();refreshDashboard();
 }
 
 function updatePendingCount(){
   const count=getUsers().filter(u=>u.role==='pending').length;
   const el=document.getElementById('pendingCount');
-  if(el){ el.textContent=count; el.style.display=count>0?'inline':'none'; }
+  if(el){el.textContent=count;el.style.display=count>0?'inline':'none';}
 }
 
-// ─────────────────────────────────────────────
-//  MANAGE ADMINS (superadmin only)
-// ─────────────────────────────────────────────
+// ── MANAGE ADMINS ──
 function renderAdminList(){
   const users=getUsers().filter(u=>u.role==='admin'||u.role==='superadmin');
   const tbody=document.getElementById('adminListBody');
@@ -763,57 +724,33 @@ function renderAdminList(){
 }
 
 function revokeAdmin(username){
-  if(!confirm(`Revoke admin from ${username}? Their account will be deleted.`)) return;
+  if(!confirm(`Revoke admin from ${username}? Their account will be deleted.`))return;
   let users=getUsers().filter(u=>u.username!==username);
   setUsers(users);
   showToast(`${username} revoked`,'info');
-  renderAdminList(); refreshDashboard();
+  renderAdminList();refreshDashboard();
 }
 
-// ─────────────────────────────────────────────
-//  SYNC players to session for homepage
-// ─────────────────────────────────────────────
-function syncToSession(players){
-  // Build nw_results format for the homepage to consume
-  const results=[];
-  players.forEach(p=>{
-    (p.results||[]).forEach(r=>{
-      results.push({ign:p.ign,region:p.region,tierEarned:r.tierEarned,gamemode:r.gamemode,tester:'admin',date:new Date().toISOString()});
-    });
-  });
-  sessionStorage.setItem('nw_results',JSON.stringify(results));
-  // Also save full players for direct admin use
-  localStorage.setItem('nw_players',JSON.stringify(players));
-}
-
-// ─────────────────────────────────────────────
-//  TOAST
-// ─────────────────────────────────────────────
+// ── TOAST ──
 let toastTimer;
 function showToast(msg,type='info'){
   const t=document.getElementById('toast');
-  t.textContent=msg; t.className=`toast ${type} show`;
+  t.textContent=msg;t.className=`toast ${type} show`;
   clearTimeout(toastTimer);
   toastTimer=setTimeout(()=>t.classList.remove('show'),3000);
 }
 
-// ─────────────────────────────────────────────
-//  REFRESH ALL
-// ─────────────────────────────────────────────
+// ── REFRESH ALL ──
 function refreshAll(){
   refreshDashboard();
   updatePendingCount();
   renderManagePlayers(document.getElementById('manageSearch')?.value||'');
 }
 
-// ─────────────────────────────────────────────
-//  INIT
-// ─────────────────────────────────────────────
+// ── INIT ──
 initUsers();
-initPlayers();
 buildTierInputs('tierInputsGrid');
 
-// Check session
 const sess=getSession();
 if(sess){
   const users=getUsers();
@@ -821,17 +758,12 @@ if(sess){
   if(user){
     currentUser=user;
     updateNav(user);
-    if(user.role==='pending') showScreen('pending');
-    else if(user.role==='admin'||user.role==='superadmin') enterAdmin();
+    if(user.role==='pending')showScreen('pending');
+    else if(user.role==='admin'||user.role==='superadmin')enterAdmin();
     else showScreen('signIn');
-  } else {
-    showScreen('signIn');
-  }
-} else {
-  showScreen('signIn');
-}
+  }else{showScreen('signIn');}
+}else{showScreen('signIn');}
 
-// Auto-build tier inputs for edit modal when it opens
 document.getElementById('editModal').addEventListener('click',()=>{});
 </script>
 </body>
