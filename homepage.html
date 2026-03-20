@@ -425,32 +425,20 @@ async function fetchPlayers(){
     // const res=await fetch('https://your-bot.railway.app/players');
     // allPlayers=await res.json();
 
-    // Read results submitted by testers from sessionStorage
-    const submitted=JSON.parse(sessionStorage.getItem('nw_results')||'[]');
+    // Read players saved by the admin panel (localStorage)
+    const adminPlayers=JSON.parse(localStorage.getItem('nw_players')||'null');
 
-    // Build player list from submitted results
-    const playerMap={};
-    submitted.forEach(r=>{
-      if(!playerMap[r.ign]){
-        playerMap[r.ign]={ign:r.ign,region:r.region,retired:false,results:[],retirements:[]};
-      }
-      // Update region if provided
-      if(r.region) playerMap[r.ign].region=r.region;
-      // Remove old result for same gamemode, add new
-      playerMap[r.ign].results=playerMap[r.ign].results.filter(x=>x.gamemode!==r.gamemode);
-      playerMap[r.ign].results.push({tierEarned:r.tierEarned,gamemode:r.gamemode,region:r.region,tester:r.tester,date:r.date});
-    });
-
-    // Merge with demo data if no real submissions yet
-    if(submitted.length===0){
+    if(adminPlayers && adminPlayers.length>0){
+      // Use admin-managed player list directly
+      allPlayers=adminPlayers;
+    } else {
+      // Fall back to demo data if admin panel has never been used
       allPlayers=[
         {ign:'JiuJitsuBoy21',region:'NA',retired:false,
           results:[{tierEarned:'HT2',gamemode:'SMP',region:'NA'},{tierEarned:'LT1',gamemode:'Pot',region:'NA'}],retirements:[]},
         {ign:'Master_client',region:'NA',retired:true,
           results:[{tierEarned:'HT1',gamemode:'SMP',region:'NA'}],retirements:[{gamemode:'SMP',tier:'HT1'}]}
       ];
-    } else {
-      allPlayers=Object.values(playerMap);
     }
 
     if(currentTab==='Overall') renderOverall(allPlayers);
