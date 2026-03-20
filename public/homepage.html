@@ -419,48 +419,40 @@ function openProfile(ign){
 function closeModal(e){ if(e.target===document.getElementById('modalOverlay')) closeModalBtn(); }
 function closeModalBtn(){ document.getElementById('modalOverlay').classList.remove('open'); }
 
+const SUPABASE_URL='https://rljvcykuiswwriwapsgi.supabase.co';
+const SUPABASE_KEY='sb_publishable_1Xm_yUEgGvO0y9rhAj5ucg_trJh3S1j';
+
 async function fetchPlayers(){
   try{
-    // TODO: Replace with your Railway URL after deploying
-    // const res=await fetch('https://your-bot.railway.app/players');
-    // allPlayers=await res.json();
-
-    // Read results submitted by testers from sessionStorage
-    const submitted=JSON.parse(sessionStorage.getItem('nw_results')||'[]');
-
-    // Build player list from submitted results
-    const playerMap={};
-    submitted.forEach(r=>{
-      if(!playerMap[r.ign]){
-        playerMap[r.ign]={ign:r.ign,region:r.region,retired:false,results:[],retirements:[]};
-      }
-      // Update region if provided
-      if(r.region) playerMap[r.ign].region=r.region;
-      // Remove old result for same gamemode, add new
-      playerMap[r.ign].results=playerMap[r.ign].results.filter(x=>x.gamemode!==r.gamemode);
-      playerMap[r.ign].results.push({tierEarned:r.tierEarned,gamemode:r.gamemode,region:r.region,tester:r.tester,date:r.date});
+    const res=await fetch(SUPABASE_URL+'/rest/v1/players?select=*&order=created_at.asc',{
+      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}
     });
-
-    // Merge with demo data if no real submissions yet
-    if(submitted.length===0){
-      allPlayers=[
-        {ign:'JiuJitsuBoy21',region:'NA',retired:false,
-          results:[{tierEarned:'HT2',gamemode:'SMP',region:'NA'},{tierEarned:'LT1',gamemode:'Pot',region:'NA'}],retirements:[]},
-        {ign:'Master_client',region:'NA',retired:true,
-          results:[{tierEarned:'HT1',gamemode:'SMP',region:'NA'}],retirements:[{gamemode:'SMP',tier:'HT1'}]}
-      ];
+    if(!res.ok) throw new Error('Supabase fetch failed: '+res.status);
+    const data=await res.json();
+    if(data && data.length>0){
+      allPlayers=data.map(function(p){
+        return {
+          ign:p.ign,
+          region:p.region||'NA',
+          retired:p.retired||false,
+          results:p.results||[],
+          retirements:p.retirements||[]
+        };
+      });
     } else {
-      allPlayers=Object.values(playerMap);
+      allPlayers=[];
     }
-
     if(currentTab==='Overall') renderOverall(allPlayers);
     else renderLeaderboard(allPlayers,currentTab);
-  } catch(e){ console.error(e); }
+  } catch(e){
+    console.error('Error loading players:',e);
+    document.getElementById('leaderboard').innerHTML='<div class="empty-state"><div class="icon">⚠️</div><h3>Could not load players</h3><p>Check your connection and try again.</p></div>';
+  }
 }
 
 fetchPlayers();
-// Refresh every 10 seconds to pick up new tester submissions
-setInterval(fetchPlayers,10000);
+// Refresh every 15 seconds
+setInterval(fetchPlayers,15000);
 </script>
 </body>
 </html>
