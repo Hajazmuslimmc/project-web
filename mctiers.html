@@ -331,29 +331,40 @@ const GM_ORDER = ['vanilla','uhc','pot','nethop','smp','sword','axe','mace','car
 
 // ── SUPABASE REST (plain fetch, no SDK needed) ──
 let dbOk = false;
-const SB_HEADERS = {
-  'apikey': SB_KEY,
-  'Authorization': 'Bearer ' + SB_KEY,
-  'Content-Type': 'application/json',
-  'Prefer': 'return=representation'
-};
+function sbHeaders(extra){
+  const h = new Headers();
+  h.append('apikey', SB_KEY);
+  h.append('Authorization', 'Bearer ' + SB_KEY);
+  h.append('Content-Type', 'application/json');
+  if(extra) h.append('Prefer', extra);
+  return h;
+}
 async function sbSelect(table){
-  const r = await fetch(SB_URL+'/rest/v1/'+table+'?select=*', {headers: SB_HEADERS});
-  if(!r.ok) throw new Error(await r.text());
+  const r = await fetch(SB_URL+'/rest/v1/'+table+'?select=*&order=id.asc&limit=100000', {
+    method:'GET', mode:'cors', headers: sbHeaders()
+  });
+  if(!r.ok){ const t=await r.text(); throw new Error(t); }
   return r.json();
 }
 async function sbInsert(table, rows){
-  const r = await fetch(SB_URL+'/rest/v1/'+table, {method:'POST', headers: SB_HEADERS, body: JSON.stringify(rows)});
-  if(!r.ok) throw new Error(await r.text());
+  const r = await fetch(SB_URL+'/rest/v1/'+table, {
+    method:'POST', mode:'cors',
+    headers: sbHeaders('return=representation'),
+    body: JSON.stringify(rows)
+  });
+  if(!r.ok){ const t=await r.text(); throw new Error(t); }
   return r.json();
 }
 async function sbDeleteById(table, id){
-  const r = await fetch(SB_URL+'/rest/v1/'+table+'?id=eq.'+id, {method:'DELETE', headers: SB_HEADERS});
-  if(!r.ok) throw new Error(await r.text());
+  const r = await fetch(SB_URL+'/rest/v1/'+table+'?id=eq.'+id, {
+    method:'DELETE', mode:'cors', headers: sbHeaders()
+  });
+  if(!r.ok){ const t=await r.text(); throw new Error(t); }
 }
 async function sbDeleteByNameGm(table, name, gm){
-  const r = await fetch(SB_URL+'/rest/v1/'+table+'?name=eq.'+encodeURIComponent(name)+'&gamemode=eq.'+gm, {method:'DELETE', headers: SB_HEADERS});
-  if(!r.ok) throw new Error(await r.text());
+  const url = SB_URL+'/rest/v1/'+table+'?name=eq.'+encodeURIComponent(name)+'&gamemode=eq.'+encodeURIComponent(gm);
+  const r = await fetch(url, {method:'DELETE', mode:'cors', headers: sbHeaders()});
+  if(!r.ok){ const t=await r.text(); throw new Error(t); }
 }
 
 // ── STATE ──
@@ -405,24 +416,44 @@ function rebuildDATA(){
 
 // ── SUPABASE LOAD ──
 async function initDB(){
+  // Show loading state
+  document.getElementById('mainContent').innerHTML='<div class="loading"><div class="spinner"></div>&nbsp;Connecting to database...</div>';
   try{
     const data = await sbSelect('players');
     dbOk=true; setDBStatus(true);
-    if(data && data.length>0){allPlayers=data;rebuildDATA();renderContent();}
-    else{await seedToDB();}
+    if(data && data.length > 0){
+      allPlayers = data;
+      console.log('Loaded', data.length, 'players from Supabase');
+      rebuildDATA(); renderContent();
+    } else {
+      console.log('Table empty, seeding initial data...');
+      await seedToDB();
+    }
   }catch(e){
-    console.warn('Supabase offline:',e.message);
+    console.error('Supabase error:', e.message);
     setDBStatus(false);
-    allPlayers=getSeed(); rebuildDATA(); renderContent();
+    // Fall back to local seed so site still works
+    allPlayers = getSeed();
+    rebuildDATA(); renderContent();
   }
 }
 
 async function seedToDB(){
-  const seed=getSeed();
+  const seed = getSeed();
   try{
-    const data = await sbInsert('players', seed);
-    allPlayers = data||seed;
-  }catch(e){ allPlayers=seed; }
+    // Insert in batches of 50 to avoid request size limits
+    let allInserted = [];
+    for(let i=0; i<seed.length; i+=50){
+      const batch = seed.slice(i, i+50);
+      const inserted = await sbInsert('players', batch);
+      allInserted = allInserted.concat(inserted||batch);
+    }
+    allPlayers = allInserted.length ? allInserted : seed;
+    console.log('Seeded', allPlayers.length, 'players to Supabase');
+  }catch(e){
+    console.error('Seed error:', e.message);
+    allPlayers = seed;
+  }
   rebuildDATA(); renderContent();
 }
 
@@ -454,7 +485,7 @@ function buildOverall(){
   ranked.sort((a,b)=>b.total-a.total);
   function reg(n){for(const td of Object.values(DATA))for(const pl of Object.values(td)){const p=pl.find(x=>x.name===n);if(p)return p.region||'NA';}return'NA';}
   let html='<div class="overall-list">';
-  ranked.slice(0,150).forEach((p,i)=>{
+  ranked.slice(0,100000).forEach((p,i)=>{
     const rc=i===0?'r1':i===1?'r2':i===2?'r3':'';
     const region=reg(p.name);
     const badges=GM_ORDER.map(gm=>{

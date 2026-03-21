@@ -18,7 +18,7 @@
   .nav-btn:hover,.nav-btn.active{background:var(--bg3);color:var(--text);}
   .discord-btn{color:#fff;background:rgba(88,101,242,.25);border:1px solid rgba(88,101,242,.5);}
   .discord-btn:hover{background:rgba(88,101,242,.45);border-color:#5865f2;}
-  .nav-search{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:7px 14px;color:var(--text);font-family:'Inter',sans-serif;font-size:.85rem;width:200px;outline:none;}
+  .nav-search{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:7px 14px;color:var(--text);font-family:'Inter',sans-serif;font-size:.85rem;width:200px;outline:none;transition:border .2s;}
   .nav-search:focus{border-color:var(--accent);}
   /* TABS */
   .tabs-wrap{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 28px;}
@@ -75,7 +75,7 @@
   /* MODAL */
   .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(5px);}
   .modal-overlay.show{display:flex;}
-  .modal{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:28px;min-width:380px;max-width:460px;width:90vw;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.6);animation:popIn .25s cubic-bezier(.34,1.56,.64,1);}
+  .modal{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:28px;min-width:420px;max-width:480px;width:90vw;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.6);animation:popIn .25s cubic-bezier(.34,1.56,.64,1);}
   @keyframes popIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
   .modal-close{position:absolute;top:14px;right:14px;background:var(--bg4);border:1px solid var(--border);color:var(--muted);cursor:pointer;width:32px;height:32px;border-radius:8px;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:all .2s;}
   .modal-close:hover{color:var(--text);border-color:var(--accent);}
@@ -86,7 +86,7 @@
   .modal-section-label{font-size:.75rem;font-weight:700;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin:14px 0 8px;}
   .modal-position{background:var(--bg3);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:12px;}
   .modal-pos-num{font-family:'Rajdhani',sans-serif;font-size:1.8rem;font-weight:700;color:var(--gold);}
-  .modal-tiers-grid{display:flex;flex-wrap:wrap;gap:7px;background:var(--bg3);border-radius:10px;padding:12px;}
+  .modal-tiers-grid{display:flex;flex-wrap:wrap;gap:7px;background:var(--bg3);border-radius:10px;padding:12px;max-height:200px;overflow-y:auto;}
   .modal-tbadge{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:42px;}
   .modal-tbadge .ico{font-size:1.2rem;}
   .modal-tbadge .lbl{font-size:.6rem;font-weight:700;padding:2px 5px;border-radius:4px;}
@@ -98,7 +98,7 @@
   /* ADMIN */
   .admin-panel{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:2000;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
   .admin-panel.show{display:flex;}
-  .admin-box{background:var(--bg2);border:1px solid var(--border);border-radius:16px;width:740px;max-width:95vw;max-height:88vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 32px 80px rgba(0,0,0,.7);animation:popIn .25s cubic-bezier(.34,1.56,.64,1);}
+  .admin-box{background:var(--bg2);border:1px solid var(--border);border-radius:16px;width:760px;max-width:95vw;max-height:88vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 32px 80px rgba(0,0,0,.7);animation:popIn .25s cubic-bezier(.34,1.56,.64,1);}
   .admin-header{padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
   .admin-title{font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;color:var(--gold);}
   .admin-body{padding:20px 24px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:14px;}
@@ -148,6 +148,8 @@
   .db-status{display:inline-flex;align-items:center;gap:5px;font-size:.75rem;color:var(--muted);}
   .db-dot{width:7px;height:7px;border-radius:50%;background:var(--green);}
   .db-dot.err{background:var(--red);}
+  /* SEARCH HIGHLIGHT */
+  .search-real-rank{display:inline-flex;align-items:center;gap:4px;background:rgba(245,166,35,.15);border:1px solid rgba(245,166,35,.4);border-radius:6px;padding:2px 8px;font-size:.72rem;color:var(--gold);font-weight:700;margin-left:8px;}
   ::-webkit-scrollbar{width:6px;height:6px;}
   ::-webkit-scrollbar-track{background:var(--bg2);}
   ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
@@ -186,6 +188,11 @@
     <button class="tab" onclick="switchTab('mace',this)"><span class="icon">🔨</span>Mace</button>
     <button class="tab" onclick="switchTab('cart',this)"><span class="icon">🛒</span>Cart</button>
     <button class="tab" onclick="switchTab('spearmace',this)"><span class="icon">🏹</span>Spear Mace</button>
+    <button class="tab" onclick="switchTab('nethsmp',this)"><span class="icon">🌐</span>Neth SMP</button>
+    <button class="tab" onclick="switchTab('ironsmp',this)"><span class="icon">🛡️</span>Iron SMP</button>
+    <button class="tab" onclick="switchTab('spearmaceop',this)"><span class="icon">⚡</span>Spear Mace OP</button>
+    <button class="tab" onclick="switchTab('bow',this)"><span class="icon">🏹</span>Bow</button>
+    <button class="tab" onclick="switchTab('opkit',this)"><span class="icon">💥</span>Op Kit</button>
   </div>
 </div>
 
@@ -201,7 +208,7 @@
       <span style="font-weight:600;color:var(--accent)">⏳ Coming Soon</span>
     </div>
   </div>
-  <div id="mainContent"><div class="loading"><div class="spinner"></div>&nbsp;Loading players...</div></div>
+  <div id="mainContent"><div class="loading"><div class="spinner"></div>&nbsp;Connecting to database...</div></div>
 </div>
 
 <!-- PROFILE MODAL -->
@@ -266,7 +273,9 @@
             <option value="vanilla">Vanilla</option><option value="uhc">UHC</option><option value="pot">Pot</option>
             <option value="nethop">NethOP</option><option value="smp">SMP</option><option value="sword">Sword</option>
             <option value="axe">Axe</option><option value="mace">Mace</option><option value="cart">Cart</option>
-            <option value="spearmace">Spear Mace</option>
+            <option value="spearmace">Spear Mace</option><option value="nethsmp">Neth SMP</option>
+            <option value="ironsmp">Iron SMP</option><option value="spearmaceop">Spear Mace OP</option>
+            <option value="bow">Bow</option><option value="opkit">Op Kit</option>
           </select>
         </div>
         <div class="admin-field"><label>Tier</label>
@@ -296,6 +305,8 @@
             <option value="pot">Pot</option><option value="nethop">NethOP</option><option value="smp">SMP</option>
             <option value="sword">Sword</option><option value="axe">Axe</option><option value="mace">Mace</option>
             <option value="cart">Cart</option><option value="spearmace">Spear Mace</option>
+            <option value="nethsmp">Neth SMP</option><option value="ironsmp">Iron SMP</option>
+            <option value="spearmaceop">Spear Mace OP</option><option value="bow">Bow</option><option value="opkit">Op Kit</option>
           </select>
         </div>
       </div>
@@ -309,7 +320,9 @@
         <option value="vanilla">Vanilla</option><option value="uhc">UHC</option><option value="pot">Pot</option>
         <option value="nethop">NethOP</option><option value="smp">SMP</option><option value="sword">Sword</option>
         <option value="axe">Axe</option><option value="mace">Mace</option><option value="cart">Cart</option>
-        <option value="spearmace">Spear Mace</option>
+        <option value="spearmace">Spear Mace</option><option value="nethsmp">Neth SMP</option>
+        <option value="ironsmp">Iron SMP</option><option value="spearmaceop">Spear Mace OP</option>
+        <option value="bow">Bow</option><option value="opkit">Op Kit</option>
       </select>
       <div class="admin-players-list" id="adminPreviewList"></div>
     </div>
@@ -325,47 +338,69 @@ const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 const ADMIN_PASS = 'KabulKarwan@2013';
 
 const TIER_PTS = {LT5:1,HT5:2,LT4:3,HT4:4,LT3:5,HT3:10,LT2:20,HT2:40,LT1:50,HT1:60};
-const GM_ICONS = {vanilla:'🎯',uhc:'❤️',pot:'🧪',nethop:'👾',smp:'🌀',sword:'⚔️',axe:'🪓',mace:'🔨',cart:'🛒',spearmace:'🏹'};
-const GM_NAMES = {vanilla:'Vanilla',uhc:'UHC',pot:'Pot',nethop:'NethOP',smp:'SMP',sword:'Sword',axe:'Axe',mace:'Mace',cart:'Cart',spearmace:'Spear Mace'};
-const GM_ORDER = ['vanilla','uhc','pot','nethop','smp','sword','axe','mace','cart','spearmace'];
-
-// ── SUPABASE REST (plain fetch, no SDK needed) ──
-let dbOk = false;
-const SB_HEADERS = {
-  'apikey': SB_KEY,
-  'Authorization': 'Bearer ' + SB_KEY,
-  'Content-Type': 'application/json',
-  'Prefer': 'return=representation'
+const GM_ICONS = {
+  vanilla:'🎯',uhc:'❤️',pot:'🧪',nethop:'👾',smp:'🌀',sword:'⚔️',
+  axe:'🪓',mace:'🔨',cart:'🛒',spearmace:'🏹',
+  nethsmp:'🌐',ironsmp:'🛡️',spearmaceop:'⚡',bow:'🎯',opkit:'💥'
 };
+const GM_NAMES = {
+  vanilla:'Vanilla',uhc:'UHC',pot:'Pot',nethop:'NethOP',smp:'SMP',sword:'Sword',
+  axe:'Axe',mace:'Mace',cart:'Cart',spearmace:'Spear Mace',
+  nethsmp:'Neth SMP',ironsmp:'Iron SMP',spearmaceop:'Spear Mace OP',bow:'Bow',opkit:'Op Kit'
+};
+const GM_ORDER = ['vanilla','uhc','pot','nethop','smp','sword','axe','mace','cart','spearmace','nethsmp','ironsmp','spearmaceop','bow','opkit'];
+
+// ── SUPABASE REST ──
+let dbOk = false;
+// Use plain objects instead of Headers() so this works everywhere (including sandboxed iframes)
+function sbHeaders(prefer){
+  const h = {
+    'apikey': SB_KEY,
+    'Authorization': 'Bearer ' + SB_KEY,
+    'Content-Type': 'application/json'
+  };
+  if(prefer) h['Prefer'] = prefer;
+  return h;
+}
 async function sbSelect(table){
-  const r = await fetch(SB_URL+'/rest/v1/'+table+'?select=*', {headers: SB_HEADERS});
-  if(!r.ok) throw new Error(await r.text());
+  const r = await fetch(SB_URL+'/rest/v1/'+table+'?select=*&order=id.asc&limit=100000', {
+    method:'GET', headers: sbHeaders()
+  });
+  if(!r.ok){ const t=await r.text(); throw new Error(t); }
   return r.json();
 }
 async function sbInsert(table, rows){
-  const r = await fetch(SB_URL+'/rest/v1/'+table, {method:'POST', headers: SB_HEADERS, body: JSON.stringify(rows)});
-  if(!r.ok) throw new Error(await r.text());
+  const r = await fetch(SB_URL+'/rest/v1/'+table, {
+    method:'POST',
+    headers: sbHeaders('return=representation'),
+    body: JSON.stringify(rows)
+  });
+  if(!r.ok){ const t=await r.text(); throw new Error(t); }
   return r.json();
 }
 async function sbDeleteById(table, id){
-  const r = await fetch(SB_URL+'/rest/v1/'+table+'?id=eq.'+id, {method:'DELETE', headers: SB_HEADERS});
-  if(!r.ok) throw new Error(await r.text());
+  const r = await fetch(SB_URL+'/rest/v1/'+table+'?id=eq.'+id, {
+    method:'DELETE', headers: sbHeaders()
+  });
+  if(!r.ok){ const t=await r.text(); throw new Error(t); }
 }
 async function sbDeleteByNameGm(table, name, gm){
-  const r = await fetch(SB_URL+'/rest/v1/'+table+'?name=eq.'+encodeURIComponent(name)+'&gamemode=eq.'+gm, {method:'DELETE', headers: SB_HEADERS});
-  if(!r.ok) throw new Error(await r.text());
+  const url = SB_URL+'/rest/v1/'+table+'?name=eq.'+encodeURIComponent(name)+'&gamemode=eq.'+encodeURIComponent(gm);
+  const r = await fetch(url, {method:'DELETE', headers: sbHeaders()});
+  if(!r.ok){ const t=await r.text(); throw new Error(t); }
 }
 
 // ── STATE ──
 let DATA = {};
 let allPlayers = [];
 let currentTab = 'overall';
+// Pre-compute sorted overall ranking so it's always consistent
+let cachedRanking = [];
 
-// ── SKIN URLS (mc-heads.net proxies NameMC) ──
+// ── SKIN URLS ──
 const skinUrl  = n => `https://mc-heads.net/avatar/${encodeURIComponent(n)}/64`;
 const skinSm   = n => `https://mc-heads.net/avatar/${encodeURIComponent(n)}/32`;
 const nameMCUrl= n => `https://namemc.com/profile/${encodeURIComponent(n)}`;
-const fallback = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
 function imgErr(el){ el.style.display='none'; }
 
 // ── TITLE ──
@@ -401,28 +436,70 @@ function rebuildDATA(){
     if(DATA[gm]&&DATA[gm][tk]!==undefined)
       DATA[gm][tk].push({name:p.name,ht:!!p.ht,region:p.region||'NA',db_id:p.id});
   });
+  // Rebuild global ranking cache whenever data changes
+  rebuildRankingCache();
+}
+
+// ── RANKING CACHE (always reflects true global rank) ──
+function rebuildRankingCache(){
+  const names=new Set();
+  for(const td of Object.values(DATA))for(const pl of Object.values(td))pl.forEach(p=>names.add(p.name));
+  cachedRanking=[...names].map(n=>{
+    const{total,tiers}=computePlayer(n);
+    const region=getRegion(n);
+    return{name:n,total,tiers,region};
+  }).sort((a,b)=>b.total-a.total);
+}
+
+function getRegion(name){
+  for(const td of Object.values(DATA))for(const pl of Object.values(td)){
+    const p=pl.find(x=>x.name===name);if(p)return p.region||'NA';
+  }
+  return'NA';
+}
+
+function getRealRank(name){
+  const idx=cachedRanking.findIndex(p=>p.name.toLowerCase()===name.toLowerCase());
+  return idx===-1?null:idx+1;
 }
 
 // ── SUPABASE LOAD ──
 async function initDB(){
+  document.getElementById('mainContent').innerHTML='<div class="loading"><div class="spinner"></div>&nbsp;Connecting to database...</div>';
   try{
     const data = await sbSelect('players');
     dbOk=true; setDBStatus(true);
-    if(data && data.length>0){allPlayers=data;rebuildDATA();renderContent();}
-    else{await seedToDB();}
+    if(data && data.length > 0){
+      allPlayers = data;
+      console.log('Loaded', data.length, 'players from Supabase');
+      rebuildDATA(); renderContent();
+    } else {
+      console.log('Table empty, seeding initial data...');
+      await seedToDB();
+    }
   }catch(e){
-    console.warn('Supabase offline:',e.message);
+    console.error('Supabase error:', e.message);
     setDBStatus(false);
-    allPlayers=getSeed(); rebuildDATA(); renderContent();
+    allPlayers = getSeed();
+    rebuildDATA(); renderContent();
   }
 }
 
 async function seedToDB(){
-  const seed=getSeed();
+  const seed = getSeed();
   try{
-    const data = await sbInsert('players', seed);
-    allPlayers = data||seed;
-  }catch(e){ allPlayers=seed; }
+    let allInserted = [];
+    for(let i=0; i<seed.length; i+=50){
+      const batch = seed.slice(i, i+50);
+      const inserted = await sbInsert('players', batch);
+      allInserted = allInserted.concat(inserted||batch);
+    }
+    allPlayers = allInserted.length ? allInserted : seed;
+    console.log('Seeded', allPlayers.length, 'players to Supabase');
+  }catch(e){
+    console.error('Seed error:', e.message);
+    allPlayers = seed;
+  }
   rebuildDATA(); renderContent();
 }
 
@@ -437,6 +514,8 @@ function setDBStatus(ok){
 // ── RENDER ──
 function switchTab(tab,el){
   currentTab=tab;
+  // Clear search when switching tabs
+  document.getElementById('globalSearch').value='';
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
   renderContent();
@@ -448,15 +527,9 @@ function renderContent(){
 }
 
 function buildOverall(){
-  const names=new Set();
-  for(const td of Object.values(DATA))for(const pl of Object.values(td))pl.forEach(p=>names.add(p.name));
-  let ranked=[...names].map(n=>{const{total,tiers}=computePlayer(n);return{name:n,total,tiers};});
-  ranked.sort((a,b)=>b.total-a.total);
-  function reg(n){for(const td of Object.values(DATA))for(const pl of Object.values(td)){const p=pl.find(x=>x.name===n);if(p)return p.region||'NA';}return'NA';}
   let html='<div class="overall-list">';
-  ranked.slice(0,100000).forEach((p,i)=>{
+  cachedRanking.slice(0,100000).forEach((p,i)=>{
     const rc=i===0?'r1':i===1?'r2':i===2?'r3':'';
-    const region=reg(p.name);
     const badges=GM_ORDER.map(gm=>{
       if(!p.tiers[gm])return`<div class="tbadge lt" title="${GM_NAMES[gm]}"><span class="badge-icon">${GM_ICONS[gm]}</span><span class="badge-label">-</span></div>`;
       const t=p.tiers[gm],cls=t.ht?'ht':'lt',lbl=(t.ht?'HT':'LT')+t.tier;
@@ -469,7 +542,7 @@ function buildOverall(){
         <div class="player-name">${p.name}</div>
         <div class="player-title">💎 ${getTitle(p.total)} (${p.total} points)</div>
       </div>
-      <div class="region-tag ${region}">${region}</div>
+      <div class="region-tag ${p.region}">${p.region}</div>
       <div class="tier-badges">${badges}</div>
     </div>`;
   });
@@ -501,13 +574,9 @@ function buildTierView(gm){
 // ── PROFILE ──
 function openProfile(name){
   const{total,tiers}=computePlayer(name);
-  let region='NA';
-  for(const td of Object.values(DATA))for(const pl of Object.values(td)){const p=pl.find(x=>x.name===name);if(p){region=p.region||'NA';break;}}
-  // rank
-  const names=new Set();
-  for(const td of Object.values(DATA))for(const pl of Object.values(td))pl.forEach(p=>names.add(p.name));
-  const ranked=[...names].map(n=>{const{total:t}=computePlayer(n);return{name:n,total:t};}).sort((a,b)=>b.total-a.total);
-  const rank=ranked.findIndex(p=>p.name===name)+1;
+  const region=getRegion(name);
+  // ALWAYS use real rank from the global cached ranking
+  const rank=getRealRank(name)||'?';
 
   document.getElementById('pAvatarImg').src=skinUrl(name);
   document.getElementById('pName').textContent=name;
@@ -552,13 +621,25 @@ async function adminAddPlayer(){
   const tk='t'+tier;
   if(DATA[gm][tk].find(p=>p.name.toLowerCase()===name.toLowerCase())){showToast('Already in this tier!',true);return;}
   const row={name,gamemode:gm,tier,ht,region};
-  try{
-    const data = await sbInsert('players', [row]);
-    allPlayers.push(data[0]); rebuildDATA();
-    showToast('✅ Added '+name+' to '+GM_NAMES[gm]+' T'+tier);
-  }catch(e){
-    allPlayers.push({...row, id:Date.now()}); rebuildDATA();
-    showToast('✅ Added '+name+' (local only)', false);
+  
+  if(dbOk){
+    // Always try to save to DB first
+    try{
+      const data = await sbInsert('players', [row]);
+      allPlayers.push(data[0]);
+      rebuildDATA();
+      showToast('✅ Saved to DB: '+name+' → '+GM_NAMES[gm]+' T'+tier+(ht?'HT':'LT'));
+    }catch(e){
+      console.error('Insert error:', e.message);
+      // Still add locally so user sees it this session
+      allPlayers.push({...row, id:'local_'+Date.now()});
+      rebuildDATA();
+      showToast('⚠️ DB error, added locally only', true);
+    }
+  } else {
+    allPlayers.push({...row, id:'local_'+Date.now()});
+    rebuildDATA();
+    showToast('⚠️ Added locally (DB offline)', false);
   }
   document.getElementById('addName').value='';
   renderAdminPreview();renderContent();
@@ -575,7 +656,7 @@ async function adminRemoveByName(){
     if(!toRemove.length)continue;
     for(const p of toRemove){
       try{
-        if(p.id&&dbOk) await sbDeleteById('players', p.id);
+        if(p.id&&dbOk&&!String(p.id).startsWith('local_')) await sbDeleteById('players', p.id);
       }catch(e){}
       allPlayers=allPlayers.filter(x=>x!==p);removed++;
     }
@@ -586,7 +667,7 @@ async function adminRemoveByName(){
 
 async function removeRowInline(dbId,name,gm){
   try{
-    if(dbId&&dbOk) await sbDeleteById('players', dbId);
+    if(dbId&&dbOk&&!String(dbId).startsWith('local_')) await sbDeleteById('players', dbId);
     else if(dbOk) await sbDeleteByNameGm('players', name, gm);
   }catch(e){}
   allPlayers=allPlayers.filter(p=>!(p.id===dbId||(p.name===name&&p.gamemode===gm)));
@@ -612,29 +693,34 @@ function renderAdminPreview(){
   list.innerHTML=html||'<div style="color:var(--muted);font-size:.85rem;padding:10px 0;">No players in this gamemode.</div>';
 }
 
-// ── SEARCH ──
+// ── SEARCH — shows real global rank ──
 function handleGlobalSearch(val){
   if(!val.trim()){renderContent();return;}
   const q=val.toLowerCase();
-  const names=new Set();
-  for(const td of Object.values(DATA))for(const pl of Object.values(td))pl.forEach(p=>names.add(p.name));
-  const matches=[...names].filter(n=>n.toLowerCase().includes(q));
-  if(!matches.length){document.getElementById('mainContent').innerHTML='<p style="color:var(--muted);padding:20px 0;">No players found.</p>';return;}
-  let ranked=matches.map(n=>{const{total,tiers}=computePlayer(n);return{name:n,total,tiers};}).sort((a,b)=>b.total-a.total);
-  function reg(n){for(const td of Object.values(DATA))for(const pl of Object.values(td)){const p=pl.find(x=>x.name===n);if(p)return p.region||'NA';}return'NA';}
+  // Filter from cached ranking so order and rank numbers are TRUE global ranks
+  const matches=cachedRanking.filter(p=>p.name.toLowerCase().includes(q));
+  if(!matches.length){
+    document.getElementById('mainContent').innerHTML='<p style="color:var(--muted);padding:20px 0;">No players found.</p>';
+    return;
+  }
   let html='<div class="overall-list">';
-  ranked.forEach((p,i)=>{
-    const region=reg(p.name);
+  matches.forEach((p)=>{
+    // realRank is index in the global sorted array
+    const realRank=getRealRank(p.name);
+    const rc=realRank===1?'r1':realRank===2?'r2':realRank===3?'r3':'';
     const badges=GM_ORDER.map(gm=>{
-      if(!p.tiers[gm])return`<div class="tbadge lt"><span class="badge-icon">${GM_ICONS[gm]}</span><span class="badge-label">-</span></div>`;
+      if(!p.tiers[gm])return`<div class="tbadge lt" title="${GM_NAMES[gm]}"><span class="badge-icon">${GM_ICONS[gm]}</span><span class="badge-label">-</span></div>`;
       const t=p.tiers[gm],cls=t.ht?'ht':'lt',lbl=(t.ht?'HT':'LT')+t.tier;
-      return`<div class="tbadge ${cls}"><span class="badge-icon">${GM_ICONS[gm]}</span><span class="badge-label">${lbl}</span></div>`;
+      return`<div class="tbadge ${cls}" title="${GM_NAMES[gm]} ${lbl}"><span class="badge-icon">${GM_ICONS[gm]}</span><span class="badge-label">${lbl}</span></div>`;
     }).join('');
     html+=`<div class="overall-row" onclick="openProfile(${JSON.stringify(p.name)})">
-      <div class="rank-num">${i+1}.</div>
+      <div class="rank-num ${rc}">${realRank}.</div>
       <div class="player-avatar"><img src="${skinUrl(p.name)}" alt="${p.name}" onerror="imgErr(this)"></div>
-      <div class="player-info"><div class="player-name">${p.name}</div><div class="player-title">💎 ${getTitle(p.total)} (${p.total} pts)</div></div>
-      <div class="region-tag ${region}">${region}</div>
+      <div class="player-info">
+        <div class="player-name">${p.name}<span class="search-real-rank">🏆 Global #${realRank}</span></div>
+        <div class="player-title">💎 ${getTitle(p.total)} (${p.total} pts)</div>
+      </div>
+      <div class="region-tag ${p.region}">${p.region}</div>
       <div class="tier-badges">${badges}</div>
     </div>`;
   });
@@ -737,6 +823,36 @@ function getSeed(){return[
   {name:'SpearFlick',gamemode:'spearmace',tier:3,ht:false,region:'NA'},{name:'MaceSpin',gamemode:'spearmace',tier:3,ht:false,region:'EU'},{name:'TipDodge',gamemode:'spearmace',tier:3,ht:false,region:'NA'},
   {name:'SpearApprentice',gamemode:'spearmace',tier:4,ht:false,region:'NA'},{name:'MaceLearner',gamemode:'spearmace',tier:4,ht:false,region:'NA'},{name:'PokeFighter',gamemode:'spearmace',tier:4,ht:false,region:'EU'},
   {name:'SpearNovice',gamemode:'spearmace',tier:5,ht:false,region:'NA'},{name:'MaceBaby',gamemode:'spearmace',tier:5,ht:false,region:'NA'},{name:'PokePoker',gamemode:'spearmace',tier:5,ht:false,region:'NA'},
+  // NETH SMP
+  {name:'Swight',gamemode:'nethsmp',tier:1,ht:true,region:'NA'},{name:'janekv',gamemode:'nethsmp',tier:1,ht:false,region:'EU'},
+  {name:'entit1es',gamemode:'nethsmp',tier:2,ht:false,region:'NA'},{name:'BetterOffSad',gamemode:'nethsmp',tier:2,ht:false,region:'NA'},{name:'YungExple',gamemode:'nethsmp',tier:2,ht:false,region:'NA'},
+  {name:'chqsed',gamemode:'nethsmp',tier:3,ht:false,region:'NA'},{name:'YungSimsek',gamemode:'nethsmp',tier:3,ht:false,region:'NA'},{name:'MoOa_',gamemode:'nethsmp',tier:3,ht:false,region:'NA'},
+  {name:'LilZayy_',gamemode:'nethsmp',tier:4,ht:false,region:'NA'},{name:'keepmytears',gamemode:'nethsmp',tier:4,ht:false,region:'NA'},
+  {name:'vanesssaaaaaaa',gamemode:'nethsmp',tier:5,ht:false,region:'NA'},{name:'_nixtro_',gamemode:'nethsmp',tier:5,ht:false,region:'NA'},
+  // IRON SMP
+  {name:'Marlowww',gamemode:'ironsmp',tier:1,ht:true,region:'NA'},{name:'coldified',gamemode:'ironsmp',tier:1,ht:false,region:'EU'},
+  {name:'Freekee_Fang',gamemode:'ironsmp',tier:2,ht:false,region:'NA'},{name:'Rivise',gamemode:'ironsmp',tier:2,ht:false,region:'NA'},{name:'CorruptNoob',gamemode:'ironsmp',tier:2,ht:false,region:'NA'},
+  {name:'kylanss',gamemode:'ironsmp',tier:3,ht:false,region:'NA'},{name:'Takqo',gamemode:'ironsmp',tier:3,ht:false,region:'NA'},{name:'ItzRelyks',gamemode:'ironsmp',tier:3,ht:false,region:'NA'},
+  {name:'LINGEEE',gamemode:'ironsmp',tier:4,ht:false,region:'NA'},{name:'kretrex',gamemode:'ironsmp',tier:4,ht:false,region:'NA'},
+  {name:'zMort_',gamemode:'ironsmp',tier:5,ht:false,region:'NA'},{name:'HT1Ghoulz',gamemode:'ironsmp',tier:5,ht:false,region:'NA'},
+  // SPEAR MACE OP
+  {name:'Kylaz',gamemode:'spearmaceop',tier:1,ht:true,region:'NA'},{name:'Swight',gamemode:'spearmaceop',tier:1,ht:false,region:'NA'},
+  {name:'LanceKing',gamemode:'spearmaceop',tier:2,ht:false,region:'NA'},{name:'SpearGod',gamemode:'spearmaceop',tier:2,ht:false,region:'EU'},{name:'ThrustMaster',gamemode:'spearmaceop',tier:2,ht:false,region:'NA'},
+  {name:'PiercePro',gamemode:'spearmaceop',tier:3,ht:false,region:'EU'},{name:'ImpactKing',gamemode:'spearmaceop',tier:3,ht:false,region:'NA'},{name:'ShieldBreaker',gamemode:'spearmaceop',tier:3,ht:false,region:'NA'},
+  {name:'MaceSpin',gamemode:'spearmaceop',tier:4,ht:false,region:'EU'},{name:'TipDodge',gamemode:'spearmaceop',tier:4,ht:false,region:'NA'},
+  {name:'PokePoker',gamemode:'spearmaceop',tier:5,ht:false,region:'NA'},{name:'MaceBaby',gamemode:'spearmaceop',tier:5,ht:false,region:'NA'},
+  // BOW
+  {name:'coldified',gamemode:'bow',tier:1,ht:true,region:'EU'},{name:'Marlowww',gamemode:'bow',tier:1,ht:false,region:'NA'},
+  {name:'Arsakha',gamemode:'bow',tier:2,ht:false,region:'NA'},{name:'Koharu89',gamemode:'bow',tier:2,ht:false,region:'NA'},{name:'BlvckWlf',gamemode:'bow',tier:2,ht:false,region:'NA'},
+  {name:'Respect5595',gamemode:'bow',tier:3,ht:false,region:'NA'},{name:'Paulinhq',gamemode:'bow',tier:3,ht:false,region:'NA'},{name:'yMiau',gamemode:'bow',tier:3,ht:false,region:'NA'},
+  {name:'Insanel',gamemode:'bow',tier:4,ht:false,region:'NA'},{name:'ohAizen',gamemode:'bow',tier:4,ht:false,region:'NA'},
+  {name:'Fatal1113',gamemode:'bow',tier:5,ht:false,region:'NA'},{name:'ynkylo',gamemode:'bow',tier:5,ht:false,region:'NA'},
+  // OP KIT
+  {name:'Kylaz',gamemode:'opkit',tier:1,ht:true,region:'NA'},{name:'Marlowww',gamemode:'opkit',tier:1,ht:false,region:'NA'},
+  {name:'coldified',gamemode:'opkit',tier:2,ht:false,region:'EU'},{name:'Swight',gamemode:'opkit',tier:2,ht:false,region:'NA'},{name:'Leaferd',gamemode:'opkit',tier:2,ht:false,region:'NA'},
+  {name:'Verniq',gamemode:'opkit',tier:3,ht:false,region:'NA'},{name:'dropkey',gamemode:'opkit',tier:3,ht:false,region:'NA'},{name:'Adamsony',gamemode:'opkit',tier:3,ht:false,region:'NA'},
+  {name:'Eoxie',gamemode:'opkit',tier:4,ht:false,region:'NA'},{name:'PXOJA',gamemode:'opkit',tier:4,ht:false,region:'NA'},
+  {name:'moonrisej_uwu',gamemode:'opkit',tier:5,ht:false,region:'NA'},{name:'207Cub',gamemode:'opkit',tier:5,ht:false,region:'NA'},
 ];}
 
 // ── BOOT ──
