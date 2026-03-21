@@ -1,307 +1,423 @@
-'use client';
+"use client";
 
 export default function Page() {
   return (
     <>
-      <style>{`
-        :root{--bg:#0d0f14;--bg2:#13161d;--bg3:#1a1e28;--bg4:#222736;--border:#2a2f3e;--text:#e8eaf0;--muted:#7a8099;--accent:#f5a623;--gold:#f5c842;--silver:#c0c8d8;--bronze:#cd7f32;--ht:rgba(255,200,80,0.18);--ht-border:rgba(255,200,80,0.45);--red:#e05252;--green:#4caf7d;--blue:#4a90d9;--purple:#9b6de0;}
-        *{margin:0;padding:0;box-sizing:border-box;}
-        body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;}
-        /* NAV */
-        nav{background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:60px;position:sticky;top:0;z-index:100;}
-        .logo{font-family:'Rajdhani',sans-serif;font-size:1.7rem;font-weight:700;color:var(--gold);letter-spacing:2px;}
-        .logo span{color:#fff;}
-        .nav-links{display:flex;gap:6px;align-items:center;}
-        .nav-btn{background:none;border:none;color:var(--muted);cursor:pointer;padding:7px 14px;border-radius:8px;font-size:.88rem;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:6px;transition:all .2s;text-decoration:none;}
-        .nav-btn:hover,.nav-btn.active{background:var(--bg3);color:var(--text);}
-        .discord-btn{color:#fff;background:rgba(88,101,242,.25);border:1px solid rgba(88,101,242,.5);}
-        .discord-btn:hover{background:rgba(88,101,242,.45);border-color:#5865f2;}
-        .nav-search{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:7px 14px;color:var(--text);font-family:'Inter',sans-serif;font-size:.85rem;width:200px;outline:none;}
-        .nav-search:focus{border-color:var(--accent);}
-        /* TABS */
-        .tabs-wrap{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 28px;}
-        .tabs{display:flex;gap:2px;overflow-x:auto;}
-        .tab{display:flex;flex-direction:column;align-items:center;padding:14px 18px;cursor:pointer;color:var(--muted);border-bottom:3px solid transparent;font-size:.82rem;font-weight:500;white-space:nowrap;transition:all .2s;gap:4px;background:none;border-top:none;border-left:none;border-right:none;font-family:'Inter',sans-serif;}
-        .tab .icon{font-size:1.3rem;}
-        .tab:hover{color:var(--text);}
-        .tab.active{color:var(--text);border-bottom-color:var(--accent);}
-        /* CONTENT */
-        .content{padding:28px;max-width:1300px;margin:0 auto;}
-        /* OVERALL */
-        .overall-list{display:flex;flex-direction:column;gap:8px;}
-        .overall-row{background:var(--bg2);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;gap:18px;padding:14px 18px;transition:all .2s;cursor:pointer;}
-        .overall-row:hover{border-color:var(--accent);transform:translateX(3px);}
-        .rank-num{font-family:'Rajdhani',sans-serif;font-size:1.5rem;font-weight:700;min-width:36px;color:var(--muted);}
-        .rank-num.r1{color:var(--gold);}
-        .rank-num.r2{color:var(--silver);}
-        .rank-num.r3{color:var(--bronze);}
-        .player-avatar{width:50px;height:50px;border-radius:8px;background:var(--bg4);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
-        .player-avatar img{width:100%;height:100%;object-fit:cover;border-radius:8px;display:block;}
-        .player-info{flex:1;}
-        .player-name{font-size:1.05rem;font-weight:600;}
-        .player-title{font-size:.8rem;color:var(--muted);display:flex;align-items:center;gap:5px;margin-top:2px;}
-        .region-tag{padding:4px 10px;border-radius:6px;font-size:.75rem;font-weight:700;background:var(--red);color:#fff;flex-shrink:0;}
-        .region-tag.EU{background:var(--blue);}
-        .region-tag.AS{background:var(--purple);}
-        .tier-badges{display:flex;gap:5px;flex-wrap:wrap;}
-        .tbadge{width:40px;height:40px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.55rem;font-weight:700;border:2px solid transparent;}
-        .tbadge .badge-icon{font-size:.9rem;line-height:1;}
-        .tbadge .badge-label{font-size:.5rem;font-weight:700;line-height:1;}
-        .tbadge.ht{background:var(--ht);border-color:var(--ht-border);color:var(--gold);}
-        .tbadge.lt{background:var(--bg4);border-color:var(--border);color:var(--muted);}
-        /* TIER GRID */
-        .tier-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;}
-        .tier-header{border-radius:10px 10px 0 0;padding:12px 14px;text-align:center;font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:4px;}
-        .tier-header.t1{background:linear-gradient(135deg,#a07b1a,#c9a84c);color:#fff;}
-        .tier-header.t2{background:linear-gradient(135deg,#3a4255,#5a6a88);color:#fff;}
-        .tier-header.t3{background:linear-gradient(135deg,#5a3010,#8a5020);color:#fff;}
-        .tier-header.t4{background:var(--bg3);color:var(--text);border:1px solid var(--border);}
-        .tier-header.t5{background:var(--bg3);color:var(--text);border:1px solid var(--border);}
-        .tier-player{background:var(--bg2);border:1px solid var(--border);padding:9px 12px;display:flex;align-items:center;gap:9px;cursor:pointer;transition:all .2s;margin-bottom:3px;border-radius:7px;}
-        .tier-player:hover{border-color:var(--accent);background:var(--bg3);}
-        .tier-player.ht-player{background:var(--ht);border-color:var(--ht-border);}
-        .tp-avatar{width:28px;height:28px;border-radius:5px;background:var(--bg4);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
-        .tp-avatar img{width:100%;height:100%;object-fit:cover;border-radius:5px;display:block;}
-        .tp-name{font-size:.82rem;font-weight:500;flex:1;}
-        .tp-badge{font-size:.65rem;padding:2px 6px;border-radius:4px;font-weight:700;}
-        .tp-badge.ht{background:rgba(245,200,66,.25);color:var(--gold);}
-        .tp-badge.lt{background:var(--bg4);color:var(--muted);}
-        .region-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
-        .region-dot.NA{background:var(--red);}
-        .region-dot.EU{background:var(--blue);}
-        .region-dot.AS{background:var(--purple);}
-        /* MODAL */
-        .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(5px);}
-        .modal-overlay.show{display:flex;}
-        .modal{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:28px;min-width:380px;max-width:460px;width:90vw;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.6);animation:popIn .25s cubic-bezier(.34,1.56,.64,1);}
-        @keyframes popIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
-        .modal-close{position:absolute;top:14px;right:14px;background:var(--bg4);border:1px solid var(--border);color:var(--muted);cursor:pointer;width:32px;height:32px;border-radius:8px;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:all .2s;}
-        .modal-close:hover{color:var(--text);border-color:var(--accent);}
-        .modal-avatar{width:80px;height:80px;border-radius:50%;background:var(--bg4);margin:0 auto 10px;overflow:hidden;border:3px solid var(--border);}
-        .modal-avatar img{width:100%;height:100%;object-fit:cover;}
-        .modal-name{text-align:center;font-family:'Rajdhani',sans-serif;font-size:1.6rem;font-weight:700;}
-        .modal-rank-badge{display:inline-flex;align-items:center;gap:6px;background:var(--bg4);border:1px solid var(--border);border-radius:20px;padding:5px 14px;font-size:.82rem;color:var(--muted);}
-        .modal-section-label{font-size:.75rem;font-weight:700;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin:14px 0 8px;}
-        .modal-position{background:var(--bg3);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:12px;}
-        .modal-pos-num{font-family:'Rajdhani',sans-serif;font-size:1.8rem;font-weight:700;color:var(--gold);}
-        .modal-tiers-grid{display:flex;flex-wrap:wrap;gap:7px;background:var(--bg3);border-radius:10px;padding:12px;}
-        .modal-tbadge{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:42px;}
-        .modal-tbadge .ico{font-size:1.2rem;}
-        .modal-tbadge .lbl{font-size:.6rem;font-weight:700;padding:2px 5px;border-radius:4px;}
-        .modal-tbadge .lbl.ht{background:rgba(245,200,66,.2);color:var(--gold);}
-        .modal-tbadge .lbl.lt{background:var(--bg4);color:var(--muted);}
-        .modal-tbadge .lbl.none{color:var(--border);}
-        .namemc-link{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:12px;color:var(--muted);font-size:.82rem;text-decoration:none;transition:color .2s;padding:8px;border-radius:8px;border:1px solid var(--border);}
-        .namemc-link:hover{color:var(--accent);border-color:var(--accent);}
-        /* ADMIN */
-        .admin-panel{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:2000;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
-        .admin-panel.show{display:flex;}
-        .admin-box{background:var(--bg2);border:1px solid var(--border);border-radius:16px;width:740px;max-width:95vw;max-height:88vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 32px 80px rgba(0,0,0,.7);animation:popIn .25s cubic-bezier(.34,1.56,.64,1);}
-        .admin-header{padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-        .admin-title{font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;color:var(--gold);}
-        .admin-body{padding:20px 24px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:14px;}
-        .admin-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;}
-        .admin-field{display:flex;flex-direction:column;gap:5px;flex:1;min-width:110px;}
-        .admin-field label{font-size:.75rem;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.05em;}
-        .admin-input,.admin-select{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-family:'Inter',sans-serif;font-size:.85rem;outline:none;transition:border .2s;width:100%;}
-        .admin-input:focus,.admin-select:focus{border-color:var(--accent);}
-        .admin-select option{background:var(--bg3);}
-        .btn{padding:9px 18px;border-radius:8px;font-family:'Inter',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;white-space:nowrap;}
-        .btn-green{background:var(--green);color:#fff;}
-        .btn-green:hover{filter:brightness(1.15);}
-        .btn-red{background:var(--red);color:#fff;}
-        .btn-red:hover{filter:brightness(1.15);}
-        .btn-gold{background:var(--gold);color:#000;}
-        .btn-gold:hover{filter:brightness(1.1);}
-        .btn-gray{background:var(--bg4);color:var(--muted);border:1px solid var(--border);}
-        .btn-gray:hover{color:var(--text);border-color:var(--muted);}
-        .admin-divider{border-top:1px solid var(--border);margin:2px 0;}
-        .admin-players-list{max-height:260px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;}
-        .admin-player-row{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg3);border-radius:8px;border:1px solid var(--border);}
-        .admin-player-row .apn{flex:1;font-size:.85rem;font-weight:500;}
-        .admin-player-row .apm{font-size:.75rem;color:var(--muted);}
-        .rm-btn{background:rgba(224,82,82,.15);border:1px solid rgba(224,82,82,.35);color:var(--red);border-radius:6px;padding:3px 9px;font-size:.75rem;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;white-space:nowrap;}
-        .rm-btn:hover{background:var(--red);color:#fff;}
-        /* TOAST */
-        .admin-toast{position:fixed;bottom:20px;right:20px;background:var(--green);color:#fff;padding:10px 18px;border-radius:10px;font-size:.85rem;font-weight:600;z-index:9999;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;}
-        .admin-toast.show{opacity:1;transform:translateY(0);}
-        .admin-toast.err{background:var(--red);}
-        /* TOP BAR */
-        .top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;gap:12px;flex-wrap:wrap;}
-        .info-badge{display:flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:.8rem;color:var(--muted);cursor:pointer;transition:all .2s;}
-        .info-badge:hover{border-color:var(--accent);color:var(--text);}
-        .server-ip{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:6px 14px;display:flex;align-items:center;gap:8px;font-size:.8rem;}
-        .admin-key-btn{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:6px 14px;color:var(--muted);cursor:pointer;font-size:.8rem;font-family:'Inter',sans-serif;transition:all .2s;}
-        .admin-key-btn:hover{border-color:var(--gold);color:var(--gold);}
-        /* KEY MODAL */
-        .key-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:3000;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
-        .key-modal.show{display:flex;}
-        .key-box{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:28px;min-width:320px;animation:popIn .2s cubic-bezier(.34,1.56,.64,1);}
-        .key-title{font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:14px;}
-        /* LOADING */
-        .loading{display:flex;align-items:center;justify-content:center;padding:60px;gap:12px;color:var(--muted);}
-        .spinner{width:24px;height:24px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
-        @keyframes spin{to{transform:rotate(360deg)}}
-        /* DB STATUS */
-        .db-status{display:inline-flex;align-items:center;gap:5px;font-size:.75rem;color:var(--muted);}
-        .db-dot{width:7px;height:7px;border-radius:50%;background:var(--green);}
-        .db-dot.err{background:var(--red);}
-        ::-webkit-scrollbar{width:6px;height:6px;}
-        ::-webkit-scrollbar-track{background:var(--bg2);}
-        ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
-        ::-webkit-scrollbar-thumb:hover{background:var(--muted);}
-        @media(max-width:1000px){.tier-grid{grid-template-columns:repeat(3,1fr);}}
-        @media(max-width:700px){.tier-grid{grid-template-columns:repeat(2,1fr);}.tier-badges{display:none;}}
-        @media(max-width:480px){.tier-grid{grid-template-columns:1fr;}.modal{min-width:96vw;padding:18px;}}
-      `}</style>
-
       <nav>
-        <div className="logo">NET<span>TIERS</span></div>
+        <div className="logo">
+          NET<span>TIERS</span>
+        </div>
         <div className="nav-links">
           <button className="nav-btn">🏠 Home</button>
           <button className="nav-btn active">🏆 Rankings</button>
-          <a href="https://discord.gg/TDSvexxwKV" target="_blank" rel="noopener" className="nav-btn discord-btn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.001.022.01.043.024.056a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+          <a
+            href="https://discord.gg/TDSvexxwKV"
+            target="_blank"
+            rel="noopener"
+            className="nav-btn discord-btn"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.001.022.01.043.024.056a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z" />
+            </svg>
             Discord
           </a>
           <button className="nav-btn">📄 API Docs</button>
         </div>
-        <input className="nav-search" placeholder="🔍 Search player..." id="globalSearch" onInput={(e) => (window as any).handleGlobalSearch?.((e.target as HTMLInputElement).value)} />
+        <input
+          className="nav-search"
+          placeholder="🔍 Search player..."
+          id="globalSearch"
+          onInput={(e) =>
+            (window as any).handleGlobalSearch?.(
+              (e.target as HTMLInputElement).value,
+            )
+          }
+        />
       </nav>
 
       <div className="tabs-wrap">
         <div className="tabs">
-          <button className="tab active" onClick={(e) => (window as any).switchTab?.('overall', e.currentTarget)}><span className="icon">🏆</span>Overall</button>
-          <button className="tab" onClick={(e) => (window as any).switchTab?.('vanilla', e.currentTarget)}><span className="icon">🎯</span>Vanilla</button>
-          <button className="tab" onClick={(e) => (window as any).switchTab?.('uhc', e.currentTarget)}><span className="icon">❤️</span>UHC</button>
-          <button className="tab" onClick={(e) => (window as any).switchTab?.('pot', e.currentTarget)}><span className="icon">🧪</span>Pot</button>
-          <button className="tab" onClick={(e) => (window as any).switchTab?.('nethop', e.currentTarget)}><span className="icon">👾</span>NethOP</button>
-          <button className="tab" onClick={(e) => (window as any).switchTab?.('smp', e.currentTarget)}><span className="icon">🌀</span>SMP</button>
-          <button className="tab" onClick={(e) => (window as any).switchTab?.('sword', e.currentTarget)}><span className="icon">⚔️</span>Sword</button>
-          <button className="tab" onClick={(e) => (window as any).switchTab?.('axe', e.currentTarget)}><span className="icon">🪓</span>Axe</button>
-          <button className="tab" onClick={(e) => (window as any).switchTab?.('mace', e.currentTarget)}><span className="icon">🔨</span>Mace</button>
-          <button className="tab" onClick={(e) => (window as any).switchTab?.('cart', e.currentTarget)}><span className="icon">🛒</span>Cart</button>
-          <button className="tab" onClick={(e) => (window as any).switchTab?.('spearmace', e.currentTarget)}><span className="icon">🏹</span>Spear Mace</button>
+          <button
+            className="tab active"
+            onClick={(e) =>
+              (window as any).switchTab?.("overall", e.currentTarget)
+            }
+          >
+            <span className="icon">🏆</span>Overall
+          </button>
+          <button
+            className="tab"
+            onClick={(e) =>
+              (window as any).switchTab?.("vanilla", e.currentTarget)
+            }
+          >
+            <span className="icon">🎯</span>Vanilla
+          </button>
+          <button
+            className="tab"
+            onClick={(e) => (window as any).switchTab?.("uhc", e.currentTarget)}
+          >
+            <span className="icon">❤️</span>UHC
+          </button>
+          <button
+            className="tab"
+            onClick={(e) => (window as any).switchTab?.("pot", e.currentTarget)}
+          >
+            <span className="icon">🧪</span>Pot
+          </button>
+          <button
+            className="tab"
+            onClick={(e) =>
+              (window as any).switchTab?.("nethop", e.currentTarget)
+            }
+          >
+            <span className="icon">👾</span>NethOP
+          </button>
+          <button
+            className="tab"
+            onClick={(e) => (window as any).switchTab?.("smp", e.currentTarget)}
+          >
+            <span className="icon">🌀</span>SMP
+          </button>
+          <button
+            className="tab"
+            onClick={(e) =>
+              (window as any).switchTab?.("sword", e.currentTarget)
+            }
+          >
+            <span className="icon">⚔️</span>Sword
+          </button>
+          <button
+            className="tab"
+            onClick={(e) => (window as any).switchTab?.("axe", e.currentTarget)}
+          >
+            <span className="icon">🪓</span>Axe
+          </button>
+          <button
+            className="tab"
+            onClick={(e) =>
+              (window as any).switchTab?.("mace", e.currentTarget)
+            }
+          >
+            <span className="icon">🔨</span>Mace
+          </button>
+          <button
+            className="tab"
+            onClick={(e) =>
+              (window as any).switchTab?.("cart", e.currentTarget)
+            }
+          >
+            <span className="icon">🛒</span>Cart
+          </button>
+          <button
+            className="tab"
+            onClick={(e) =>
+              (window as any).switchTab?.("spearmace", e.currentTarget)
+            }
+          >
+            <span className="icon">🏹</span>Spear Mace
+          </button>
         </div>
       </div>
 
       <div className="content">
         <div className="top-bar">
-          <div style={{display:'flex',gap:'8px',alignItems:'center'}}>
+          <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
             <div className="info-badge">ℹ️ Information</div>
-            <button className="admin-key-btn" onClick={() => (window as any).openKeyModal?.()}>🔑 Admin</button>
+            <button
+              className="admin-key-btn"
+              onClick={() => (window as any).openKeyModal?.()}
+            >
+              🔑 Admin
+            </button>
           </div>
           <div className="server-ip">
             <span>🖥️</span>
-            <span style={{color:'var(--muted)'}}>SERVER IP</span>
-            <span style={{fontWeight:'600',color:'var(--accent)'}}>⏳ Coming Soon</span>
+            <span style={{ color: "var(--muted)" }}>SERVER IP</span>
+            <span style={{ fontWeight: "600", color: "var(--accent)" }}>
+              ⏳ Coming Soon
+            </span>
           </div>
         </div>
-        <div id="mainContent"><div className="loading"><div className="spinner"></div>&nbsp;Loading players...</div></div>
+        <div id="mainContent">
+          <div className="loading">
+            <div className="spinner"></div>&nbsp;Loading players...
+          </div>
+        </div>
       </div>
 
       {/* PROFILE MODAL */}
-      <div className="modal-overlay" id="profileModal" onClick={(e) => (window as any).closeProfileIfOutside?.(e)}>
+      <div
+        className="modal-overlay"
+        id="profileModal"
+        onClick={(e) => (window as any).closeProfileIfOutside?.(e)}
+      >
         <div className="modal">
-          <button className="modal-close" onClick={() => (window as any).closeProfile?.()}>✕</button>
-          <div className="modal-avatar"><img id="pAvatarImg" src="" alt="" onError={(e) => {
-            const img = e.target as HTMLImageElement;
-            img.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 80 80%22><rect width=%2280%22 height=%2280%22 fill=%22%23222736%22/><text x=%2240%22 y=%2250%22 text-anchor=%22middle%22 font-size=%2232%22>🎮</text></svg>';
-          }} /></div>
+          <button
+            className="modal-close"
+            onClick={() => (window as any).closeProfile?.()}
+          >
+            ✕
+          </button>
+          <div className="modal-avatar">
+            <img
+              id="pAvatarImg"
+              src=""
+              alt=""
+              onError={(e) => {
+                const img = e.target as HTMLImageElement;
+                img.src =
+                  "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 80 80%22><rect width=%2280%22 height=%2280%22 fill=%22%23222736%22/><text x=%2240%22 y=%2250%22 text-anchor=%22middle%22 font-size=%2232%22>🎮</text></svg>";
+              }}
+            />
+          </div>
           <div className="modal-name" id="pName"></div>
-          <div style={{textAlign:'center',margin:'6px 0'}}><div className="modal-rank-badge"><span>💎</span><span id="pTitle"></span></div></div>
-          <div style={{textAlign:'center',color:'var(--muted)',fontSize:'.85rem',marginBottom:'14px'}} id="pRegion"></div>
+          <div style={{ textAlign: "center", margin: "6px 0" }}>
+            <div className="modal-rank-badge">
+              <span>💎</span>
+              <span id="pTitle"></span>
+            </div>
+          </div>
+          <div
+            style={{
+              textAlign: "center",
+              color: "var(--muted)",
+              fontSize: ".85rem",
+              marginBottom: "14px",
+            }}
+            id="pRegion"
+          ></div>
           <div className="modal-section-label">POSITION</div>
           <div className="modal-position">
             <div className="modal-pos-num" id="pPos"></div>
             <div>
-              <div style={{fontSize:'.85rem',fontWeight:'600'}}>🏆 OVERALL</div>
-              <div style={{fontSize:'.78rem',color:'var(--muted)'}} id="pPts"></div>
+              <div style={{ fontSize: ".85rem", fontWeight: "600" }}>
+                🏆 OVERALL
+              </div>
+              <div
+                style={{ fontSize: ".78rem", color: "var(--muted)" }}
+                id="pPts"
+              ></div>
             </div>
           </div>
           <div className="modal-section-label">TIERS</div>
           <div className="modal-tiers-grid" id="pTiers"></div>
-          <a id="pNameMC" href="#" target="_blank" rel="noopener" className="namemc-link">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7h-2v7zM14 3v2h3.59L7.76 14.83l1.41 1.41L19 5.41V9h2V3h-7z"/></svg>
+          <a
+            id="pNameMC"
+            href="#"
+            target="_blank"
+            rel="noopener"
+            className="namemc-link"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7h-2v7zM14 3v2h3.59L7.76 14.83l1.41 1.41L19 5.41V9h2V3h-7z" />
+            </svg>
             View on NameMC
           </a>
         </div>
       </div>
 
       {/* ADMIN KEY MODAL */}
-      <div className="key-modal" id="keyModal" onClick={(e) => (window as any).closeKeyIfOutside?.(e)}>
+      <div
+        className="key-modal"
+        id="keyModal"
+        onClick={(e) => (window as any).closeKeyIfOutside?.(e)}
+      >
         <div className="key-box">
           <div className="key-title">🔑 Admin Access</div>
-          <div className="admin-field" style={{marginBottom:'12px'}}>
+          <div className="admin-field" style={{ marginBottom: "12px" }}>
             <label>Password</label>
-            <input className="admin-input" type="password" id="keyInput" placeholder="Enter password..." onKeyDown={(e) => {
-              if(e.key==='Enter') (window as any).checkKey?.();
-            }} />
+            <input
+              className="admin-input"
+              type="password"
+              id="keyInput"
+              placeholder="Enter password..."
+              onKeyDown={(e) => {
+                if (e.key === "Enter") (window as any).checkKey?.();
+              }}
+            />
           </div>
-          <div style={{display:'flex',gap:'8px'}}>
-            <button className="btn btn-gold" onClick={() => (window as any).checkKey?.()}>Enter</button>
-            <button className="btn btn-gray" onClick={() => (window as any).closeKeyModal?.()}>Cancel</button>
+          <div style={{ display: "flex", gap: "8px" }}>
+            <button
+              className="btn btn-gold"
+              onClick={() => (window as any).checkKey?.()}
+            >
+              Enter
+            </button>
+            <button
+              className="btn btn-gray"
+              onClick={() => (window as any).closeKeyModal?.()}
+            >
+              Cancel
+            </button>
           </div>
-          <div id="keyErr" style={{color:'var(--red)',fontSize:'.8rem',marginTop:'8px',display:'none'}}>❌ Incorrect password.</div>
+          <div
+            id="keyErr"
+            style={{
+              color: "var(--red)",
+              fontSize: ".8rem",
+              marginTop: "8px",
+              display: "none",
+            }}
+          >
+            ❌ Incorrect password.
+          </div>
         </div>
       </div>
 
       {/* ADMIN PANEL */}
-      <div className="admin-panel" id="adminPanel" onClick={(e) => (window as any).closeAdminIfOutside?.(e)}>
+      <div
+        className="admin-panel"
+        id="adminPanel"
+        onClick={(e) => (window as any).closeAdminIfOutside?.(e)}
+      >
         <div className="admin-box">
           <div className="admin-header">
             <div className="admin-title">⚙️ Admin Panel</div>
-            <div style={{display:'flex',alignItems:'center',gap:'10px'}}>
-              <div className="db-status"><div className="db-dot" id="dbDot"></div><span id="dbStatus">Connecting...</span></div>
-              <button className="btn btn-gray" onClick={() => (window as any).closeAdmin?.()}>✕ Close</button>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <div className="db-status">
+                <div className="db-dot" id="dbDot"></div>
+                <span id="dbStatus">Connecting...</span>
+              </div>
+              <button
+                className="btn btn-gray"
+                onClick={() => (window as any).closeAdmin?.()}
+              >
+                ✕ Close
+              </button>
             </div>
           </div>
           <div className="admin-body">
-            <div style={{fontWeight:'600',fontSize:'.92rem',color:'var(--green)'}}>➕ Add Player</div>
+            <div
+              style={{
+                fontWeight: "600",
+                fontSize: ".92rem",
+                color: "var(--green)",
+              }}
+            >
+              ➕ Add Player
+            </div>
             <div className="admin-row">
-              <div className="admin-field"><label>Username</label><input className="admin-input" id="addName" placeholder="PlayerName" /></div>
-              <div className="admin-field"><label>Gamemode</label>
+              <div className="admin-field">
+                <label>Username</label>
+                <input
+                  className="admin-input"
+                  id="addName"
+                  placeholder="PlayerName"
+                />
+              </div>
+              <div className="admin-field">
+                <label>Gamemode</label>
                 <select className="admin-select" id="addMode">
-                  <option value="vanilla">Vanilla</option><option value="uhc">UHC</option><option value="pot">Pot</option>
-                  <option value="nethop">NethOP</option><option value="smp">SMP</option><option value="sword">Sword</option>
-                  <option value="axe">Axe</option><option value="mace">Mace</option><option value="cart">Cart</option>
+                  <option value="vanilla">Vanilla</option>
+                  <option value="uhc">UHC</option>
+                  <option value="pot">Pot</option>
+                  <option value="nethop">NethOP</option>
+                  <option value="smp">SMP</option>
+                  <option value="sword">Sword</option>
+                  <option value="axe">Axe</option>
+                  <option value="mace">Mace</option>
+                  <option value="cart">Cart</option>
                   <option value="spearmace">Spear Mace</option>
                 </select>
               </div>
-              <div className="admin-field"><label>Tier</label>
+              <div className="admin-field">
+                <label>Tier</label>
                 <select className="admin-select" id="addTier">
-                  <option value="1">Tier 1</option><option value="2">Tier 2</option><option value="3">Tier 3</option>
-                  <option value="4">Tier 4</option><option value="5">Tier 5</option>
+                  <option value="1">Tier 1</option>
+                  <option value="2">Tier 2</option>
+                  <option value="3">Tier 3</option>
+                  <option value="4">Tier 4</option>
+                  <option value="5">Tier 5</option>
                 </select>
               </div>
-              <div className="admin-field"><label>HT / LT</label>
-                <select className="admin-select" id="addHT"><option value="HT">HT – High Tier</option><option value="LT">LT – Low Tier</option></select>
+              <div className="admin-field">
+                <label>HT / LT</label>
+                <select className="admin-select" id="addHT">
+                  <option value="HT">HT – High Tier</option>
+                  <option value="LT">LT – Low Tier</option>
+                </select>
               </div>
-              <div className="admin-field"><label>Region</label>
-                <select className="admin-select" id="addRegion"><option value="NA">NA</option><option value="EU">EU</option><option value="AS">AS</option></select>
+              <div className="admin-field">
+                <label>Region</label>
+                <select className="admin-select" id="addRegion">
+                  <option value="NA">NA</option>
+                  <option value="EU">EU</option>
+                  <option value="AS">AS</option>
+                </select>
               </div>
             </div>
-            <div><button className="btn btn-green" onClick={() => (window as any).adminAddPlayer?.()}>➕ Add Player</button></div>
+            <div>
+              <button
+                className="btn btn-green"
+                onClick={() => (window as any).adminAddPlayer?.()}
+              >
+                ➕ Add Player
+              </button>
+            </div>
             <div className="admin-divider"></div>
-            <div style={{fontWeight:'600',fontSize:'.92rem',color:'var(--red)'}}>🗑️ Remove Player by Name</div>
+            <div
+              style={{
+                fontWeight: "600",
+                fontSize: ".92rem",
+                color: "var(--red)",
+              }}
+            >
+              🗑️ Remove Player by Name
+            </div>
             <div className="admin-row">
-              <div className="admin-field"><label>Username</label><input className="admin-input" id="removeName" placeholder="PlayerName" /></div>
-              <div className="admin-field"><label>From Gamemode</label>
+              <div className="admin-field">
+                <label>Username</label>
+                <input
+                  className="admin-input"
+                  id="removeName"
+                  placeholder="PlayerName"
+                />
+              </div>
+              <div className="admin-field">
+                <label>From Gamemode</label>
                 <select className="admin-select" id="removeMode">
-                  <option value="ALL">⚡ All Gamemodes</option><option value="vanilla">Vanilla</option><option value="uhc">UHC</option>
-                  <option value="pot">Pot</option><option value="nethop">NethOP</option><option value="smp">SMP</option>
-                  <option value="sword">Sword</option><option value="axe">Axe</option><option value="mace">Mace</option>
-                  <option value="cart">Cart</option><option value="spearmace">Spear Mace</option>
+                  <option value="ALL">⚡ All Gamemodes</option>
+                  <option value="vanilla">Vanilla</option>
+                  <option value="uhc">UHC</option>
+                  <option value="pot">Pot</option>
+                  <option value="nethop">NethOP</option>
+                  <option value="smp">SMP</option>
+                  <option value="sword">Sword</option>
+                  <option value="axe">Axe</option>
+                  <option value="mace">Mace</option>
+                  <option value="cart">Cart</option>
+                  <option value="spearmace">Spear Mace</option>
                 </select>
               </div>
             </div>
-            <div><button className="btn btn-red" onClick={() => (window as any).adminRemoveByName?.()}>🗑️ Remove</button></div>
+            <div>
+              <button
+                className="btn btn-red"
+                onClick={() => (window as any).adminRemoveByName?.()}
+              >
+                🗑️ Remove
+              </button>
+            </div>
             <div className="admin-divider"></div>
-            <div style={{fontWeight:'600',fontSize:'.92rem'}}>📋 Browse &amp; Remove Players</div>
-            <select className="admin-select" id="previewMode" onChange={() => (window as any).renderAdminPreview?.()} style={{maxWidth:'220px'}}>
-              <option value="vanilla">Vanilla</option><option value="uhc">UHC</option><option value="pot">Pot</option>
-              <option value="nethop">NethOP</option><option value="smp">SMP</option><option value="sword">Sword</option>
-              <option value="axe">Axe</option><option value="mace">Mace</option><option value="cart">Cart</option>
+            <div style={{ fontWeight: "600", fontSize: ".92rem" }}>
+              📋 Browse &amp; Remove Players
+            </div>
+            <select
+              className="admin-select"
+              id="previewMode"
+              onChange={() => (window as any).renderAdminPreview?.()}
+              style={{ maxWidth: "220px" }}
+            >
+              <option value="vanilla">Vanilla</option>
+              <option value="uhc">UHC</option>
+              <option value="pot">Pot</option>
+              <option value="nethop">NethOP</option>
+              <option value="smp">SMP</option>
+              <option value="sword">Sword</option>
+              <option value="axe">Axe</option>
+              <option value="mace">Mace</option>
+              <option value="cart">Cart</option>
               <option value="spearmace">Spear Mace</option>
             </select>
             <div className="admin-players-list" id="adminPreviewList"></div>
@@ -311,7 +427,9 @@ export default function Page() {
 
       <div className="admin-toast" id="toast"></div>
 
-      <script dangerouslySetInnerHTML={{__html: `
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
 // ── CONFIG ──
 const SB_URL = 'https://rljvcykuiswwriwapsgi.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJsanZjeWt1aXN3d3Jpd2Fwc2dpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5NzE1NTUsImV4cCI6MjA4OTU0NzU1NX0.TL2BzGqeb8GsWEsaCTwtzqKaKqB9l8ROdVap7rOPDZI';
@@ -612,11 +730,11 @@ async function adminRemoveByName(){
   }
   if(removed){
     rebuildDATA();
-    showToast(`🗑️ Removed ${name}`);
+    showToast(\`🗑️ Removed \${name}\`);
     document.getElementById('removeName').value='';
     renderAdminPreview();
     renderContent();
-  } else showToast(`"${name}" not found!`,true);
+  } else showToast(\`\"\${name}\" not found!\`,true);
 }
 
 async function removeRowInline(dbId,name,gm){
@@ -630,7 +748,7 @@ async function removeRowInline(dbId,name,gm){
   }
   allPlayers=allPlayers.filter(p=>!(p.id===dbId||(p.name===name&&p.gamemode===gm)));
   rebuildDATA();
-  showToast(`🗑️ Removed ${name}`);
+  showToast(\`🗑️ Removed \${name}\`);
   renderAdminPreview();
   renderContent();
 }
@@ -783,7 +901,9 @@ function getSeed(){return[
 
 // ── BOOT ──
 initDB();
-      `}} />
+      `,
+        }}
+      />
     </>
   );
 }
