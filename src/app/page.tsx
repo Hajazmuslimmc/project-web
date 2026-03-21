@@ -599,22 +599,40 @@ async function adminRemoveByName(){
     if(!toRemove.length)continue;
     for(const p of toRemove){
       try{
-        if(p.id&&dbOk) await sbDeleteById('players', p.id);
-      }catch(e){}
-      allPlayers=allPlayers.filter(x=>x!==p);removed++;
+        if(dbOk){
+          if(p.id) await sbDeleteById('players', p.id);
+          else await sbDeleteByNameGm('players', p.name, gm);
+        }
+      }catch(e){
+        console.warn('Supabase remove failed', p.name, gm, e.message);
+      }
+      allPlayers=allPlayers.filter(x=>x!==p);
+      removed++;
     }
   }
-  if(removed){rebuildDATA();showToast(\`🗑️ Removed \${name}\`);document.getElementById('removeName').value='';renderAdminPreview();renderContent();}
-  else showToast(\`"\${name}" not found!\`,true);
+  if(removed){
+    rebuildDATA();
+    showToast(`🗑️ Removed ${name}`);
+    document.getElementById('removeName').value='';
+    renderAdminPreview();
+    renderContent();
+  } else showToast(`"${name}" not found!`,true);
 }
 
 async function removeRowInline(dbId,name,gm){
   try{
-    if(dbId&&dbOk) await sbDeleteById('players', dbId);
-    else if(dbOk) await sbDeleteByNameGm('players', name, gm);
-  }catch(e){}
+    if(dbOk){
+      if(dbId) await sbDeleteById('players', dbId);
+      else await sbDeleteByNameGm('players', name, gm);
+    }
+  }catch(e){
+    console.warn('Supabase remove failed', name, gm, e.message);
+  }
   allPlayers=allPlayers.filter(p=>!(p.id===dbId||(p.name===name&&p.gamemode===gm)));
-  rebuildDATA();showToast(\`🗑️ Removed \${name}\`);renderAdminPreview();renderContent();
+  rebuildDATA();
+  showToast(`🗑️ Removed ${name}`);
+  renderAdminPreview();
+  renderContent();
 }
 
 function renderAdminPreview(){
