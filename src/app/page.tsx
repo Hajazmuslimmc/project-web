@@ -431,8 +431,6 @@ export default function Page() {
         dangerouslySetInnerHTML={{
           __html: `
 // ── CONFIG ──
-const SB_URL = 'https://rljvcykuiswwriwapsgi.supabase.co';
-const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJsanZjeWt1aXN3d3Jpd2Fwc2dpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5NzE1NTUsImV4cCI6MjA4OTU0NzU1NX0.TL2BzGqeb8GsWEsaCTwtzqKaKqB9l8ROdVap7rOPDZI';
 const ADMIN_PASS = 'KabulKarwan@2013';
 
 const TIER_PTS = {LT5:1,HT5:2,LT4:3,HT4:4,LT3:5,HT3:10,LT2:20,HT2:40,LT1:50,HT1:60};
@@ -440,42 +438,29 @@ const GM_ICONS = {vanilla:'🎯',uhc:'❤️',pot:'🧪',nethop:'👾',smp:'🌀
 const GM_NAMES = {vanilla:'Vanilla',uhc:'UHC',pot:'Pot',nethop:'NethOP',smp:'SMP',sword:'Sword',axe:'Axe',mace:'Mace',cart:'Cart',spearmace:'Spear Mace'};
 const GM_ORDER = ['vanilla','uhc','pot','nethop','smp','sword','axe','mace','cart','spearmace'];
 
-// ── SUPABASE REST (plain fetch, no SDK needed) ──
+// ── NEON API ──
 let dbOk = false;
-function sbHeaders(extra){
-  const h = new Headers();
-  h.append('apikey', SB_KEY);
-  h.append('Authorization', 'Bearer ' + SB_KEY);
-  h.append('Content-Type', 'application/json');
-  if(extra) h.append('Prefer', extra);
-  return h;
-}
-async function sbSelect(table){
-  const r = await fetch(SB_URL+'/rest/v1/'+table+'?select=*&order=id.asc&limit=100000', {
-    method:'GET', mode:'cors', headers: sbHeaders()
+async function dbQuery(query, params = []){
+  const res = await fetch('/api/neon', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query, params })
   });
-  if(!r.ok){ const t=await r.text(); throw new Error(t); }
-  return r.json();
+  if (!res.ok) throw new Error('DB error');
+  return res.json();
 }
-async function sbInsert(table, rows){
-  const r = await fetch(SB_URL+'/rest/v1/'+table, {
-    method:'POST', mode:'cors',
-    headers: sbHeaders('return=representation'),
-    body: JSON.stringify(rows)
-  });
-  if(!r.ok){ const t=await r.text(); throw new Error(t); }
-  return r.json();
+async function neonSelect(){
+  return await dbQuery('SELECT * FROM players ORDER BY id ASC LIMIT 100000');
 }
-async function sbDeleteById(table, id){
-  const r = await fetch(SB_URL+'/rest/v1/'+table+'?id=eq.'+id, {
-    method:'DELETE', mode:'cors', headers: sbHeaders()
-  });
-  if(!r.ok){ const t=await r.text(); throw new Error(t); }
+async function neonInsert(rows){
+  const row = rows[0];
+  return await dbQuery('INSERT INTO players (name, gamemode, tier, ht, region) VALUES ($1, $2, $3, $4, $5) RETURNING *', [row.name, row.gamemode, row.tier, row.ht, row.region]);
 }
-async function sbDeleteByNameGm(table, name, gm){
-  const url = SB_URL+'/rest/v1/'+table+'?name=eq.'+encodeURIComponent(name)+'&gamemode=eq.'+encodeURIComponent(gm);
-  const r = await fetch(url, {method:'DELETE', mode:'cors', headers: sbHeaders()});
-  if(!r.ok){ const t=await r.text(); throw new Error(t); }
+async function neonDeleteById(id){
+  await dbQuery('DELETE FROM players WHERE id = $1', [id]);
+}
+async function neonDeleteByNameGm(name, gm){
+  await dbQuery('DELETE FROM players WHERE name = $1 AND gamemode = $2', [name, gm]);
 }
 
 // ── STATE ──
@@ -525,23 +510,23 @@ function rebuildDATA(){
   });
 }
 
-// ── SUPABASE LOAD ──
+// ── NEON LOAD ──
 async function initDB(){
   // Show loading state
   document.getElementById('mainContent').innerHTML='<div class="loading"><div class="spinner"></div>&nbsp;Connecting to database...</div>';
   try{
-    const data = await sbSelect('players');
+    const data = await neonSelect();
     dbOk=true; setDBStatus(true);
     if(data && data.length > 0){
       allPlayers = data;
-      console.log('Loaded', data.length, 'players from Supabase');
+      console.log('Loaded', data.length, 'players from Neon');
       rebuildDATA(); renderContent();
     } else {
       console.log('Table empty, seeding initial data...');
       await seedToDB();
     }
   }catch(e){
-    console.error('Supabase error:', e.message);
+    console.error('Neon error:', e.message);
     setDBStatus(false);
     // Fall back to local seed so site still works
     allPlayers = getSeed();
@@ -556,11 +541,11 @@ async function seedToDB(){
     let allInserted = [];
     for(let i=0; i<seed.length; i+=50){
       const batch = seed.slice(i, i+50);
-      const inserted = await sbInsert('players', batch);
+      const inserted = await neonInsert(batch);
       allInserted = allInserted.concat(inserted||batch);
     }
     allPlayers = allInserted.length ? allInserted : seed;
-    console.log('Seeded', allPlayers.length, 'players to Supabase');
+    console.log('Seeded', allPlayers.length, 'players to Neon');
   }catch(e){
     console.error('Seed error:', e.message);
     allPlayers = seed;
@@ -573,7 +558,7 @@ function setDBStatus(ok){
   const dot=document.getElementById('dbDot');
   const lbl=document.getElementById('dbStatus');
   if(dot){dot.className='db-dot'+(ok?'':' err');}
-  if(lbl){lbl.textContent=ok?'Supabase Connected':'Local (DB offline)';}
+  if(lbl){lbl.textContent=ok?'Neon Connected':'Local (DB offline)';}
 }
 
 // ── RENDER ──
@@ -695,7 +680,7 @@ async function adminAddPlayer(){
   if(DATA[gm][tk].find(p=>p.name.toLowerCase()===name.toLowerCase())){showToast('Already in this tier!',true);return;}
   const row={name,gamemode:gm,tier,ht,region};
   try{
-    const data = await sbInsert('players', [row]);
+    const data = await neonInsert([row]);
     allPlayers.push(data[0]); rebuildDATA();
     showToast('✅ Added '+name+' to '+GM_NAMES[gm]+' T'+tier);
   }catch(e){
@@ -718,11 +703,11 @@ async function adminRemoveByName(){
     for(const p of toRemove){
       try{
         if(dbOk){
-          if(p.id) await sbDeleteById('players', p.id);
-          else await sbDeleteByNameGm('players', p.name, gm);
+          if(p.id) await neonDeleteById(p.id);
+          else await neonDeleteByNameGm(p.name, gm);
         }
       }catch(e){
-        console.warn('Supabase remove failed', p.name, gm, e.message);
+        console.warn('Neon remove failed', p.name, gm, e.message);
       }
       allPlayers=allPlayers.filter(x=>x!==p);
       removed++;
@@ -740,11 +725,11 @@ async function adminRemoveByName(){
 async function removeRowInline(dbId,name,gm){
   try{
     if(dbOk){
-      if(dbId) await sbDeleteById('players', dbId);
-      else await sbDeleteByNameGm('players', name, gm);
+      if(dbId) await neonDeleteById(dbId);
+      else await neonDeleteByNameGm(name, gm);
     }
   }catch(e){
-    console.warn('Supabase remove failed', name, gm, e.message);
+    console.warn('Neon remove failed', name, gm, e.message);
   }
   allPlayers=allPlayers.filter(p=>!(p.id===dbId||(p.name===name&&p.gamemode===gm)));
   rebuildDATA();
