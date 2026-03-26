@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NetTiers - Minecraft PvP Rankings</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0d0f14;--bg2:#13161d;--bg3:#1a1e28;--bg4:#222736;--border:#2a2f3e;--text:#e8eaf0;--muted:#7a8099;--accent:#f5a623;--gold:#f5c842;--silver:#c0c8d8;--bronze:#cd7f32;--ht:rgba(255,200,80,0.18);--ht-border:rgba(255,200,80,0.45);--red:#e05252;--green:#4caf7d;--blue:#4a90d9;--purple:#9b6de0;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;}
+  /* NAV */
+  nav{background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:60px;position:sticky;top:0;z-index:100;}
+  .logo{font-family:'Rajdhani',sans-serif;font-size:1.7rem;font-weight:700;color:var(--gold);letter-spacing:2px;}
+  .logo span{color:#fff;}
+  .nav-links{display:flex;gap:6px;align-items:center;}
+  .nav-btn{background:none;border:none;color:var(--muted);cursor:pointer;padding:7px 14px;border-radius:8px;font-size:.88rem;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:6px;transition:all .2s;text-decoration:none;}
+  .nav-btn:hover,.nav-btn.active{background:var(--bg3);color:var(--text);}
+  .discord-btn{color:#fff;background:rgba(88,101,242,.25);border:1px solid rgba(88,101,242,.5);}
+  .discord-btn:hover{background:rgba(88,101,242,.45);border-color:#5865f2;}
+  .nav-search{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:7px 14px;color:var(--text);font-family:'Inter',sans-serif;font-size:.85rem;width:200px;outline:none;}
+  .nav-search:focus{border-color:var(--accent);}
+  /* TABS */
+  .tabs-wrap{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 28px;}
+  .tabs{display:flex;gap:2px;overflow-x:auto;}
+  .tab{display:flex;flex-direction:column;align-items:center;padding:14px 18px;cursor:pointer;color:var(--muted);border-bottom:3px solid transparent;font-size:.82rem;font-weight:500;white-space:nowrap;transition:all .2s;gap:4px;background:none;border-top:none;border-left:none;border-right:none;font-family:'Inter',sans-serif;}
+  .tab .icon{font-size:1.3rem;}
+  .tab:hover{color:var(--text);}
+  .tab.active{color:var(--text);border-bottom-color:var(--accent);}
+  /* CONTENT */
+  .content{padding:28px;max-width:1300px;margin:0 auto;}
+  /* OVERALL */
+  .overall-list{display:flex;flex-direction:column;gap:8px;}
+  .overall-row{background:var(--bg2);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;gap:18px;padding:14px 18px;transition:all .2s;cursor:pointer;}
+  .overall-row:hover{border-color:var(--accent);transform:translateX(3px);}
+  .rank-num{font-family:'Rajdhani',sans-serif;font-size:1.5rem;font-weight:700;min-width:36px;color:var(--muted);}
+  .rank-num.r1{color:var(--gold);}
+  .rank-num.r2{color:var(--silver);}
+  .rank-num.r3{color:var(--bronze);}
+  .player-avatar{width:50px;height:50px;border-radius:8px;background:var(--bg4);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
+  .player-avatar img{width:100%;height:100%;object-fit:cover;border-radius:8px;display:block;}
+  .player-info{flex:1;}
+  .player-name{font-size:1.05rem;font-weight:600;}
+  .player-title{font-size:.8rem;color:var(--muted);display:flex;align-items:center;gap:5px;margin-top:2px;}
+  .region-tag{padding:4px 10px;border-radius:6px;font-size:.75rem;font-weight:700;background:var(--red);color:#fff;flex-shrink:0;}
+  .region-tag.EU{background:var(--blue);}
+  .region-tag.AS{background:var(--purple);}
+  .tier-badges{display:flex;gap:5px;flex-wrap:wrap;}
+  .tbadge{width:40px;height:40px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.55rem;font-weight:700;border:2px solid transparent;}
+  .tbadge .badge-icon{font-size:.9rem;line-height:1;}
+  .tbadge .badge-label{font-size:.5rem;font-weight:700;line-height:1;}
+  .tbadge.ht{background:var(--ht);border-color:var(--ht-border);color:var(--gold);}
+  .tbadge.lt{background:var(--bg4);border-color:var(--border);color:var(--muted);}
+  /* TIER GRID */
+  .tier-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;}
+  .tier-header{border-radius:10px 10px 0 0;padding:12px 14px;text-align:center;font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:4px;}
+  .tier-header.t1{background:linear-gradient(135deg,#a07b1a,#c9a84c);color:#fff;}
+  .tier-header.t2{background:linear-gradient(135deg,#3a4255,#5a6a88);color:#fff;}
+  .tier-header.t3{background:linear-gradient(135deg,#5a3010,#8a5020);color:#fff;}
+  .tier-header.t4{background:var(--bg3);color:var(--text);border:1px solid var(--border);}
+  .tier-header.t5{background:var(--bg3);color:var(--text);border:1px solid var(--border);}
+  .tier-player{background:var(--bg2);border:1px solid var(--border);padding:9px 12px;display:flex;align-items:center;gap:9px;cursor:pointer;transition:all .2s;margin-bottom:3px;border-radius:7px;}
+  .tier-player:hover{border-color:var(--accent);background:var(--bg3);}
+  .tier-player.ht-player{background:var(--ht);border-color:var(--ht-border);}
+  .tp-avatar{width:28px;height:28px;border-radius:5px;background:var(--bg4);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
+  .tp-avatar img{width:100%;height:100%;object-fit:cover;border-radius:5px;display:block;}
+  .tp-name{font-size:.82rem;font-weight:500;flex:1;}
+  .tp-badge{font-size:.65rem;padding:2px 6px;border-radius:4px;font-weight:700;}
+  .tp-badge.ht{background:rgba(245,200,66,.25);color:var(--gold);}
+  .tp-badge.lt{background:var(--bg4);color:var(--muted);}
+  .region-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+  .region-dot.NA{background:var(--red);}
+  .region-dot.EU{background:var(--blue);}
+  .region-dot.AS{background:var(--purple);}
+  /* MODAL */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(5px);}
+  .modal-overlay.show{display:flex;}
+  .modal{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:28px;min-width:380px;max-width:460px;width:90vw;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.6);animation:popIn .25s cubic-bezier(.34,1.56,.64,1);}
+  @keyframes popIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+  .modal-close{position:absolute;top:14px;right:14px;background:var(--bg4);border:1px solid var(--border);color:var(--muted);cursor:pointer;width:32px;height:32px;border-radius:8px;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+  .modal-close:hover{color:var(--text);border-color:var(--accent);}
+  .modal-avatar{width:80px;height:80px;border-radius:50%;background:var(--bg4);margin:0 auto 10px;overflow:hidden;border:3px solid var(--border);}
+  .modal-avatar img{width:100%;height:100%;object-fit:cover;}
+  .modal-name{text-align:center;font-family:'Rajdhani',sans-serif;font-size:1.6rem;font-weight:700;}
+  .modal-rank-badge{display:inline-flex;align-items:center;gap:6px;background:var(--bg4);border:1px solid var(--border);border-radius:20px;padding:5px 14px;font-size:.82rem;color:var(--muted);}
+  .modal-section-label{font-size:.75rem;font-weight:700;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin:14px 0 8px;}
+  .modal-position{background:var(--bg3);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:12px;}
+  .modal-pos-num{font-family:'Rajdhani',sans-serif;font-size:1.8rem;font-weight:700;color:var(--gold);}
+  .modal-tiers-grid{display:flex;flex-wrap:wrap;gap:7px;background:var(--bg3);border-radius:10px;padding:12px;}
+  .modal-tbadge{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:42px;}
+  .modal-tbadge .ico{font-size:1.2rem;}
+  .modal-tbadge .lbl{font-size:.6rem;font-weight:700;padding:2px 5px;border-radius:4px;}
+  .modal-tbadge .lbl.ht{background:rgba(245,200,66,.2);color:var(--gold);}
+  .modal-tbadge .lbl.lt{background:var(--bg4);color:var(--muted);}
+  .modal-tbadge .lbl.none{color:var(--border);}
+  .namemc-link{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:12px;color:var(--muted);font-size:.82rem;text-decoration:none;transition:color .2s;padding:8px;border-radius:8px;border:1px solid var(--border);}
+  .namemc-link:hover{color:var(--accent);border-color:var(--accent);}
+  /* ADMIN */
+  .admin-panel{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:2000;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
+  .admin-panel.show{display:flex;}
+  .admin-box{background:var(--bg2);border:1px solid var(--border);border-radius:16px;width:740px;max-width:95vw;max-height:88vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 32px 80px rgba(0,0,0,.7);animation:popIn .25s cubic-bezier(.34,1.56,.64,1);}
+  .admin-header{padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+  .admin-title{font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;color:var(--gold);}
+  .admin-body{padding:20px 24px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:14px;}
+  .admin-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;}
+  .admin-field{display:flex;flex-direction:column;gap:5px;flex:1;min-width:110px;}
+  .admin-field label{font-size:.75rem;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.05em;}
+  .admin-input,.admin-select{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-family:'Inter',sans-serif;font-size:.85rem;outline:none;transition:border .2s;width:100%;}
+  .admin-input:focus,.admin-select:focus{border-color:var(--accent);}
+  .admin-select option{background:var(--bg3);}
+  .btn{padding:9px 18px;border-radius:8px;font-family:'Inter',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;white-space:nowrap;}
+  .btn-green{background:var(--green);color:#fff;}
+  .btn-green:hover{filter:brightness(1.15);}
+  .btn-red{background:var(--red);color:#fff;}
+  .btn-red:hover{filter:brightness(1.15);}
+  .btn-gold{background:var(--gold);color:#000;}
+  .btn-gold:hover{filter:brightness(1.1);}
+  .btn-gray{background:var(--bg4);color:var(--muted);border:1px solid var(--border);}
+  .btn-gray:hover{color:var(--text);border-color:var(--muted);}
+  .admin-divider{border-top:1px solid var(--border);margin:2px 0;}
+  .admin-players-list{max-height:260px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;}
+  .admin-player-row{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg3);border-radius:8px;border:1px solid var(--border);}
+  .admin-player-row .apn{flex:1;font-size:.85rem;font-weight:500;}
+  .admin-player-row .apm{font-size:.75rem;color:var(--muted);}
+  .rm-btn{background:rgba(224,82,82,.15);border:1px solid rgba(224,82,82,.35);color:var(--red);border-radius:6px;padding:3px 9px;font-size:.75rem;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;white-space:nowrap;}
+  .rm-btn:hover{background:var(--red);color:#fff;}
+  /* TOAST */
+  .admin-toast{position:fixed;bottom:20px;right:20px;background:var(--green);color:#fff;padding:10px 18px;border-radius:10px;font-size:.85rem;font-weight:600;z-index:9999;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;}
+  .admin-toast.show{opacity:1;transform:translateY(0);}
+  .admin-toast.err{background:var(--red);}
+  /* TOP BAR */
+  .top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;gap:12px;flex-wrap:wrap;}
+  .info-badge{display:flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:.8rem;color:var(--muted);cursor:pointer;transition:all .2s;}
+  .info-badge:hover{border-color:var(--accent);color:var(--text);}
+  .server-ip{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:6px 14px;display:flex;align-items:center;gap:8px;font-size:.8rem;}
+  .admin-key-btn{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:6px 14px;color:var(--muted);cursor:pointer;font-size:.8rem;font-family:'Inter',sans-serif;transition:all .2s;}
+  .admin-key-btn:hover{border-color:var(--gold);color:var(--gold);}
+  /* KEY MODAL */
+  .key-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:3000;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+  .key-modal.show{display:flex;}
+  .key-box{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:28px;min-width:320px;animation:popIn .2s cubic-bezier(.34,1.56,.64,1);}
+  .key-title{font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:14px;}
+  /* LOADING */
+  .loading{display:flex;align-items:center;justify-content:center;padding:60px;gap:12px;color:var(--muted);}
+  .spinner{width:24px;height:24px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  /* DB STATUS */
+  .db-status{display:inline-flex;align-items:center;gap:5px;font-size:.75rem;color:var(--muted);}
+  .db-dot{width:7px;height:7px;border-radius:50%;background:var(--green);}
+  .db-dot.err{background:var(--red);}
+  ::-webkit-scrollbar{width:6px;height:6px;}
+  ::-webkit-scrollbar-track{background:var(--bg2);}
+  ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+  ::-webkit-scrollbar-thumb:hover{background:var(--muted);}
+  @media(max-width:1000px){.tier-grid{grid-template-columns:repeat(3,1fr);}}
+  @media(max-width:700px){.tier-grid{grid-template-columns:repeat(2,1fr);.tier-badges{display:none;}}
+  @media(max-width:480px){.tier-grid{grid-template-columns:1fr;}.modal{min-width:96vw;padding:18px;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">NET<span>TIERS</span></div>
+  <div class="nav-links">
+    <button class="nav-btn">🏠 Home</button>
+    <button class="nav-btn active">🏆 Rankings</button>
+    <a href="https://discord.gg/TDSvexxwKV" target="_blank" rel="noopener" class="nav-btn discord-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.001.022.01.043.024.056a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+      Discord
+    </a>
+    <button class="nav-btn">📄 API Docs</button>
+  </div>
+  <input class="nav-search" placeholder="🔍 Search player..." id="globalSearch" oninput="handleGlobalSearch(this.value)">
+</nav>
+
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('overall',this)"><span class="icon">🏆</span>Overall</button>
+    <button class="tab" onclick="switchTab('vanilla',this)"><span class="icon">🎯</span>Vanilla</button>
+    <button class="tab" onclick="switchTab('uhc',this)"><span class="icon">❤️</span>UHC</button>
+    <button class="tab" onclick="switchTab('pot',this)"><span class="icon">🧪</span>Pot</button>
+    <button class="tab" onclick="switchTab('nethop',this)"><span class="icon">👾</span>NethOP</button>
+    <button class="tab" onclick="switchTab('smp',this)"><span class="icon">🌀</span>SMP</button>
+    <button class="tab" onclick="switchTab('sword',this)"><span class="icon">⚔️</span>Sword</button>
+    <button class="tab" onclick="switchTab('axe',this)"><span class="icon">🪓</span>Axe</button>
+    <button class="tab" onclick="switchTab('mace',this)"><span class="icon">🔨</span>Mace</button>
+    <button class="tab" onclick="switchTab('cart',this)"><span class="icon">🛒</span>Cart</button>
+    <button class="tab" onclick="switchTab('spearmace',this)"><span class="icon">🏹</span>Spear Mace</button>
+  </div>
+</div>
+
+<div class="content">
+  <div class="top-bar">
+    <div style="display:flex;gap:8px;align-items:center;">
+      <div class="info-badge">ℹ️ Information</div>
+      <button class="admin-key-btn" onclick="openKeyModal()">🔑 Admin</button>
+    </div>
+    <div class="server-ip">
+      <span>🖥️</span>
+      <span style="color:var(--muted)">SERVER IP</span>
+      <span style="font-weight:600;color:var(--accent)">⏳ Coming Soon</span>
+    </div>
+  </div>
+  <div id="mainContent"><div class="loading"><div class="spinner"></div>&nbsp;Loading players...</div></div>
+</div>
+
+<!-- PROFILE MODAL -->
+<div class="modal-overlay" id="profileModal" onclick="closeProfileIfOutside(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeProfile()">✕</button>
+    <div class="modal-avatar"><img id="pAvatarImg" src="" alt="" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 80 80%22><rect width=%2280%22 height=%2280%22 fill=%22%23222736%22><text x=%2240%22 y=%2250%22 text-anchor=%22middle%22 font-size=%2232%22>🎮</text></svg>'"></div>
+    <div class="modal-name" id="pName"></div>
+    <div style="text-align:center;margin:6px 0"><div class="modal-rank-badge"><span>💎</span><span id="pTitle"></span></div></div>
+    <div style="text-align:center;color:var(--muted);font-size:.85rem;margin-bottom:14px" id="pRegion"></div>
+    <div class="modal-section-label">POSITION</div>
+    <div class="modal-position">
+      <div class="modal-pos-num" id="pPos"></div>
+      <div>
+        <div style="font-size:.85rem;font-weight:600;">🏆 OVERALL</div>
+        <div style="font-size:.78rem;color:var(--muted)" id="pPts"></div>
+      </div>
+    </div>
+    <div class="modal-section-label">TIERS</div>
+    <div class="modal-tiers-grid" id="pTiers"></div>
+    <a id="pNameMC" href="#" target="_blank" rel="noopener" class="namemc-link">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7h-2v7zM14 3v2h3.59L7.76 14.83l1.41 1.41L19 5.41V9h2V3h-7z"/></svg>
+      View on NameMC
+    </a>
+  </div>
+</div>
+
+<!-- ADMIN KEY MODAL -->
+<div class="key-modal" id="keyModal" onclick="closeKeyIfOutside(event)">
+  <div class="key-box">
+    <div class="key-title">🔑 Admin Access</div>
+    <div class="admin-field" style="margin-bottom:12px;">
+      <label>Password</label>
+      <input class="admin-input" type="password" id="keyInput" placeholder="Enter password..." onkeydown="if(event.key==='Enter')checkKey()">
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-gold" onclick="checkKey()">Enter</button>
+      <button class="btn btn-gray" onclick="closeKeyModal()">Cancel</button>
+    </div>
+    <div id="keyErr" style="color:var(--red);font-size:.8rem;margin-top:8px;display:none;">❌ Incorrect password.</div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div class="admin-panel" id="adminPanel" onclick="closeAdminIfOutside(event)">
+  <div class="admin-box">
+    <div class="admin-header">
+      <div class="admin-title">⚙️ Admin Panel</div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="db-status"><div class="db-dot" id="dbDot"></div><span id="dbStatus">Connecting...</span></div>
+        <button class="btn btn-gray" onclick="closeAdmin()">✕ Close</button>
+      </div>
+    </div>
+    <div class="admin-body">
+
+      <!-- ADD PLAYER -->
+      <div style="font-weight:600;font-size:.92rem;color:var(--green);">➕ Add Player</div>
+      <div class="admin-row">
+        <div class="admin-field"><label>Username</label><input class="admin-input" id="addName" placeholder="PlayerName"></div>
+        <div class="admin-field"><label>Gamemode</label>
+          <select class="admin-select" id="addMode">
+            <option value="vanilla">Vanilla</option><option value="uhc">UHC</option><option value="pot">Pot</option>
+            <option value="nethop">NethOP</option><option value="smp">SMP</option><option value="sword">Sword</option>
+            <option value="axe">Axe</option><option value="mace">Mace</option><option value="cart">Cart</option>
+            <option value="spearmace">Spear Mace</option>
+          </select>
+        </div>
+        <div class="admin-field"><label>Tier</label>
+          <select class="admin-select" id="addTier">
+            <option value="1">Tier 1</option><option value="2">Tier 2</option><option value="3">Tier 3</option>
+            <option value="4">Tier 4</option><option value="5">Tier 5</option>
+          </select>
+        </div>
+        <div class="admin-field"><label>HT / LT</label>
+          <select class="admin-select" id="addHT"><option value="HT">HT – High Tier</option><option value="LT">LT – Low Tier</option></select>
+        </div>
+        <div class="admin-field"><label>Region</label>
+          <select class="admin-select" id="addRegion"><option value="NA">NA</option><option value="EU">EU</option><option value="AS">AS</option></select>
+        </div>
+      </div>
+      <div><button class="btn btn-green" onclick="adminAddPlayer()">➕ Add Player</button></div>
+
+      <div class="admin-divider"></div>
+
+      <!-- REMOVE BY NAME -->
+      <div style="font-weight:600;font-size:.92rem;color:var(--red);">🗑️ Remove Player by Name</div>
+      <div class="admin-row">
+        <div class="admin-field"><label>Username</label><input class="admin-input" id="removeName" placeholder="PlayerName"></div>
+        <div class="admin-field"><label>From Gamemode</label>
+          <select class="admin-select" id="removeMode">
+            <option value="ALL">⚡ All Gamemodes</option><option value="vanilla">Vanilla</option><option value="uhc">UHC</option>
+            <option value="pot">Pot</option><option value="nethop">NethOP</option><option value="smp">SMP</option>
+            <option value="sword">Sword</option><option value="axe">Axe</option><option value="mace">Mace</option>
+            <option value="cart">Cart</option><option value="spearmace">Spear Mace</option>
+          </select>
+        </div>
+      </div>
+      <div><button class="btn btn-red" onclick="adminRemoveByName()">🗑️ Remove</button></div>
+
+      <div class="admin-divider"></div>
+
+      <!-- BROWSE -->
+      <div style="font-weight:600;font-size:.92rem;">📋 Browse & Remove Players</div>
+      <select class="admin-select" id="previewMode" onchange="renderAdminPreview()" style="max-width:220px;">
+        <option value="vanilla">Vanilla</option><option value="uhc">UHC</option><option value="pot">Pot</option>
+        <option value="nethop">NethOP</option><option value="smp">SMP</option><option value="sword">Sword</option>
+        <option value="axe">Axe</option><option value="mace">Mace</option><option value="cart">Cart</option>
+        <option value="spearmace">Spear Mace</option>
+      </select>
+      <div class="admin-players-list" id="adminPreviewList"></div>
+    </div>
+  </div>
+</div>
+
+<div class="admin-toast" id="toast"></div>
+
+<script>
+// ── CONFIG ──
+const ADMIN_PASS = 'KabulKarwan@2013';
+
+const TIER_PTS = {LT5:1,HT5:2,LT4:3,HT4:4,LT3:5,HT3:10,LT2:20,HT2:40,LT1:50,HT1:60};
+const GM_ICONS = {vanilla:'🎯',uhc:'❤️',pot:'🧪',nethop:'👾',smp:'🌀',sword:'⚔️',axe:'🪓',mace:'🔨',cart:'🛒',spearmace:'🏹'};
+const GM_NAMES = {vanilla:'Vanilla',uhc:'UHC',pot:'Pot',nethop:'NethOP',smp:'SMP',sword:'Sword',axe:'Axe',mace:'Mace',cart:'Cart',spearmace:'Spear Mace'};
+const GM_ORDER = ['vanilla','uhc','pot','nethop','smp','sword','axe','mace','cart','spearmace'];
+
+// ── NEON API ──
+let dbOk = false;
+async function dbQuery(query, params = []){
+  const res = await fetch('/api/neon', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query, params })
+  });
+  if (!res.ok) throw new Error('DB error');
+  return res.json();
+}
+async function neonSelect(){
+  return await dbQuery('SELECT * FROM players ORDER BY id ASC LIMIT 100000');
+}
+async function neonInsert(rows){
+  const row = rows[0];
+  return await dbQuery('INSERT INTO players (name, gamemode, tier, ht, region) VALUES ($1, $2, $3, $4, $5) RETURNING *', [row.name, row.gamemode, row.tier, row.ht, row.region]);
+}
+async function neonDeleteById(id){
+  await dbQuery('DELETE FROM players WHERE id = $1', [id]);
+}
+async function neonDeleteByNameGm(name, gm){
+  await dbQuery('DELETE FROM players WHERE name = $1 AND gamemode = $2', [name, gm]);
+}
+
+// ── STATE ──
+let DATA = {};
+let allPlayers = [];
+let currentTab = 'overall';
+
+// ── SKIN URLS ──
+const skinUrl  = n => `https://mc-heads.net/avatar/${encodeURIComponent(n)}/64`;
+const skinSm   = n => `https://mc-heads.net/avatar/${encodeURIComponent(n)}/32`;
+const nameMCUrl= n => `https://namemc.com/profile/${encodeURIComponent(n)}`;
+const fallback = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+function imgErr(el){ el.style.display='none'; }
+
+// ── TITLE ──
+function getTitle(pts){
+  if(pts>=400)return'Combat Grandmaster';
+  if(pts>=250)return'Combat Master';
+  if(pts>=100)return'Combat Ace';
+  if(pts>=50) return'Combat Specialist';
+  if(pts>=20) return'Combat Cadet';
+  if(pts>=10) return'Combat Novice';
+  return'Rookie';
+}
+
+// ── COMPUTE POINTS ──
+function computePlayer(name){
+  let total=0,tiers={};
+  for(const[gm,td]of Object.entries(DATA)){
+    for(const[tk,players]of Object.entries(td)){
+      const n=tk.replace('t','');
+      const p=players.find(p=>p.name.toLowerCase()===name.toLowerCase());
+      if(p){const k=(p.ht?'HT':'LT')+n;total+=TIER_PTS[k]||0;tiers[gm]={tier:n,ht:p.ht,key:k};}
+    }
+  }
+  return{total,tiers};
+}
+
+// ── BUILD DATA FROM FLAT LIST ──
+function rebuildDATA(){
+  DATA={};
+  GM_ORDER.forEach(gm=>{DATA[gm]={t1:[],t2:[],t3:[],t4:[],t5:[]};});
+  allPlayers.forEach(p=>{
+    const gm=p.gamemode,tk='t'+p.tier;
+    if(DATA[gm]&&DATA[gm][tk]!==undefined)
+      DATA[gm][tk].push({name:p.name,ht:!!p.ht,region:p.region||'NA',db_id:p.id});
+  });
+}
+
+// ── NEON LOAD ──
+async function initDB(){
+  // Show loading state
+  document.getElementById('mainContent').innerHTML='<div class="loading"><div class="spinner"></div>&nbsp;Connecting to database...</div>';
+  try{
+    const data = await neonSelect();
+    dbOk=true; setDBStatus(true);
+    if(data && data.length > 0){
+      allPlayers = data;
+      console.log('Loaded', data.length, 'players from Neon');
+      rebuildDATA(); renderContent();
+    } else {
+      console.log('Table empty, seeding initial data...');
+      await seedToDB();
+    }
+  }catch(e){
+    console.error('Neon error:', e.message);
+    setDBStatus(false);
+    // Fall back to local seed so site still works
+    allPlayers = getSeed();
+    rebuildDATA(); renderContent();
+  }
+}
+
+async function seedToDB(){
+  const seed = getSeed();
+  try{
+    // Insert in batches of 50 to avoid request size limits
+    let allInserted = [];
+    for(let i=0; i<seed.length; i+=50){
+      const batch = seed.slice(i, i+50);
+      const inserted = await neonInsert(batch);
+      allInserted = allInserted.concat(inserted||batch);
+    }
+    allPlayers = allInserted.length ? allInserted : seed;
+    console.log('Seeded', allPlayers.length, 'players to Neon');
+  }catch(e){
+    console.error('Seed error:', e.message);
+    allPlayers = seed;
+  }
+  rebuildDATA(); renderContent();
+}
+
+function setDBStatus(ok){
+  dbOk=ok;
+  const dot=document.getElementById('dbDot');
+  const lbl=document.getElementById('dbStatus');
+  if(dot){dot.className='db-dot'+(ok?'':' err');}
+  if(lbl){lbl.textContent=ok?'Neon Connected':'Local (DB offline)';}
+}
+
+// ── RENDER ──
+function switchTab(tab,el){
+  currentTab=tab;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderContent();
+}
+
+function renderContent(){
+  document.getElementById('mainContent').innerHTML=
+    currentTab==='overall'?buildOverall():buildTierView(currentTab);
+}
+
+function buildOverall(){
+  const names=new Set();
+  for(const td of Object.values(DATA))for(const pl of Object.values(td))pl.forEach(p=>names.add(p.name));
+  let ranked=[...names].map(n=>{const{total,tiers}=computePlayer(n);return{name:n,total,tiers};});
+  ranked.sort((a,b)=>b.total-a.total);
+  function reg(n){for(const td of Object.values(DATA))for(const pl of Object.values(td)){const p=pl.find(x=>x.name===n);if(p)return p.region||'NA';}return'NA';}
+  let html='<div class="overall-list">';
+  ranked.slice(0,100000).forEach((p,i)=>{
+    const rc=i===0?'r1':i===1?'r2':i===2?'r3':'';
+    const region=reg(p.name);
+    const badges=GM_ORDER.map(gm=>{
+      if(!p.tiers[gm])return`<div class="tbadge lt" title="${GM_NAMES[gm]}"><span class="badge-icon">${GM_ICONS[gm]}</span><span class="badge-label">-</span></div>`;
+      const t=p.tiers[gm],cls=t.ht?'ht':'lt',lbl=(t.ht?'HT':'LT')+t.tier;
+      return`<div class="tbadge ${cls}" title="${GM_NAMES[gm]} ${lbl}"><span class="badge-icon">${GM_ICONS[gm]}</span><span class="badge-label">${lbl}</span></div>`;
+    }).join('');
+    html+=`<div class="overall-row" onclick="openProfile(${JSON.stringify(p.name)})">
+      <div class="rank-num ${rc}">${i+1}.</div>
+      <div class="player-avatar"><img src="${skinUrl(p.name)}" alt="${p.name}" onerror="imgErr(this)"></div>
+      <div class="player-info">
+        <div class="player-name">${p.name}</div>
+        <div class="player-title">💎 ${getTitle(p.total)} (${p.total} points)</div>
+      </div>
+      <div class="region-tag ${region}">${region}</div>
+      <div class="tier-badges">${badges}</div>
+    </div>`;
+  });
+  return html+'</div>';
+}
+
+function buildTierView(gm){
+  const td=DATA[gm];
+  if(!td)return'<p style="color:var(--muted)">No data.</p>';
+  const cols=[{k:'t1',l:'Tier 1',c:'t1',i:'🏆'},{k:'t2',l:'Tier 2',c:'t2',i:'🥈'},{k:'t3',l:'Tier 3',c:'t3',i:'🥉'},{k:'t4',l:'Tier 4',c:'t4',i:''},{k:'t5',l:'Tier 5',c:'t5',i:''}];
+  let html='<div class="tier-grid">';
+  cols.forEach(({k,l,c,i})=>{
+    const pls=td[k]||[];
+    html+=`<div><div class="tier-header ${c}">${i} ${l}</div>`;
+    pls.forEach(p=>{
+      const hc=p.ht?'ht-player':'',bc=p.ht?'ht':'lt',bl=p.ht?'HT':'LT',n=k.replace('t','');
+      html+=`<div class="tier-player ${hc}" onclick="openProfile(${JSON.stringify(p.name)})">
+        <div class="region-dot ${p.region}"></div>
+        <div class="tp-avatar"><img src="${skinSm(p.name)}" alt="${p.name}" onerror="imgErr(this)"></div>
+        <div class="tp-name">${p.name}</div>
+        <div class="tp-badge ${bc}">${bl}${n}</div>
+      </div>`;
+    });
+    html+='</div>';
+  });
+  return html+'</div>';
+}
+
+// ── PROFILE ──
+function openProfile(name){
+  const{total,tiers}=computePlayer(name);
+  let region='NA';
+  for(const td of Object.values(DATA))for(const pl of Object.values(td)){const p=pl.find(x=>x.name===name);if(p){region=p.region||'NA';break;}}
+  // rank
+  const names=new Set();
+  for(const td of Object.values(DATA))for(const pl of Object.values(td))pl.forEach(p=>names.add(p.name));
+  const ranked=[...names].map(n=>{const{total:t}=computePlayer(n);return{name:n,total:t};}).sort((a,b)=>b.total-a.total);
+  const rank=ranked.findIndex(p=>p.name===name)+1;
+
+  document.getElementById('pAvatarImg').src=skinUrl(name);
+  document.getElementById('pName').textContent=name;
+  document.getElementById('pTitle').textContent=getTitle(total);
+  document.getElementById('pRegion').textContent='📍 '+region;
+  document.getElementById('pPos').textContent=rank+'.';
+  document.getElementById('pPts').textContent=total+' points';
+  document.getElementById('pNameMC').href=nameMCUrl(name);
+
+  let th='';
+  GM_ORDER.forEach(gm=>{
+    const t=tiers[gm];
+    if(t){const lbl=(t.ht?'HT':'LT')+t.tier,cls=t.ht?'ht':'lt';
+      th+=`<div class="modal-tbadge"><div class="ico">${GM_ICONS[gm]}</div><div class="lbl ${cls}">${lbl}</div><div style="font-size:.55rem;color:var(--muted)">${GM_NAMES[gm]}</div></div>`;}
+    else th+=`<div class="modal-tbadge"><div class="ico">${GM_ICONS[gm]}</div><div class="lbl none">-</div><div style="font-size:.55rem;color:var(--border)">${GM_NAMES[gm]}</div></div>`;
+  });
+  document.getElementById('pTiers').innerHTML=th;
+  document.getElementById('profileModal').classList.add('show');
+}
+function closeProfile(){document.getElementById('profileModal').classList.remove('show');}
+function closeProfileIfOutside(e){if(e.target.id==='profileModal')closeProfile();}
+
+// ── ADMIN ──
+function openKeyModal(){document.getElementById('keyInput').value='';document.getElementById('keyErr').style.display='none';document.getElementById('keyModal').classList.add('show');setTimeout(()=>document.getElementById('keyInput').focus(),80);}
+function closeKeyModal(){document.getElementById('keyModal').classList.remove('show');}
+function closeKeyIfOutside(e){if(e.target.id==='keyModal')closeKeyModal();}
+function checkKey(){
+  if(document.getElementById('keyInput').value===ADMIN_PASS){closeKeyModal();openAdmin();}
+  else document.getElementById('keyErr').style.display='block';
+}
+function openAdmin(){setDBStatus(dbOk);document.getElementById('adminPanel').classList.add('show');renderAdminPreview();}
+function closeAdmin(){document.getElementById('adminPanel').classList.remove('show');}
+function closeAdminIfOutside(e){if(e.target.id==='adminPanel')closeAdmin();}
+
+async function adminAddPlayer(){
+  const name=document.getElementById('addName').value.trim();
+  const gm=document.getElementById('addMode').value;
+  const tier=parseInt(document.getElementById('addTier').value);
+  const ht=document.getElementById('addHT').value==='HT';
+  const region=document.getElementById('addRegion').value;
+  if(!name){showToast('Enter a player name!',true);return;}
+  const tk='t'+tier;
+  if(DATA[gm][tk].find(p=>p.name.toLowerCase()===name.toLowerCase())){showToast('Already in this tier!',true);return;}
+  const row={name,gamemode:gm,tier,ht,region};
+  try{
+    const data = await neonInsert([row]);
+    allPlayers.push(data[0]); rebuildDATA();
+    showToast('✅ Added '+name+' to '+GM_NAMES[gm]+' T'+tier);
+  }catch(e){
+    allPlayers.push({...row, id:Date.now()}); rebuildDATA();
+    showToast('✅ Added '+name+' (local only)', false);
+  }
+  document.getElementById('addName').value='';
+  renderAdminPreview();renderContent();
+}
+
+async function adminRemoveByName(){
+  const name=document.getElementById('removeName').value.trim();
+  const mode=document.getElementById('removeMode').value;
+  if(!name){showToast('Enter a player name!',true);return;}
+  const gms=mode==='ALL'?GM_ORDER:[mode];
+  let removed=0;
+  for(const gm of gms){
+    const toRemove=allPlayers.filter(p=>p.name.toLowerCase()===name.toLowerCase()&&p.gamemode===gm);
+    if(!toRemove.length)continue;
+    for(const p of toRemove){
+      try{
+        if(dbOk){
+          if(p.id) await neonDeleteById(p.id);
+          else await neonDeleteByNameGm(p.name, gm);
+        }
+      }catch(e){
+        console.warn('Neon remove failed', p.name, gm, e.message);
+      }
+      allPlayers=allPlayers.filter(x=>x!==p);
+      removed++;
+    }
+  }
+  if(removed){
+    rebuildDATA();
+    showToast(\`🗑️ Removed \${name}\`);
+    document.getElementById('removeName').value='';
+    renderAdminPreview();
+    renderContent();
+  } else showToast(\`\"\${name}\" not found!\`,true);
+}
+
+async function removeRowInline(dbId,name,gm){
+  try{
+    if(dbOk){
+      if(dbId) await neonDeleteById(dbId);
+      else await neonDeleteByNameGm(name, gm);
+    }
+  }catch(e){
+    console.warn('Neon remove failed', name, gm, e.message);
+  }
+  allPlayers=allPlayers.filter(p=>!(p.id===dbId||(p.name===name&&p.gamemode===gm)));
+  rebuildDATA();
+  showToast(\`🗑️ Removed \${name}\`);
+  renderAdminPreview();
+  renderContent();
+}
+
+function renderAdminPreview(){
+  const gm=document.getElementById('previewMode').value;
+  const list=document.getElementById('adminPreviewList');
+  let html='';
+  for(const[tk,players]of Object.entries(DATA[gm]||{})){
+    const n=tk.replace('t','');
+    players.forEach(p=>{
+      const lbl=(p.ht?'HT':'LT')+n;
+      html+=`<div class="admin-player-row">
+        <img src="${skinSm(p.name)}" width="24" height="24" style="border-radius:4px" onerror="this.style.display='none'">
+        <span class="apn">${p.name}</span>
+        <span class="apm">${lbl} · ${p.region}</span>
+        <button class="rm-btn" onclick="removeRowInline(${JSON.stringify(p.db_id)},${JSON.stringify(p.name)},${JSON.stringify(gm)})">🗑️ Remove</button>
+      </div>`;
+    });
+  }
+  list.innerHTML=html||'<div style="color:var(--muted);font-size:.85rem;padding:10px 0;">No players in this gamemode.</div>';
+}
+
+// ── SEARCH ──
+function handleGlobalSearch(val){
+  if(!val.trim()){renderContent();return;}
+  const q=val.toLowerCase();
+  const names=new Set();
+  for(const td of Object.values(DATA))for(const pl of Object.values(td))pl.forEach(p=>names.add(p.name));
+  const matches=[...names].filter(n=>n.toLowerCase().includes(q));
+  if(!matches.length){document.getElementById('mainContent').innerHTML='<p style="color:var(--muted);padding:20px 0;">No players found.</p>';return;}
+  let ranked=matches.map(n=>{const{total,tiers}=computePlayer(n);return{name:n,total,tiers};}).sort((a,b)=>b.total-a.total);
+  function reg(n){for(const td of Object.values(DATA))for(const pl of Object.values(td)){const p=pl.find(x=>x.name===n);if(p)return p.region||'NA';}return'NA';}
+  let html='<div class="overall-list">';
+  ranked.forEach((p,i)=>{
+    const region=reg(p.name);
+    const badges=GM_ORDER.map(gm=>{
+      if(!p.tiers[gm])return`<div class="tbadge lt"><span class="badge-icon">${GM_ICONS[gm]}</span><span class="badge-label">-</span></div>`;
+      const t=p.tiers[gm],cls=t.ht?'ht':'lt',lbl=(t.ht?'HT':'LT')+t.tier;
+      return`<div class="tbadge ${cls}"><span class="badge-icon">${GM_ICONS[gm]}</span><span class="badge-label">${lbl}</span></div>`;
+    }).join('');
+    html+=`<div class="overall-row" onclick="openProfile(${JSON.stringify(p.name)})">
+      <div class="rank-num">${i+1}.</div>
+      <div class="player-avatar"><img src="${skinUrl(p.name)}" alt="${p.name}" onerror="imgErr(this)"></div>
+      <div class="player-info"><div class="player-name">${p.name}</div><div class="player-title">💎 ${getTitle(p.total)} (${p.total} pts)</div></div>
+      <div class="region-tag ${region}">${region}</div>
+      <div class="tier-badges">${badges}</div>
+    </div>`;
+  });
+  document.getElementById('mainContent').innerHTML=html+'</div>';
+}
+
+// ── TOAST ──
+function showToast(msg,err=false){
+  const t=document.getElementById('toast');t.textContent=msg;
+  t.className='admin-toast show'+(err?' err':'');
+  setTimeout(()=>t.className='admin-toast',2800);
+}
+
+// ── SEED DATA ──
+function getSeed(){return[
+  // VANILLA
+  {name:'K1RBE',gamemode:'vanilla',tier:1,ht:true,region:'NA'},
+  {name:'Camcal',gamemode:'vanilla',tier:2,ht:false,region:'NA'},{name:'Demonmcc',gamemode:'vanilla',tier:2,ht:false,region:'NA'},{name:'KingD3fault',gamemode:'vanilla',tier:2,ht:false,region:'NA'},
+  {name:'qPower',gamemode:'vanilla',tier:2,ht:false,region:'NA'},{name:'Tokenu',gamemode:'vanilla',tier:2,ht:false,region:'NA'},{name:'cloudmlol',gamemode:'vanilla',tier:2,ht:false,region:'NA'},
+  {name:'Cowarted',gamemode:'vanilla',tier:2,ht:false,region:'NA'},{name:'Dwggo',gamemode:'vanilla',tier:2,ht:false,region:'NA'},{name:'GalleryWalk',gamemode:'vanilla',tier:2,ht:false,region:'NA'},
+  {name:'SuperBowserSpike',gamemode:'vanilla',tier:2,ht:false,region:'NA'},{name:'C1utch',gamemode:'vanilla',tier:2,ht:false,region:'NA'},{name:'MoezXF',gamemode:'vanilla',tier:2,ht:false,region:'NA'},{name:'Amateur_Poet',gamemode:'vanilla',tier:2,ht:false,region:'NA'},
+  {name:'raaicuo',gamemode:'vanilla',tier:3,ht:false,region:'NA'},{name:'Sonya_skvirtik',gamemode:'vanilla',tier:3,ht:false,region:'NA'},{name:'resettable',gamemode:'vanilla',tier:3,ht:false,region:'NA'},
+  {name:'kexqa',gamemode:'vanilla',tier:3,ht:false,region:'NA'},{name:'noc0oo_',gamemode:'vanilla',tier:3,ht:false,region:'NA'},{name:'TwoSpeedy',gamemode:'vanilla',tier:3,ht:false,region:'NA'},
+  {name:'Sylank',gamemode:'vanilla',tier:3,ht:false,region:'NA'},{name:'yesbee1',gamemode:'vanilla',tier:3,ht:false,region:'NA'},{name:'k4etril',gamemode:'vanilla',tier:3,ht:true,region:'EU'},
+  {name:'Atlantkv',gamemode:'vanilla',tier:3,ht:false,region:'NA'},{name:'Wior',gamemode:'vanilla',tier:3,ht:false,region:'NA'},{name:'ksuvis',gamemode:'vanilla',tier:3,ht:false,region:'NA'},
+  {name:'D3mongorgons',gamemode:'vanilla',tier:4,ht:false,region:'NA'},{name:'09024204',gamemode:'vanilla',tier:4,ht:false,region:'NA'},{name:'r3surrgence',gamemode:'vanilla',tier:4,ht:false,region:'NA'},
+  {name:'a4yt',gamemode:'vanilla',tier:4,ht:false,region:'NA'},{name:'LaggyMonkey',gamemode:'vanilla',tier:4,ht:false,region:'NA'},{name:'Thai_mimi',gamemode:'vanilla',tier:4,ht:false,region:'NA'},
+  {name:'soundovo',gamemode:'vanilla',tier:5,ht:false,region:'NA'},{name:'KotsaMC',gamemode:'vanilla',tier:5,ht:false,region:'NA'},{name:'bobuxv3',gamemode:'vanilla',tier:5,ht:false,region:'NA'},
+  {name:'SoyDhru',gamemode:'vanilla',tier:5,ht:false,region:'NA'},{name:'polarbear1213451',gamemode:'vanilla',tier:5,ht:false,region:'NA'},{name:'rayz7n_01',gamemode:'vanilla',tier:5,ht:false,region:'NA'},
+  // UHC
+  {name:'Swight',gamemode:'uhc',tier:1,ht:true,region:'NA'},{name:'coldified',gamemode:'uhc',tier:1,ht:false,region:'EU'},{name:'CORZZ',gamemode:'uhc',tier:1,ht:false,region:'NA'},
+  {name:'SeeBoMWABASSSSS',gamemode:'uhc',tier:2,ht:false,region:'NA'},{name:'Paulinhq',gamemode:'uhc',tier:2,ht:false,region:'NA'},{name:'BLMcheat',gamemode:'uhc',tier:2,ht:false,region:'NA'},
+  {name:'Koharu89',gamemode:'uhc',tier:2,ht:false,region:'NA'},{name:'Arsakha',gamemode:'uhc',tier:2,ht:false,region:'NA'},{name:'sweatgod',gamemode:'uhc',tier:2,ht:false,region:'NA'},
+  {name:'DryAU',gamemode:'uhc',tier:2,ht:false,region:'NA'},{name:'Triser5000',gamemode:'uhc',tier:2,ht:false,region:'NA'},{name:'Draqonate',gamemode:'uhc',tier:2,ht:false,region:'NA'},
+  {name:'_PuggyWuggy',gamemode:'uhc',tier:3,ht:false,region:'NA'},{name:'xzTito',gamemode:'uhc',tier:3,ht:false,region:'NA'},{name:'Axzll',gamemode:'uhc',tier:3,ht:false,region:'NA'},
+  {name:'Runn1n9',gamemode:'uhc',tier:3,ht:false,region:'NA'},{name:'Nilo10',gamemode:'uhc',tier:3,ht:false,region:'NA'},{name:'1Wenzy',gamemode:'uhc',tier:3,ht:false,region:'NA'},
+  {name:'Aimingstars',gamemode:'uhc',tier:4,ht:false,region:'NA'},{name:'Masqnn',gamemode:'uhc',tier:4,ht:false,region:'NA'},{name:'Clehu',gamemode:'uhc',tier:4,ht:false,region:'NA'},
+  {name:'PeaceButCool',gamemode:'uhc',tier:4,ht:false,region:'NA'},{name:'wduo',gamemode:'uhc',tier:4,ht:false,region:'NA'},
+  {name:'jocko051',gamemode:'uhc',tier:5,ht:false,region:'NA'},{name:'TOPPER28',gamemode:'uhc',tier:5,ht:false,region:'NA'},{name:'voiru',gamemode:'uhc',tier:5,ht:false,region:'NA'},
+  {name:'BurgerMarioo',gamemode:'uhc',tier:5,ht:false,region:'NA'},{name:'xpyw',gamemode:'uhc',tier:5,ht:false,region:'NA'},
+  // POT
+  {name:'Kylaz',gamemode:'pot',tier:1,ht:true,region:'NA'},{name:'sashia2m',gamemode:'pot',tier:1,ht:false,region:'NA'},
+  {name:'ph4ntic',gamemode:'pot',tier:2,ht:false,region:'NA'},{name:'jano74',gamemode:'pot',tier:2,ht:false,region:'NA'},{name:'badspelhr',gamemode:'pot',tier:2,ht:false,region:'NA'},
+  {name:'ciphar',gamemode:'pot',tier:2,ht:false,region:'NA'},{name:'coldified',gamemode:'pot',tier:2,ht:false,region:'NA'},{name:'Leaferd',gamemode:'pot',tier:2,ht:false,region:'NA'},
+  {name:'SwiftNautilus',gamemode:'pot',tier:2,ht:false,region:'NA'},{name:'Hosit',gamemode:'pot',tier:2,ht:false,region:'NA'},{name:'Xarlaq',gamemode:'pot',tier:2,ht:false,region:'NA'},
+  {name:'ZeNain',gamemode:'pot',tier:3,ht:false,region:'NA'},{name:'garlicbreed',gamemode:'pot',tier:3,ht:false,region:'NA'},{name:'1Wenzy',gamemode:'pot',tier:3,ht:false,region:'NA'},
+  {name:'igekoma',gamemode:'pot',tier:3,ht:false,region:'NA'},{name:'rzuwik6',gamemode:'pot',tier:3,ht:false,region:'NA'},{name:'SlaadeWiilson',gamemode:'pot',tier:3,ht:false,region:'NA'},
+  {name:'mushroomstew101',gamemode:'pot',tier:4,ht:false,region:'NA'},{name:'Osuismypet',gamemode:'pot',tier:4,ht:false,region:'NA'},{name:'ltzStack',gamemode:'pot',tier:4,ht:false,region:'NA'},
+  {name:'lllExodus',gamemode:'pot',tier:5,ht:false,region:'NA'},{name:'Thrawn303',gamemode:'pot',tier:5,ht:false,region:'NA'},{name:'Infinity3void',gamemode:'pot',tier:5,ht:false,region:'NA'},
+  // NETHOP
+  {name:'janekv',gamemode:'nethop',tier:1,ht:true,region:'EU'},
+  {name:'entit1es',gamemode:'nethop',tier:2,ht:false,region:'NA'},{name:'Merrypenguin',gamemode:'nethop',tier:2,ht:false,region:'NA'},{name:'YungExple',gamemode:'nethop',tier:2,ht:false,region:'NA'},
+  {name:'Swight',gamemode:'nethop',tier:2,ht:false,region:'NA'},{name:'BetterOffSad',gamemode:'nethop',tier:2,ht:false,region:'NA'},{name:'chqsed',gamemode:'nethop',tier:2,ht:false,region:'NA'},
+  {name:'YungSimsek',gamemode:'nethop',tier:3,ht:false,region:'NA'},{name:'MoOa_',gamemode:'nethop',tier:3,ht:false,region:'NA'},{name:'DontrunLOL',gamemode:'nethop',tier:3,ht:false,region:'NA'},
+  {name:'LilZayy_',gamemode:'nethop',tier:3,ht:false,region:'NA'},{name:'1Critzz',gamemode:'nethop',tier:3,ht:false,region:'NA'},
+  {name:'RubyLamb',gamemode:'nethop',tier:4,ht:false,region:'NA'},{name:'Infernoplex_',gamemode:'nethop',tier:4,ht:false,region:'NA'},{name:'keepmytears',gamemode:'nethop',tier:4,ht:false,region:'NA'},
+  {name:'vanesssaaaaaaa',gamemode:'nethop',tier:5,ht:false,region:'NA'},{name:'Chasemm3813',gamemode:'nethop',tier:5,ht:false,region:'NA'},{name:'_nixtro_',gamemode:'nethop',tier:5,ht:false,region:'NA'},
+  // SMP
+  {name:'Marlowww',gamemode:'smp',tier:1,ht:true,region:'NA'},
+  {name:'Freekee_Fang',gamemode:'smp',tier:2,ht:false,region:'NA'},{name:'CorruptNoob',gamemode:'smp',tier:2,ht:false,region:'NA'},{name:'Legendarryy',gamemode:'smp',tier:2,ht:false,region:'NA'},
+  {name:'ibrahhhh',gamemode:'smp',tier:2,ht:false,region:'NA'},{name:'Rivise',gamemode:'smp',tier:2,ht:false,region:'NA'},{name:'Error455',gamemode:'smp',tier:2,ht:false,region:'NA'},
+  {name:'ItzRelyks',gamemode:'smp',tier:3,ht:false,region:'NA'},{name:'kylanss',gamemode:'smp',tier:3,ht:false,region:'NA'},{name:'Takqo',gamemode:'smp',tier:3,ht:false,region:'NA'},
+  {name:'LINGEEE',gamemode:'smp',tier:4,ht:false,region:'NA'},{name:'kretrex',gamemode:'smp',tier:4,ht:false,region:'NA'},{name:'WobbleWave',gamemode:'smp',tier:4,ht:false,region:'NA'},
+  {name:'MishMishon',gamemode:'smp',tier:5,ht:false,region:'NA'},{name:'HT1Ghoulz',gamemode:'smp',tier:5,ht:false,region:'NA'},{name:'zMort_',gamemode:'smp',tier:5,ht:false,region:'NA'},
+  // SWORD
+  {name:'Marlowww',gamemode:'sword',tier:1,ht:true,region:'NA'},{name:'Kylaz',gamemode:'sword',tier:1,ht:false,region:'NA'},{name:'coldified',gamemode:'sword',tier:1,ht:false,region:'EU'},{name:'Leaferd',gamemode:'sword',tier:1,ht:false,region:'NA'},
+  {name:'Verniq',gamemode:'sword',tier:2,ht:false,region:'NA'},{name:'dropkey',gamemode:'sword',tier:2,ht:false,region:'NA'},{name:'ngrSancion',gamemode:'sword',tier:2,ht:false,region:'NA'},
+  {name:'Moroccan_Mjinina',gamemode:'sword',tier:2,ht:false,region:'NA'},{name:'Adamsony',gamemode:'sword',tier:2,ht:false,region:'NA'},{name:'TheyBeHating',gamemode:'sword',tier:2,ht:false,region:'NA'},
+  {name:'Eoxie',gamemode:'sword',tier:3,ht:false,region:'NA'},{name:'PXOJA',gamemode:'sword',tier:3,ht:false,region:'NA'},{name:'Error455',gamemode:'sword',tier:3,ht:false,region:'NA'},
+  {name:'Outname',gamemode:'sword',tier:3,ht:false,region:'NA'},{name:'X4shh',gamemode:'sword',tier:3,ht:false,region:'NA'},
+  {name:'ViperKits',gamemode:'sword',tier:4,ht:false,region:'NA'},{name:'Fogz_14',gamemode:'sword',tier:4,ht:false,region:'NA'},{name:'dirtythug32',gamemode:'sword',tier:4,ht:false,region:'NA'},
+  {name:'moonrisej_uwu',gamemode:'sword',tier:5,ht:false,region:'NA'},{name:'207Cub',gamemode:'sword',tier:5,ht:false,region:'NA'},{name:'minato15',gamemode:'sword',tier:5,ht:false,region:'NA'},
+  // AXE
+  {name:'Swight',gamemode:'axe',tier:1,ht:true,region:'NA'},{name:'coldified',gamemode:'axe',tier:1,ht:false,region:'EU'},
+  {name:'Respect5595',gamemode:'axe',tier:2,ht:false,region:'NA'},{name:'BlvckWlf',gamemode:'axe',tier:2,ht:false,region:'NA'},{name:'vvfr',gamemode:'axe',tier:2,ht:false,region:'NA'},
+  {name:'Koharu89',gamemode:'axe',tier:2,ht:false,region:'NA'},{name:'Arsakha',gamemode:'axe',tier:2,ht:false,region:'NA'},{name:'Insanel',gamemode:'axe',tier:2,ht:false,region:'NA'},
+  {name:'Paulinhq',gamemode:'axe',tier:3,ht:false,region:'NA'},{name:'yMiau',gamemode:'axe',tier:3,ht:false,region:'NA'},{name:'1Wenzy',gamemode:'axe',tier:3,ht:false,region:'NA'},
+  {name:'mrdarkbob2',gamemode:'axe',tier:3,ht:false,region:'NA'},{name:'Nekitbrother',gamemode:'axe',tier:3,ht:false,region:'NA'},
+  {name:'AxiomSL5',gamemode:'axe',tier:4,ht:false,region:'NA'},{name:'ohAizen',gamemode:'axe',tier:4,ht:false,region:'NA'},{name:'NotEriRexFan77',gamemode:'axe',tier:4,ht:false,region:'NA'},
+  {name:'ynkylo',gamemode:'axe',tier:5,ht:false,region:'NA'},{name:'Fatal1113',gamemode:'axe',tier:5,ht:false,region:'NA'},{name:'Nitwit_Owen',gamemode:'axe',tier:5,ht:false,region:'NA'},
+  // MACE
+  {name:'Rappture',gamemode:'mace',tier:1,ht:true,region:'NA'},{name:'AlienOverdose',gamemode:'mace',tier:1,ht:false,region:'NA'},{name:'Marlowww',gamemode:'mace',tier:1,ht:false,region:'NA'},
+  {name:'AdamAdiss',gamemode:'mace',tier:2,ht:false,region:'NA'},{name:'coldified',gamemode:'mace',tier:2,ht:false,region:'EU'},{name:'elmerlizz',gamemode:'mace',tier:2,ht:false,region:'NA'},
+  {name:'BlvckWlf',gamemode:'mace',tier:2,ht:false,region:'NA'},{name:'Turbinial',gamemode:'mace',tier:2,ht:false,region:'NA'},{name:'PUFFIERZ',gamemode:'mace',tier:2,ht:false,region:'NA'},
+  {name:'Yaso___',gamemode:'mace',tier:3,ht:false,region:'NA'},{name:'gliiifer',gamemode:'mace',tier:3,ht:false,region:'NA'},{name:'loafuss',gamemode:'mace',tier:3,ht:false,region:'NA'},
+  {name:'vickslover',gamemode:'mace',tier:3,ht:false,region:'NA'},{name:'Stormlash',gamemode:'mace',tier:3,ht:false,region:'NA'},
+  {name:'RioTheOGBird',gamemode:'mace',tier:4,ht:false,region:'NA'},{name:'LuckiestBow92',gamemode:'mace',tier:4,ht:false,region:'NA'},{name:'Swordified02',gamemode:'mace',tier:4,ht:false,region:'NA'},
+  {name:'_Tynan',gamemode:'mace',tier:5,ht:false,region:'NA'},{name:'Crepescular',gamemode:'mace',tier:5,ht:false,region:'NA'},{name:'disabledlove',gamemode:'mace',tier:5,ht:false,region:'NA'},
+  // CART
+  {name:'Speedrunner99',gamemode:'cart',tier:1,ht:true,region:'NA'},{name:'CartKing',gamemode:'cart',tier:1,ht:false,region:'EU'},
+  {name:'RailMaster',gamemode:'cart',tier:2,ht:false,region:'NA'},{name:'MinecartPro',gamemode:'cart',tier:2,ht:false,region:'NA'},{name:'Derailment',gamemode:'cart',tier:2,ht:false,region:'NA'},
+  {name:'TrackStar',gamemode:'cart',tier:2,ht:false,region:'EU'},{name:'BoosterMax',gamemode:'cart',tier:2,ht:false,region:'NA'},
+  {name:'SlopeMaster',gamemode:'cart',tier:3,ht:false,region:'NA'},{name:'CurveSlayer',gamemode:'cart',tier:3,ht:false,region:'EU'},{name:'SwitchFlick',gamemode:'cart',tier:3,ht:false,region:'NA'},
+  {name:'RailHopper',gamemode:'cart',tier:4,ht:false,region:'NA'},{name:'CartCrasher',gamemode:'cart',tier:4,ht:false,region:'NA'},{name:'DriftCart',gamemode:'cart',tier:4,ht:false,region:'NA'},
+  {name:'NewRacer',gamemode:'cart',tier:5,ht:false,region:'NA'},{name:'CartNerd',gamemode:'cart',tier:5,ht:false,region:'NA'},{name:'SlowCart',gamemode:'cart',tier:5,ht:false,region:'NA'},
+  // SPEAR MACE
+  {name:'LanceKing',gamemode:'spearmace',tier:1,ht:true,region:'NA'},{name:'SpearGod',gamemode:'spearmace',tier:1,ht:false,region:'EU'},
+  {name:'ThrustMaster',gamemode:'spearmace',tier:2,ht:false,region:'NA'},{name:'MaceAndSpear',gamemode:'spearmace',tier:2,ht:false,region:'NA'},{name:'PiercePro',gamemode:'spearmace',tier:2,ht:false,region:'EU'},
+  {name:'ImpactKing',gamemode:'spearmace',tier:2,ht:false,region:'NA'},{name:'ShieldBreaker',gamemode:'spearmace',tier:2,ht:false,region:'NA'},
+  {name:'SpearFlick',gamemode:'spearmace',tier:3,ht:false,region:'NA'},{name:'MaceSpin',gamemode:'spearmace',tier:3,ht:false,region:'EU'},{name:'TipDodge',gamemode:'spearmace',tier:3,ht:false,region:'NA'},
+  {name:'SpearApprentice',gamemode:'spearmace',tier:4,ht:false,region:'NA'},{name:'MaceLearner',gamemode:'spearmace',tier:4,ht:false,region:'NA'},{name:'PokeFighter',gamemode:'spearmace',tier:4,ht:false,region:'EU'},
+  {name:'SpearNovice',gamemode:'spearmace',tier:5,ht:false,region:'NA'},{name:'MaceBaby',gamemode:'spearmace',tier:5,ht:false,region:'NA'},{name:'PokePoker',gamemode:'spearmace',tier:5,ht:false,region:'NA'},
+];}
+
+// ── BOOT ──
+initDB();
+</script>
+</body>
+</html>
