@@ -1,11 +1,13 @@
 import { neon } from '@neondatabase/serverless';
 import { NextResponse } from 'next/server';
 
-const sql = neon(process.env.DATABASE_URL!);
+const db = neon(process.env.DATABASE_URL!) as unknown as {
+  query: (q: string) => Promise<unknown>;
+};
 
 export async function GET() {
   try {
-    await sql(`
+    await db.query(`
       CREATE TABLE IF NOT EXISTS nt_players (
         id SERIAL PRIMARY KEY,
         name TEXT NOT NULL,
@@ -20,7 +22,7 @@ export async function GET() {
         UNIQUE(name, gamemode, edition)
       )
     `);
-    await sql(`
+    await db.query(`
       CREATE TABLE IF NOT EXISTS nt_verify_tokens (
         id SERIAL PRIMARY KEY,
         discord_id TEXT NOT NULL,

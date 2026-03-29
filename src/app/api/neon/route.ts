@@ -6,7 +6,9 @@ const sql = neon(process.env.DATABASE_URL!);
 export async function POST(request: NextRequest) {
   try {
     const { query, params } = await request.json();
-    const result = await sql(query, params || []);
+    // neon tagged-template doesn't support dynamic queries directly,
+    // so we use the underlying query method via sql.query
+    const result = await (sql as unknown as { query: (q: string, p: unknown[]) => Promise<unknown> }).query(query, params || []);
     return NextResponse.json(result);
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : 'Unknown error';
