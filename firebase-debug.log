@@ -1,0 +1,42 @@
+[debug] [2026-03-29T21:06:37.098Z] ----------------------------------------------------------------------
+[debug] [2026-03-29T21:06:37.119Z] Command:       /opt/homebrew/Cellar/node/25.8.2/bin/node /opt/homebrew/bin/firebase projects:list
+[debug] [2026-03-29T21:06:37.121Z] CLI Version:   15.12.0
+[debug] [2026-03-29T21:06:37.121Z] Platform:      darwin
+[debug] [2026-03-29T21:06:37.123Z] Node Version:  v25.8.2
+[debug] [2026-03-29T21:06:37.125Z] Time:          Sun Mar 29 2026 14:06:37 GMT-0700 (Pacific Daylight Time)
+[debug] [2026-03-29T21:06:37.125Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-03-29T21:06:37.132Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2026-03-29T21:06:55.514Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-03-29T21:06:55.746Z] > authorizing via signed-in user (hooopro31@gmail.com)
+[debug] [2026-03-29T21:06:56.270Z] Checked if tokens are valid: false, expires at: 1762404052588
+[debug] [2026-03-29T21:06:56.301Z] Checked if tokens are valid: false, expires at: 1762404052588
+[debug] [2026-03-29T21:06:56.302Z] > refreshing access token with scopes: []
+[debug] [2026-03-29T21:06:56.496Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-03-29T21:06:56.496Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-03-29T21:06:58.971Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2026-03-29T21:06:58.981Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2026-03-29T21:07:01.777Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-03-29T21:07:01.780Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-03-29T21:07:02.853Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=1000
+[debug] [2026-03-29T21:07:08.971Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 200
+[debug] [2026-03-29T21:08:34.680Z] ----------------------------------------------------------------------
+[debug] [2026-03-29T21:08:34.704Z] Command:       /opt/homebrew/Cellar/node/25.8.2/bin/node /opt/homebrew/bin/firebase use minecraftjava121
+[debug] [2026-03-29T21:08:34.713Z] CLI Version:   15.12.0
+[debug] [2026-03-29T21:08:34.715Z] Platform:      darwin
+[debug] [2026-03-29T21:08:34.718Z] Node Version:  v25.8.2
+[debug] [2026-03-29T21:08:34.718Z] Time:          Sun Mar 29 2026 14:08:34 GMT-0700 (Pacific Daylight Time)
+[debug] [2026-03-29T21:08:34.719Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-03-29T21:08:40.206Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-03-29T21:08:40.302Z] > authorizing via signed-in user (hooopro31@gmail.com)
+[debug] [2026-03-29T21:08:40.337Z] Checked if tokens are valid: true, expires at: 1774822019786
+[debug] [2026-03-29T21:08:40.344Z] Checked if tokens are valid: true, expires at: 1774822019786
+[debug] [2026-03-29T21:08:40.353Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/minecraftjava121/services/cloudresourcemanager.googleapis.com [none]
+[debug] [2026-03-29T21:08:40.355Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/minecraftjava121/services/cloudresourcemanager.googleapis.com  x-goog-user-project=minecraftjava121
+[debug] [2026-03-29T21:08:48.276Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/minecraftjava121/services/cloudresourcemanager.googleapis.com 200
+[debug] [2026-03-29T21:08:48.361Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/minecraftjava121/services/cloudresourcemanager.googleapis.com [omitted]
+[debug] [2026-03-29T21:08:48.862Z] Checked if tokens are valid: true, expires at: 1774822019786
+[debug] [2026-03-29T21:08:48.993Z] Checked if tokens are valid: true, expires at: 1774822019786
+[debug] [2026-03-29T21:08:48.994Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/minecraftjava121 [none]
+[debug] [2026-03-29T21:08:53.370Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/minecraftjava121 200

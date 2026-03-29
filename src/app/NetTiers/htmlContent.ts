@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+export const htmlContent = `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -153,7 +153,7 @@
   ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
   ::-webkit-scrollbar-thumb:hover{background:var(--muted);}
   @media(max-width:1000px){.tier-grid{grid-template-columns:repeat(3,1fr);}}
-  @media(max-width:700px){.tier-grid{grid-template-columns:repeat(2,1fr);}.tier-badges{display:none;}}
+  @media(max-width:700px){.tier-grid{grid-template-columns:repeat(2,1fr);.tier-badges{display:none;}}
   @media(max-width:480px){.tier-grid{grid-template-columns:1fr;}.modal{min-width:96vw;padding:18px;}}
 </style>
 </head>
@@ -208,7 +208,7 @@
 <div class="modal-overlay" id="profileModal" onclick="closeProfileIfOutside(event)">
   <div class="modal">
     <button class="modal-close" onclick="closeProfile()">✕</button>
-    <div class="modal-avatar"><img id="pAvatarImg" src="" alt="" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 80 80%22><rect width=%2280%22 height=%2280%22 fill=%22%23222736%22/><text x=%2240%22 y=%2250%22 text-anchor=%22middle%22 font-size=%2232%22>🎮</text></svg>'"></div>
+    <div class="modal-avatar"><img id="pAvatarImg" src="" alt="" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 80 80%22><rect width=%2280%22 height=%2280%22 fill=%22%23222736%22><text x=%2240%22 y=%2250%22 text-anchor=%22middle%22 font-size=%2232%22>🎮</text></svg>'"></div>
     <div class="modal-name" id="pName"></div>
     <div style="text-align:center;margin:6px 0"><div class="modal-rank-badge"><span>💎</span><span id="pTitle"></span></div></div>
     <div style="text-align:center;color:var(--muted);font-size:.85rem;margin-bottom:14px" id="pRegion"></div>
@@ -304,7 +304,7 @@
       <div class="admin-divider"></div>
 
       <!-- BROWSE -->
-      <div style="font-weight:600;font-size:.92rem;">📋 Browse &amp; Remove Players</div>
+      <div style="font-weight:600;font-size:.92rem;">📋 Browse & Remove Players</div>
       <select class="admin-select" id="previewMode" onchange="renderAdminPreview()" style="max-width:220px;">
         <option value="vanilla">Vanilla</option><option value="uhc">UHC</option><option value="pot">Pot</option>
         <option value="nethop">NethOP</option><option value="smp">SMP</option><option value="sword">Sword</option>
@@ -320,8 +320,6 @@
 
 <script>
 // ── CONFIG ──
-const SB_URL = 'https://rljvcykuiswwriwapsgi.supabase.co';
-const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJsanZjeWt1aXN3d3Jpd2Fwc2dpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5NzE1NTUsImV4cCI6MjA4OTU0NzU1NX0.TL2BzGqeb8GsWEsaCTwtzqKaKqB9l8ROdVap7rOPDZI';
 const ADMIN_PASS = 'KabulKarwan@2013';
 
 const TIER_PTS = {LT5:1,HT5:2,LT4:3,HT4:4,LT3:5,HT3:10,LT2:20,HT2:40,LT1:50,HT1:60};
@@ -329,42 +327,29 @@ const GM_ICONS = {vanilla:'🎯',uhc:'❤️',pot:'🧪',nethop:'👾',smp:'🌀
 const GM_NAMES = {vanilla:'Vanilla',uhc:'UHC',pot:'Pot',nethop:'NethOP',smp:'SMP',sword:'Sword',axe:'Axe',mace:'Mace',cart:'Cart',spearmace:'Spear Mace'};
 const GM_ORDER = ['vanilla','uhc','pot','nethop','smp','sword','axe','mace','cart','spearmace'];
 
-// ── SUPABASE REST (plain fetch, no SDK needed) ──
+// ── NEON API ──
 let dbOk = false;
-function sbHeaders(extra){
-  const h = new Headers();
-  h.append('apikey', SB_KEY);
-  h.append('Authorization', 'Bearer ' + SB_KEY);
-  h.append('Content-Type', 'application/json');
-  if(extra) h.append('Prefer', extra);
-  return h;
-}
-async function sbSelect(table){
-  const r = await fetch(SB_URL+'/rest/v1/'+table+'?select=*&order=id.asc&limit=100000', {
-    method:'GET', mode:'cors', headers: sbHeaders()
+async function dbQuery(query, params = []){
+  const res = await fetch('/api/neon', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query, params })
   });
-  if(!r.ok){ const t=await r.text(); throw new Error(t); }
-  return r.json();
+  if (!res.ok) throw new Error('DB error');
+  return res.json();
 }
-async function sbInsert(table, rows){
-  const r = await fetch(SB_URL+'/rest/v1/'+table, {
-    method:'POST', mode:'cors',
-    headers: sbHeaders('return=representation'),
-    body: JSON.stringify(rows)
-  });
-  if(!r.ok){ const t=await r.text(); throw new Error(t); }
-  return r.json();
+async function neonSelect(){
+  return await dbQuery('SELECT * FROM players ORDER BY id ASC LIMIT 100000');
 }
-async function sbDeleteById(table, id){
-  const r = await fetch(SB_URL+'/rest/v1/'+table+'?id=eq.'+id, {
-    method:'DELETE', mode:'cors', headers: sbHeaders()
-  });
-  if(!r.ok){ const t=await r.text(); throw new Error(t); }
+async function neonInsert(rows){
+  const row = rows[0];
+  return await dbQuery('INSERT INTO players (name, gamemode, tier, ht, region) VALUES ($1, $2, $3, $4, $5) RETURNING *', [row.name, row.gamemode, row.tier, row.ht, row.region]);
 }
-async function sbDeleteByNameGm(table, name, gm){
-  const url = SB_URL+'/rest/v1/'+table+'?name=eq.'+encodeURIComponent(name)+'&gamemode=eq.'+encodeURIComponent(gm);
-  const r = await fetch(url, {method:'DELETE', mode:'cors', headers: sbHeaders()});
-  if(!r.ok){ const t=await r.text(); throw new Error(t); }
+async function neonDeleteById(id){
+  await dbQuery('DELETE FROM players WHERE id = $1', [id]);
+}
+async function neonDeleteByNameGm(name, gm){
+  await dbQuery('DELETE FROM players WHERE name = $1 AND gamemode = $2', [name, gm]);
 }
 
 // ── STATE ──
@@ -372,10 +357,10 @@ let DATA = {};
 let allPlayers = [];
 let currentTab = 'overall';
 
-// ── SKIN URLS (mc-heads.net proxies NameMC) ──
-const skinUrl  = n => `https://mc-heads.net/avatar/${encodeURIComponent(n)}/64`;
-const skinSm   = n => `https://mc-heads.net/avatar/${encodeURIComponent(n)}/32`;
-const nameMCUrl= n => `https://namemc.com/profile/${encodeURIComponent(n)}`;
+// ── SKIN URLS ──
+const skinUrl  = n => \`https://mc-heads.net/avatar/\${encodeURIComponent(n)}/64\`;
+const skinSm   = n => \`https://mc-heads.net/avatar/\${encodeURIComponent(n)}/32\`;
+const nameMCUrl= n => \`https://namemc.com/profile/\${encodeURIComponent(n)}\`;
 const fallback = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
 function imgErr(el){ el.style.display='none'; }
 
@@ -414,23 +399,23 @@ function rebuildDATA(){
   });
 }
 
-// ── SUPABASE LOAD ──
+// ── NEON LOAD ──
 async function initDB(){
   // Show loading state
   document.getElementById('mainContent').innerHTML='<div class="loading"><div class="spinner"></div>&nbsp;Connecting to database...</div>';
   try{
-    const data = await sbSelect('players');
+    const data = await neonSelect();
     dbOk=true; setDBStatus(true);
     if(data && data.length > 0){
       allPlayers = data;
-      console.log('Loaded', data.length, 'players from Supabase');
+      console.log('Loaded', data.length, 'players from Neon');
       rebuildDATA(); renderContent();
     } else {
       console.log('Table empty, seeding initial data...');
       await seedToDB();
     }
   }catch(e){
-    console.error('Supabase error:', e.message);
+    console.error('Neon error:', e.message);
     setDBStatus(false);
     // Fall back to local seed so site still works
     allPlayers = getSeed();
@@ -445,11 +430,11 @@ async function seedToDB(){
     let allInserted = [];
     for(let i=0; i<seed.length; i+=50){
       const batch = seed.slice(i, i+50);
-      const inserted = await sbInsert('players', batch);
+      const inserted = await neonInsert(batch);
       allInserted = allInserted.concat(inserted||batch);
     }
     allPlayers = allInserted.length ? allInserted : seed;
-    console.log('Seeded', allPlayers.length, 'players to Supabase');
+    console.log('Seeded', allPlayers.length, 'players to Neon');
   }catch(e){
     console.error('Seed error:', e.message);
     allPlayers = seed;
@@ -462,7 +447,7 @@ function setDBStatus(ok){
   const dot=document.getElementById('dbDot');
   const lbl=document.getElementById('dbStatus');
   if(dot){dot.className='db-dot'+(ok?'':' err');}
-  if(lbl){lbl.textContent=ok?'Supabase Connected':'Local (DB offline)';}
+  if(lbl){lbl.textContent=ok?'Neon Connected':'Local (DB offline)';}
 }
 
 // ── RENDER ──
@@ -489,20 +474,20 @@ function buildOverall(){
     const rc=i===0?'r1':i===1?'r2':i===2?'r3':'';
     const region=reg(p.name);
     const badges=GM_ORDER.map(gm=>{
-      if(!p.tiers[gm])return`<div class="tbadge lt" title="${GM_NAMES[gm]}"><span class="badge-icon">${GM_ICONS[gm]}</span><span class="badge-label">-</span></div>`;
+      if(!p.tiers[gm])return\`<div class="tbadge lt" title="\${GM_NAMES[gm]}"><span class="badge-icon">\${GM_ICONS[gm]}</span><span class="badge-label">-</span></div>\`;
       const t=p.tiers[gm],cls=t.ht?'ht':'lt',lbl=(t.ht?'HT':'LT')+t.tier;
-      return`<div class="tbadge ${cls}" title="${GM_NAMES[gm]} ${lbl}"><span class="badge-icon">${GM_ICONS[gm]}</span><span class="badge-label">${lbl}</span></div>`;
+      return\`<div class="tbadge \${cls}" title="\${GM_NAMES[gm]} \${lbl}"><span class="badge-icon">\${GM_ICONS[gm]}</span><span class="badge-label">\${lbl}</span></div>\`;
     }).join('');
-    html+=`<div class="overall-row" onclick="openProfile(${JSON.stringify(p.name)})">
-      <div class="rank-num ${rc}">${i+1}.</div>
-      <div class="player-avatar"><img src="${skinUrl(p.name)}" alt="${p.name}" onerror="imgErr(this)"></div>
+    html+=\`<div class="overall-row" onclick="openProfile(\${JSON.stringify(p.name)})">
+      <div class="rank-num \${rc}">\${i+1}.</div>
+      <div class="player-avatar"><img src="\${skinUrl(p.name)}" alt="\${p.name}" onerror="imgErr(this)"></div>
       <div class="player-info">
-        <div class="player-name">${p.name}</div>
-        <div class="player-title">💎 ${getTitle(p.total)} (${p.total} points)</div>
+        <div class="player-name">\${p.name}</div>
+        <div class="player-title">💎 \${getTitle(p.total)} (\${p.total} points)</div>
       </div>
-      <div class="region-tag ${region}">${region}</div>
-      <div class="tier-badges">${badges}</div>
-    </div>`;
+      <div class="region-tag \${region}">\${region}</div>
+      <div class="tier-badges">\${badges}</div>
+    </div>\`;
   });
   return html+'</div>';
 }
@@ -514,15 +499,15 @@ function buildTierView(gm){
   let html='<div class="tier-grid">';
   cols.forEach(({k,l,c,i})=>{
     const pls=td[k]||[];
-    html+=`<div><div class="tier-header ${c}">${i} ${l}</div>`;
+    html+=\`<div><div class="tier-header \${c}">\${i} \${l}</div>\`;
     pls.forEach(p=>{
       const hc=p.ht?'ht-player':'',bc=p.ht?'ht':'lt',bl=p.ht?'HT':'LT',n=k.replace('t','');
-      html+=`<div class="tier-player ${hc}" onclick="openProfile(${JSON.stringify(p.name)})">
-        <div class="region-dot ${p.region}"></div>
-        <div class="tp-avatar"><img src="${skinSm(p.name)}" alt="${p.name}" onerror="imgErr(this)"></div>
-        <div class="tp-name">${p.name}</div>
-        <div class="tp-badge ${bc}">${bl}${n}</div>
-      </div>`;
+      html+=\`<div class="tier-player \${hc}" onclick="openProfile(\${JSON.stringify(p.name)})">
+        <div class="region-dot \${p.region}"></div>
+        <div class="tp-avatar"><img src="\${skinSm(p.name)}" alt="\${p.name}" onerror="imgErr(this)"></div>
+        <div class="tp-name">\${p.name}</div>
+        <div class="tp-badge \${bc}">\${bl}\${n}</div>
+      </div>\`;
     });
     html+='</div>';
   });
@@ -552,8 +537,8 @@ function openProfile(name){
   GM_ORDER.forEach(gm=>{
     const t=tiers[gm];
     if(t){const lbl=(t.ht?'HT':'LT')+t.tier,cls=t.ht?'ht':'lt';
-      th+=`<div class="modal-tbadge"><div class="ico">${GM_ICONS[gm]}</div><div class="lbl ${cls}">${lbl}</div><div style="font-size:.55rem;color:var(--muted)">${GM_NAMES[gm]}</div></div>`;}
-    else th+=`<div class="modal-tbadge"><div class="ico">${GM_ICONS[gm]}</div><div class="lbl none">-</div><div style="font-size:.55rem;color:var(--border)">${GM_NAMES[gm]}</div></div>`;
+      th+=\`<div class="modal-tbadge"><div class="ico">\${GM_ICONS[gm]}</div><div class="lbl \${cls}">\${lbl}</div><div style="font-size:.55rem;color:var(--muted)">\${GM_NAMES[gm]}</div></div>\`;}
+    else th+=\`<div class="modal-tbadge"><div class="ico">\${GM_ICONS[gm]}</div><div class="lbl none">-</div><div style="font-size:.55rem;color:var(--border)">\${GM_NAMES[gm]}</div></div>\`;
   });
   document.getElementById('pTiers').innerHTML=th;
   document.getElementById('profileModal').classList.add('show');
@@ -584,7 +569,7 @@ async function adminAddPlayer(){
   if(DATA[gm][tk].find(p=>p.name.toLowerCase()===name.toLowerCase())){showToast('Already in this tier!',true);return;}
   const row={name,gamemode:gm,tier,ht,region};
   try{
-    const data = await sbInsert('players', [row]);
+    const data = await neonInsert([row]);
     allPlayers.push(data[0]); rebuildDATA();
     showToast('✅ Added '+name+' to '+GM_NAMES[gm]+' T'+tier);
   }catch(e){
@@ -606,22 +591,40 @@ async function adminRemoveByName(){
     if(!toRemove.length)continue;
     for(const p of toRemove){
       try{
-        if(p.id&&dbOk) await sbDeleteById('players', p.id);
-      }catch(e){}
-      allPlayers=allPlayers.filter(x=>x!==p);removed++;
+        if(dbOk){
+          if(p.id) await neonDeleteById(p.id);
+          else await neonDeleteByNameGm(p.name, gm);
+        }
+      }catch(e){
+        console.warn('Neon remove failed', p.name, gm, e.message);
+      }
+      allPlayers=allPlayers.filter(x=>x!==p);
+      removed++;
     }
   }
-  if(removed){rebuildDATA();showToast(`🗑️ Removed ${name}`);document.getElementById('removeName').value='';renderAdminPreview();renderContent();}
-  else showToast(`"${name}" not found!`,true);
+  if(removed){
+    rebuildDATA();
+    showToast(\`🗑️ Removed \${name}\`);
+    document.getElementById('removeName').value='';
+    renderAdminPreview();
+    renderContent();
+  } else showToast(\`\"\${name}\" not found!\`,true);
 }
 
 async function removeRowInline(dbId,name,gm){
   try{
-    if(dbId&&dbOk) await sbDeleteById('players', dbId);
-    else if(dbOk) await sbDeleteByNameGm('players', name, gm);
-  }catch(e){}
+    if(dbOk){
+      if(dbId) await neonDeleteById(dbId);
+      else await neonDeleteByNameGm(name, gm);
+    }
+  }catch(e){
+    console.warn('Neon remove failed', name, gm, e.message);
+  }
   allPlayers=allPlayers.filter(p=>!(p.id===dbId||(p.name===name&&p.gamemode===gm)));
-  rebuildDATA();showToast(`🗑️ Removed ${name}`);renderAdminPreview();renderContent();
+  rebuildDATA();
+  showToast(\`🗑️ Removed \${name}\`);
+  renderAdminPreview();
+  renderContent();
 }
 
 function renderAdminPreview(){
@@ -632,12 +635,12 @@ function renderAdminPreview(){
     const n=tk.replace('t','');
     players.forEach(p=>{
       const lbl=(p.ht?'HT':'LT')+n;
-      html+=`<div class="admin-player-row">
-        <img src="${skinSm(p.name)}" width="24" height="24" style="border-radius:4px" onerror="this.style.display='none'">
-        <span class="apn">${p.name}</span>
-        <span class="apm">${lbl} · ${p.region}</span>
-        <button class="rm-btn" onclick="removeRowInline(${JSON.stringify(p.db_id)},${JSON.stringify(p.name)},${JSON.stringify(gm)})">🗑️ Remove</button>
-      </div>`;
+      html+=\`<div class="admin-player-row">
+        <img src="\${skinSm(p.name)}" width="24" height="24" style="border-radius:4px" onerror="this.style.display='none'">
+        <span class="apn">\${p.name}</span>
+        <span class="apm">\${lbl} · \${p.region}</span>
+        <button class="rm-btn" onclick="removeRowInline(\${JSON.stringify(p.db_id)},\${JSON.stringify(p.name)},\${JSON.stringify(gm)})">🗑️ Remove</button>
+      </div>\`;
     });
   }
   list.innerHTML=html||'<div style="color:var(--muted);font-size:.85rem;padding:10px 0;">No players in this gamemode.</div>';
@@ -657,17 +660,17 @@ function handleGlobalSearch(val){
   ranked.forEach((p,i)=>{
     const region=reg(p.name);
     const badges=GM_ORDER.map(gm=>{
-      if(!p.tiers[gm])return`<div class="tbadge lt"><span class="badge-icon">${GM_ICONS[gm]}</span><span class="badge-label">-</span></div>`;
+      if(!p.tiers[gm])return\`<div class="tbadge lt"><span class="badge-icon">\${GM_ICONS[gm]}</span><span class="badge-label">-</span></div>\`;
       const t=p.tiers[gm],cls=t.ht?'ht':'lt',lbl=(t.ht?'HT':'LT')+t.tier;
-      return`<div class="tbadge ${cls}"><span class="badge-icon">${GM_ICONS[gm]}</span><span class="badge-label">${lbl}</span></div>`;
+      return\`<div class="tbadge \${cls}"><span class="badge-icon">\${GM_ICONS[gm]}</span><span class="badge-label">\${lbl}</span></div>\`;
     }).join('');
-    html+=`<div class="overall-row" onclick="openProfile(${JSON.stringify(p.name)})">
-      <div class="rank-num">${i+1}.</div>
-      <div class="player-avatar"><img src="${skinUrl(p.name)}" alt="${p.name}" onerror="imgErr(this)"></div>
-      <div class="player-info"><div class="player-name">${p.name}</div><div class="player-title">💎 ${getTitle(p.total)} (${p.total} pts)</div></div>
-      <div class="region-tag ${region}">${region}</div>
-      <div class="tier-badges">${badges}</div>
-    </div>`;
+    html+=\`<div class="overall-row" onclick="openProfile(\${JSON.stringify(p.name)})">
+      <div class="rank-num">\${i+1}.</div>
+      <div class="player-avatar"><img src="\${skinUrl(p.name)}" alt="\${p.name}" onerror="imgErr(this)"></div>
+      <div class="player-info"><div class="player-name">\${p.name}</div><div class="player-title">💎 \${getTitle(p.total)} (\${p.total} pts)</div></div>
+      <div class="region-tag \${region}">\${region}</div>
+      <div class="tier-badges">\${badges}</div>
+    </div>\`;
   });
   document.getElementById('mainContent').innerHTML=html+'</div>';
 }
@@ -774,4 +777,4 @@ function getSeed(){return[
 initDB();
 </script>
 </body>
-</html>
+</html>`;

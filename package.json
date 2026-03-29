@@ -20,7 +20,7 @@
     "@neondatabase/serverless": "^1.0.2",
     "@supabase/supabase-js": "^2.99.3",
     "express": "^5.2.1",
-    "firebase": "^12.3.0",
+    "firebase": "^12.11.0",
     "framer-motion": "^10.16.16",
     "lucide-react": "^0.294.0",
     "mongodb": "^7.1.0",
