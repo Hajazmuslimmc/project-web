@@ -140,7 +140,7 @@ export default function Page() {
                 <span className="tag">Cart</span>
                 <span className="tag">ShieldlessSMP</span>
               </div>
-              <a className="card-btn btn-primary" href="/NetTiers">
+              <a className="card-btn btn-primary" href="https://comptiersmc.web.app/" target="_blank" rel="noopener noreferrer">
                 Open NetTiers →
               </a>
             </div>
