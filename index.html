@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MCTiers — Combat Rankings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;600;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<!-- BACKGROUND GRID -->
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+
+<!-- NAV -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">
+      <span class="logo-icon">⚔</span>
+      <span class="logo-text">MC<span class="logo-accent">TIERS</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link active">Tiers</a>
+      <a href="leaderboard.html" class="nav-link">Leaderboard</a>
+      <a href="admin.html" class="nav-link nav-admin">Admin</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">Season 1</div>
+    <h1 class="hero-title">Combat <span class="gradient-text">Rankings</span></h1>
+    <p class="hero-sub">The definitive PvP tier list — tracked, verified, ranked.</p>
+  </div>
+</section>
+
+<!-- GAMEMODE TABS -->
+<div class="tabs-wrapper">
+  <div class="tabs" id="gamemodes">
+    <button class="tab active" data-mode="NethSmp">NethSmp</button>
+    <button class="tab" data-mode="Sword">Sword</button>
+    <button class="tab" data-mode="Axe">Axe</button>
+    <button class="tab" data-mode="DiaSMP">DiaSMP</button>
+    <button class="tab" data-mode="Cart">Cart</button>
+    <button class="tab" data-mode="Spearmace">Spearmace</button>
+    <button class="tab" data-mode="Craystal">Craystal</button>
+  </div>
+</div>
+
+<!-- TIER LIST -->
+<main class="tier-container" id="tierContainer">
+  <div class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading tier data...</p>
+  </div>
+</main>
+
+<!-- PLAYER PROFILE POPUP -->
+<div class="profile-overlay" id="profileOverlay">
+  <div class="profile-card" id="profileCard">
+    <button class="profile-close" id="profileClose">✕</button>
+    <div class="profile-header">
+      <div class="profile-avatar" id="profileAvatar"></div>
+      <div class="profile-info">
+        <h2 class="profile-name" id="profileName"></h2>
+        <div class="profile-title" id="profileTitle"></div>
+        <div class="profile-points"><span id="profilePoints">0</span> pts</div>
+      </div>
+    </div>
+    <div class="profile-discord" id="profileDiscordWrap">
+      <img id="profileDiscordImg" src="" alt="Discord" class="discord-img" />
+      <span id="profileDiscord"></span>
+    </div>
+    <div class="profile-tiers-grid" id="profileTiers"></div>
+  </div>
+</div>
+
+<!-- LEGEND -->
+<div class="legend">
+  <div class="legend-item">
+    <span class="legend-dot ht"></span> HT (High Tier)
+  </div>
+  <div class="legend-item">
+    <span class="legend-dot lt"></span> LT (Low Tier)
+  </div>
+</div>
+
+<!-- FIREBASE + JS -->
+<script type="module" src="js/firebase-config.js"></script>
+<script type="module" src="js/tiers.js"></script>
+</body>
+</html>

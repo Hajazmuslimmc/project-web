@@ -1,0 +1,15 @@
+{
+  "name": "pvptiers-bot",
+  "version": "1.0.0",
+  "description": "PvP Tier Testing Discord Bot",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "deploy": "node deploy-commands.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "lowdb": "^1.0.0",
+    "dotenv": "^16.4.1"
+  }
+}

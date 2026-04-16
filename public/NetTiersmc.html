@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PvPTiers – Minecraft PvP Rankings</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, query, where, onSnapshot, setDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// ╔══════════════════════════════════════════════════════════════╗
+// ║  🔥 PASTE YOUR FIREBASE CONFIG HERE                         ║
+// ║  Firebase Console → Project Settings → Your Apps → Web     ║
+// ╚══════════════════════════════════════════════════════════════╝
+const firebaseConfig = {
+  apiKey:            "YOUR_API_KEY",
+  authDomain:        "YOUR_PROJECT.firebaseapp.com",
+  projectId:         "YOUR_PROJECT_ID",
+  storageBucket:     "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId:             "YOUR_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+// Expose helpers globally
+window._FB = {
+  db,
+  async getAll() {
+    try {
+      const snap = await getDocs(collection(db, 'players'));
+      return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    } catch(e) { return null; }
+  },
+  async add(data) {
+    try {
+      const ref = await addDoc(collection(db, 'players'), data);
+      return ref.id;
+    } catch(e) { return null; }
+  },
+  async remove(id) {
+    try { await deleteDoc(doc(db, 'players', id)); return true; }
+    catch(e) { return false; }
+  },
+  listen(cb) {
+    return onSnapshot(collection(db, 'players'), snap => {
+      cb(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    }, () => cb(null));
+  }
+};
+window.dispatchEvent(new Event('fbReady'));
+</script>
+
+<style>
+:root {
+  --bg:#080b10;--bg2:#0e1219;--bg3:#141924;--bg4:#1c2333;--bg5:#232c40;
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.13);
+  --text:#dde4f0;--muted:#5c6b8a;--accent:#f0b429;--gold:#f5cc5a;
+  --silver:#b8c4d8;--bronze:#c87d3a;
+  --ht:rgba(240,180,41,.12);--ht-b:rgba(240,180,41,.35);
+  --red:#e05252;--green:#3ec97a;--blue:#4a8fe8;--purple:#9b6de0;--discord:#5865f2;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh;overflow-x:hidden;}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 60% 45% at 15% 0%,rgba(240,180,41,.07) 0%,transparent 70%),
+    radial-gradient(ellipse 50% 40% at 85% 100%,rgba(74,143,232,.06) 0%,transparent 70%),
+    repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,.018) 39px,rgba(255,255,255,.018) 40px),
+    repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(255,255,255,.018) 39px,rgba(255,255,255,.018) 40px);
+}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:200;background:rgba(8,11,16,.9);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:62px;}
+.logo{font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:900;letter-spacing:3px;color:var(--gold);text-transform:uppercase;text-shadow:0 0 30px rgba(240,180,41,.5);}
+.logo span{color:var(--text);}
+.nav-links{display:flex;gap:4px;align-items:center;}
+.nav-btn{background:none;border:none;color:var(--muted);cursor:pointer;padding:7px 14px;border-radius:8px;font-size:.83rem;font-family:'Barlow',sans-serif;font-weight:500;display:flex;align-items:center;gap:6px;transition:all .2s;text-decoration:none;letter-spacing:.02em;}
+.nav-btn:hover,.nav-btn.active{background:var(--bg4);color:var(--text);}
+.discord-btn{color:#fff;background:rgba(88,101,242,.18);border:1px solid rgba(88,101,242,.35);}
+.discord-btn:hover{background:rgba(88,101,242,.35);border-color:var(--discord);color:#fff;}
+.nav-search{background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:8px 16px;color:var(--text);font-family:'Barlow',sans-serif;font-size:.85rem;width:210px;outline:none;transition:all .25s;}
+.nav-search:focus{border-color:var(--accent);background:var(--bg4);box-shadow:0 0 0 3px rgba(240,180,41,.1);}
+.nav-search::placeholder{color:var(--muted);}
+
+/* ── TABS ── */
+.tabs-wrap{background:rgba(14,18,25,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:0 32px;position:sticky;top:62px;z-index:100;}
+.tabs{display:flex;gap:0;overflow-x:auto;scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{display:flex;flex-direction:column;align-items:center;padding:11px 16px;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;font-size:.74rem;font-weight:600;white-space:nowrap;transition:all .2s;gap:3px;background:none;border-top:none;border-left:none;border-right:none;font-family:'Barlow',sans-serif;letter-spacing:.05em;text-transform:uppercase;}
+.tab .icon{font-size:1rem;transition:transform .2s;}
+.tab:hover{color:var(--text);}
+.tab:hover .icon{transform:scale(1.15);}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+/* ── CONTENT ── */
+.content{padding:28px 32px;max-width:1360px;margin:0 auto;position:relative;z-index:1;}
+.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;gap:12px;flex-wrap:wrap;}
+.info-badge{display:flex;align-items:center;gap:7px;background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:7px 16px;font-size:.8rem;color:var(--muted);cursor:pointer;transition:all .2s;}
+.info-badge:hover{border-color:var(--accent);color:var(--text);}
+.server-ip{background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:7px 16px;display:flex;align-items:center;gap:10px;font-size:.8rem;}
+.admin-key-btn{background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:7px 16px;color:var(--muted);cursor:pointer;font-size:.8rem;font-family:'Barlow',sans-serif;transition:all .2s;}
+.admin-key-btn:hover{border-color:var(--gold);color:var(--gold);}
+
+/* ── POINTS LEGEND ── */
+.pts-legend{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;align-items:center;}
+.pts-legend-label{font-size:.72rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-right:4px;}
+.pts-chip{padding:3px 8px;border-radius:5px;font-size:.68rem;font-weight:800;letter-spacing:.04em;}
+.pts-chip.ht{background:rgba(245,200,66,.18);color:var(--gold);border:1px solid rgba(245,200,66,.3);}
+.pts-chip.lt{background:rgba(255,255,255,.05);color:var(--muted);border:1px solid var(--border);}
+
+/* ── OVERALL ── */
+.overall-list{display:flex;flex-direction:column;gap:7px;}
+.overall-row{background:var(--bg2);border:1px solid var(--border);border-radius:13px;display:flex;align-items:center;gap:16px;padding:13px 18px;transition:all .22s;cursor:pointer;position:relative;overflow:hidden;}
+.overall-row:hover{border-color:rgba(240,180,41,.35);transform:translateX(4px);background:var(--bg3);}
+.overall-row.top3{border-color:rgba(240,180,41,.2);}
+@keyframes goldPulse{0%,100%{box-shadow:none;}50%{box-shadow:0 0 18px rgba(240,180,41,.08);}}
+.overall-row.top3{animation:goldPulse 4s ease-in-out infinite;}
+.rank-num{font-family:'Barlow Condensed',sans-serif;font-size:1.55rem;font-weight:900;min-width:38px;color:var(--muted);letter-spacing:-.02em;}
+.rank-num.r1{color:var(--gold);text-shadow:0 0 12px rgba(245,204,90,.4);}
+.rank-num.r2{color:var(--silver);}
+.rank-num.r3{color:var(--bronze);}
+.player-avatar{width:48px;height:48px;border-radius:9px;background:var(--bg4);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;border:1px solid var(--border2);}
+.player-avatar img{width:100%;height:100%;object-fit:cover;border-radius:8px;display:block;}
+.player-info{flex:1;min-width:0;}
+.player-name{font-size:1rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.player-title{font-size:.76rem;color:var(--muted);margin-top:2px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.title-tag{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:5px;font-size:.68rem;font-weight:800;letter-spacing:.04em;}
+.region-tag{padding:4px 10px;border-radius:6px;font-size:.72rem;font-weight:700;flex-shrink:0;letter-spacing:.06em;background:rgba(224,82,82,.2);color:var(--red);border:1px solid rgba(224,82,82,.3);}
+.region-tag.EU{background:rgba(74,143,232,.2);color:var(--blue);border-color:rgba(74,143,232,.3);}
+.region-tag.AS{background:rgba(155,109,224,.2);color:var(--purple);border-color:rgba(155,109,224,.3);}
+.tier-badges{display:flex;gap:4px;flex-wrap:wrap;}
+.tbadge{width:36px;height:36px;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid transparent;transition:transform .15s;cursor:pointer;}
+.tbadge:hover{transform:scale(1.12);}
+.tbadge .badge-icon{font-size:.78rem;line-height:1;}
+.tbadge .badge-label{font-size:.44rem;font-weight:800;line-height:1;}
+.tbadge.ht{background:var(--ht);border-color:var(--ht-b);color:var(--gold);}
+.tbadge.lt{background:rgba(255,255,255,.04);border-color:var(--border);color:var(--muted);}
+
+/* ── TIER GRID ── */
+.tier-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;}
+.tier-col{border-radius:12px;overflow:hidden;background:var(--bg2);border:1px solid var(--border);}
+.tier-header{padding:13px 15px;text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:1.05rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:7px;border-bottom:1px solid var(--border);}
+.tier-header.t1{background:linear-gradient(135deg,rgba(160,123,26,.8),rgba(201,168,76,.6));color:#ffe8a0;}
+.tier-header.t2{background:linear-gradient(135deg,rgba(58,66,85,.8),rgba(90,106,136,.6));color:#c8d8f0;}
+.tier-header.t3{background:linear-gradient(135deg,rgba(90,48,16,.8),rgba(138,80,32,.6));color:#f0c896;}
+.tier-header.t4{background:rgba(255,255,255,.04);color:var(--muted);}
+.tier-header.t5{background:rgba(255,255,255,.025);color:var(--muted);}
+.tier-players{padding:8px;}
+.tier-player{border-radius:8px;display:flex;align-items:center;gap:9px;padding:8px 10px;cursor:pointer;transition:all .18s;margin-bottom:4px;border:1px solid transparent;}
+.tier-player:last-child{margin-bottom:0;}
+.tier-player:hover{background:var(--bg4);border-color:var(--border2);}
+.tier-player.ht-player{background:var(--ht);border-color:var(--ht-b);}
+.tier-player.ht-player:hover{background:rgba(240,180,41,.2);}
+.tp-avatar{width:26px;height:26px;border-radius:5px;background:var(--bg5);flex-shrink:0;overflow:hidden;}
+.tp-avatar img{width:100%;height:100%;object-fit:cover;border-radius:4px;display:block;}
+.tp-name{font-size:.8rem;font-weight:500;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tp-badge{font-size:.62rem;padding:2px 6px;border-radius:4px;font-weight:800;letter-spacing:.04em;flex-shrink:0;}
+.tp-badge.ht{background:rgba(245,200,66,.2);color:var(--gold);border:1px solid rgba(245,200,66,.3);}
+.tp-badge.lt{background:rgba(255,255,255,.06);color:var(--muted);border:1px solid var(--border);}
+.region-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.region-dot.NA{background:var(--red);}
+.region-dot.EU{background:var(--blue);}
+.region-dot.AS{background:var(--purple);}
+
+/* ── VIEW HEADER ── */
+.view-header{display:flex;align-items:center;gap:12px;margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--border);}
+.view-icon{font-size:2rem;}
+.view-title{font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:900;letter-spacing:.04em;text-transform:uppercase;}
+.view-sub{font-size:.8rem;color:var(--muted);margin-top:2px;letter-spacing:.03em;}
+.view-count{margin-left:auto;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:.78rem;color:var(--muted);}
+
+/* ── PROFILE MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
+.modal-overlay.show{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:18px;padding:30px;min-width:390px;max-width:480px;width:92vw;position:relative;box-shadow:0 32px 80px rgba(0,0,0,.7);animation:popIn .28s cubic-bezier(.34,1.56,.64,1);max-height:90vh;overflow-y:auto;}
+@keyframes popIn{from{transform:scale(.82) translateY(10px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.modal-close{position:absolute;top:14px;right:14px;background:var(--bg4);border:1px solid var(--border2);color:var(--muted);cursor:pointer;width:32px;height:32px;border-radius:8px;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.modal-close:hover{color:var(--text);border-color:var(--accent);}
+.modal-avatar{width:90px;height:90px;border-radius:50%;background:var(--bg4);margin:0 auto 12px;overflow:hidden;border:3px solid var(--border2);box-shadow:0 0 0 6px rgba(240,180,41,.08);}
+.modal-avatar img{width:100%;height:100%;object-fit:cover;}
+.modal-name{text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;}
+.modal-title-row{text-align:center;margin:8px 0 4px;}
+.modal-rank-badge{display:inline-flex;align-items:center;gap:6px;background:var(--bg4);border:1px solid var(--border2);border-radius:20px;padding:5px 14px;font-size:.8rem;}
+.modal-section-label{font-size:.7rem;font-weight:800;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin:16px 0 8px;display:flex;align-items:center;gap:7px;}
+.modal-section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.modal-position{background:var(--bg3);border:1px solid var(--border);border-radius:11px;padding:12px 16px;display:flex;align-items:center;gap:14px;}
+.modal-pos-num{font-family:'Barlow Condensed',sans-serif;font-size:2.2rem;font-weight:900;color:var(--gold);text-shadow:0 0 20px rgba(240,180,41,.4);letter-spacing:-.02em;}
+.modal-tiers-grid{display:flex;flex-wrap:wrap;gap:8px;background:var(--bg3);border:1px solid var(--border);border-radius:11px;padding:12px;}
+.modal-tbadge{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:48px;}
+.modal-tbadge .ico{font-size:1.1rem;}
+.modal-tbadge .gm-name{font-size:.5rem;color:var(--muted);text-align:center;font-weight:600;letter-spacing:.03em;}
+.modal-tbadge .lbl{font-size:.58rem;font-weight:800;padding:2px 5px;border-radius:4px;letter-spacing:.04em;}
+.modal-tbadge .lbl.ht{background:rgba(245,200,66,.2);color:var(--gold);}
+.modal-tbadge .lbl.lt{background:var(--bg4);color:var(--muted);}
+.modal-tbadge .lbl.none{color:var(--border);}
+.namemc-link{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:14px;color:var(--muted);font-size:.82rem;text-decoration:none;transition:all .2s;padding:9px;border-radius:10px;border:1px solid var(--border);background:var(--bg3);}
+.namemc-link:hover{color:var(--accent);border-color:var(--accent);background:rgba(240,180,41,.06);}
+
+/* ── DISCORD MODAL ── */
+.discord-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:1500;align-items:center;justify-content:center;backdrop-filter:blur(8px);}
+.discord-modal.show{display:flex;}
+.discord-box{background:var(--bg2);border:1px solid rgba(88,101,242,.4);border-radius:20px;padding:28px 28px 22px;width:530px;max-width:95vw;box-shadow:0 40px 100px rgba(0,0,0,.7),0 0 60px rgba(88,101,242,.08);animation:popIn .28s cubic-bezier(.34,1.56,.64,1);position:relative;max-height:90vh;overflow-y:auto;}
+.discord-box-title{font-family:'Barlow Condensed',sans-serif;font-size:1.5rem;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#fff;margin-bottom:4px;display:flex;align-items:center;gap:10px;}
+.discord-box-sub{font-size:.82rem;color:var(--muted);margin-bottom:22px;letter-spacing:.02em;}
+.discord-server-list{display:flex;flex-direction:column;gap:7px;}
+.discord-server-item{display:flex;align-items:center;gap:14px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:12px 15px;text-decoration:none;color:var(--text);transition:all .2s;}
+.discord-server-item:hover{border-color:rgba(88,101,242,.55);background:rgba(88,101,242,.1);transform:translateX(3px);}
+.discord-server-item:hover .ds-arrow{opacity:1;transform:translateX(3px);}
+.ds-icon{width:38px;height:38px;border-radius:9px;background:rgba(88,101,242,.18);border:1px solid rgba(88,101,242,.3);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.ds-info{flex:1;}
+.ds-name{font-weight:700;font-size:.9rem;letter-spacing:.02em;}
+.ds-desc{font-size:.73rem;color:var(--muted);margin-top:2px;}
+.ds-arrow{color:var(--discord);font-size:.85rem;opacity:.45;transition:all .2s;}
+.ds-badge{font-size:.62rem;font-weight:800;letter-spacing:.06em;padding:3px 8px;border-radius:5px;text-transform:uppercase;background:rgba(88,101,242,.18);color:#a5acff;border:1px solid rgba(88,101,242,.28);white-space:nowrap;flex-shrink:0;}
+.discord-section-label{font-size:.7rem;font-weight:800;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;padding:14px 0 6px;display:flex;align-items:center;gap:8px;}
+.discord-section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.discord-close-btn{position:absolute;top:14px;right:14px;background:var(--bg4);border:1px solid var(--border2);color:var(--muted);cursor:pointer;width:32px;height:32px;border-radius:8px;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.discord-close-btn:hover{color:var(--text);border-color:rgba(88,101,242,.6);}
+
+/* ── ADMIN ── */
+.admin-panel{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:2000;align-items:center;justify-content:center;backdrop-filter:blur(8px);}
+.admin-panel.show{display:flex;}
+.admin-box{background:var(--bg2);border:1px solid var(--border2);border-radius:18px;width:820px;max-width:96vw;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 40px 100px rgba(0,0,0,.8);animation:popIn .25s cubic-bezier(.34,1.56,.64,1);}
+.admin-header{padding:18px 26px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.02);flex-shrink:0;}
+.admin-title{font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:800;color:var(--gold);letter-spacing:.05em;text-transform:uppercase;}
+.admin-body{padding:22px 26px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:15px;}
+.admin-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;}
+.admin-field{display:flex;flex-direction:column;gap:5px;flex:1;min-width:100px;}
+.admin-field label{font-size:.72rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em;}
+.admin-input,.admin-select{background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:9px 13px;color:var(--text);font-family:'Barlow',sans-serif;font-size:.85rem;outline:none;transition:all .2s;width:100%;}
+.admin-input:focus,.admin-select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(240,180,41,.1);}
+.admin-select option{background:var(--bg3);}
+.btn{padding:9px 20px;border-radius:9px;font-family:'Barlow',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;border:none;transition:all .2s;white-space:nowrap;letter-spacing:.03em;text-transform:uppercase;}
+.btn-green{background:var(--green);color:#000;}
+.btn-green:hover{filter:brightness(1.15);transform:translateY(-1px);}
+.btn-red{background:var(--red);color:#fff;}
+.btn-red:hover{filter:brightness(1.15);transform:translateY(-1px);}
+.btn-gold{background:var(--gold);color:#000;}
+.btn-gold:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.btn-gray{background:var(--bg4);color:var(--muted);border:1px solid var(--border2);}
+.btn-gray:hover{color:var(--text);border-color:var(--muted);}
+.admin-divider{border-top:1px solid var(--border);margin:3px 0;}
+.admin-players-list{max-height:240px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;}
+.admin-player-row{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg3);border-radius:9px;border:1px solid var(--border);}
+.admin-player-row .apn{flex:1;font-size:.85rem;font-weight:500;}
+.admin-player-row .apm{font-size:.75rem;color:var(--muted);}
+.rm-btn{background:rgba(224,82,82,.12);border:1px solid rgba(224,82,82,.3);color:var(--red);border-radius:6px;padding:3px 10px;font-size:.72rem;cursor:pointer;font-family:'Barlow',sans-serif;font-weight:700;transition:all .2s;white-space:nowrap;text-transform:uppercase;letter-spacing:.04em;}
+.rm-btn:hover{background:var(--red);color:#fff;}
+
+/* ── TOAST ── */
+.admin-toast{position:fixed;bottom:24px;right:24px;background:var(--bg3);border:1px solid var(--green);color:var(--green);padding:10px 20px;border-radius:11px;font-size:.84rem;font-weight:700;z-index:9999;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.4);}
+.admin-toast.show{opacity:1;transform:translateY(0);}
+.admin-toast.err{border-color:var(--red);color:var(--red);}
+
+/* ── KEY MODAL ── */
+.key-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:3000;align-items:center;justify-content:center;backdrop-filter:blur(5px);}
+.key-modal.show{display:flex;}
+.key-box{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:30px;min-width:330px;animation:popIn .22s cubic-bezier(.34,1.56,.64,1);box-shadow:0 24px 60px rgba(0,0,0,.6);}
+.key-title{font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:800;margin-bottom:16px;text-transform:uppercase;letter-spacing:.05em;color:var(--gold);}
+.db-status{display:inline-flex;align-items:center;gap:6px;font-size:.75rem;color:var(--muted);}
+.db-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);}
+.db-dot.err{background:var(--red);box-shadow:0 0 6px var(--red);}
+.loading{display:flex;align-items:center;justify-content:center;padding:80px;gap:14px;color:var(--muted);font-size:.9rem;letter-spacing:.05em;text-transform:uppercase;}
+.spinner{width:22px;height:22px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.search-label{font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:800;letter-spacing:.05em;margin-bottom:18px;text-transform:uppercase;color:var(--muted);}
+.search-label span{color:var(--text);}
+
+/* ── TITLE COLORS ── */
+.t-grandmaster{background:rgba(240,180,41,.18);color:#ffd966;border:1px solid rgba(240,180,41,.4);}
+.t-master     {background:rgba(224,92,52,.18);color:#ffaa80;border:1px solid rgba(224,92,52,.4);}
+.t-ace        {background:rgba(74,143,232,.18);color:#7ab8ff;border:1px solid rgba(74,143,232,.4);}
+.t-specialist {background:rgba(155,109,224,.18);color:#c4a3ff;border:1px solid rgba(155,109,224,.4);}
+.t-cadet      {background:rgba(62,201,122,.18);color:#7de8a8;border:1px solid rgba(62,201,122,.4);}
+.t-novice     {background:rgba(255,255,255,.07);color:var(--muted);border:1px solid var(--border);}
+.t-rookie     {background:rgba(255,255,255,.04);color:var(--muted);border:1px solid var(--border);}
+
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--bg2);}
+::-webkit-scrollbar-thumb{background:var(--bg5);border-radius:4px;}
+::-webkit-scrollbar-thumb:hover{background:var(--muted);}
+@media(max-width:1100px){.tier-grid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:760px){.tier-grid{grid-template-columns:repeat(2,1fr);}.tier-badges{display:none;}nav{padding:0 16px;}.content{padding:20px 16px;}.tabs-wrap{padding:0 16px;}}
+@media(max-width:500px){.tier-grid{grid-template-columns:1fr;}.modal{min-width:96vw;padding:20px;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">PVP<span>TIERS</span></div>
+  <div class="nav-links">
+    <button class="nav-btn active">🏆 Rankings</button>
+    <button class="nav-btn discord-btn" onclick="openDiscordModal()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.001.022.01.043.024.056a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+      Discord
+    </button>
+  </div>
+  <input class="nav-search" placeholder="🔍  Search player…" id="globalSearch" oninput="handleGlobalSearch(this.value)">
+</nav>
+
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('overall',this)"><span class="icon">🏆</span>Overall</button>
+    <button class="tab" onclick="switchTab('nethsmp',this)"><span class="icon">🌐</span>NethSmp</button>
+    <button class="tab" onclick="switchTab('sword',this)"><span class="icon">⚔️</span>Sword</button>
+    <button class="tab" onclick="switchTab('axe',this)"><span class="icon">🪓</span>Axe</button>
+    <button class="tab" onclick="switchTab('diasmp',this)"><span class="icon">💎</span>DiaSMP</button>
+    <button class="tab" onclick="switchTab('cart',this)"><span class="icon">🛒</span>Cart</button>
+    <button class="tab" onclick="switchTab('spearmace',this)"><span class="icon">🔱</span>Spearmace</button>
+    <button class="tab" onclick="switchTab('craystal',this)"><span class="icon">🔮</span>Craystal</button>
+    <button class="tab" onclick="switchTab('uhc',this)"><span class="icon">❤️</span>UHC</button>
+    <button class="tab" onclick="switchTab('mace',this)"><span class="icon">🔨</span>Mace</button>
+  </div>
+</div>
+
+<div class="content">
+  <div class="top-bar">
+    <div style="display:flex;gap:8px;align-items:center;">
+      <div class="info-badge" onclick="toggleLegend()">ℹ️ &nbsp;Points Guide</div>
+      <button class="admin-key-btn" onclick="openKeyModal()">🔑 &nbsp;Admin</button>
+    </div>
+    <div class="server-ip">
+      <span>🖥️</span>
+      <span style="color:var(--muted);font-size:.78rem;letter-spacing:.03em;">SERVER IP</span>
+      <span style="font-weight:700;color:var(--accent);font-family:'Barlow Condensed',sans-serif;font-size:.95rem;letter-spacing:.05em;">⏳ COMING SOON</span>
+    </div>
+  </div>
+
+  <!-- Points legend (hidden by default, toggle) -->
+  <div id="ptsLegend" style="display:none;margin-bottom:18px;">
+    <div class="pts-legend">
+      <span class="pts-legend-label">Points:</span>
+      <span class="pts-chip ht">HT1 = 60</span><span class="pts-chip lt">LT1 = 50</span>
+      <span class="pts-chip ht">HT2 = 40</span><span class="pts-chip lt">LT2 = 20</span>
+      <span class="pts-chip ht">HT3 = 10</span><span class="pts-chip lt">LT3 = 5</span>
+      <span class="pts-chip ht">HT4 = 4</span><span class="pts-chip lt">LT4 = 3</span>
+      <span class="pts-chip ht">HT5 = 2</span><span class="pts-chip lt">LT5 = 1</span>
+    </div>
+    <div class="pts-legend" style="margin-top:6px;">
+      <span class="pts-legend-label">Titles:</span>
+      <span class="pts-chip ht" style="background:rgba(240,180,41,.2)">👑 Grandmaster 400+</span>
+      <span class="pts-chip ht" style="background:rgba(224,92,52,.15);color:#ffaa80;border-color:rgba(224,92,52,.3)">🥇 Master 250+</span>
+      <span class="pts-chip lt" style="color:#7ab8ff;border-color:rgba(74,143,232,.3)">⚡ Ace 100+</span>
+      <span class="pts-chip lt" style="color:#c4a3ff;border-color:rgba(155,109,224,.3)">🎯 Specialist 50+</span>
+      <span class="pts-chip lt" style="color:#7de8a8;border-color:rgba(62,201,122,.3)">🛡️ Cadet 20+</span>
+      <span class="pts-chip lt">⚔️ Novice 10+</span>
+      <span class="pts-chip lt">🌱 Rookie &lt;10</span>
+    </div>
+  </div>
+
+  <div id="mainContent"><div class="loading"><div class="spinner"></div>&nbsp;Loading players…</div></div>
+</div>
+
+<!-- PROFILE MODAL -->
+<div class="modal-overlay" id="profileModal" onclick="closeProfileIfOutside(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeProfile()">✕</button>
+    <div class="modal-avatar"><img id="pAvatarImg" src="" alt="" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 90 90%22><rect width=%2290%22 height=%2290%22 fill=%22%231c2333%22/><text x=%2245%22 y=%2258%22 text-anchor=%22middle%22 font-size=%2236%22>🎮</text></svg>'"></div>
+    <div class="modal-name" id="pName"></div>
+    <div class="modal-title-row"><div class="modal-rank-badge" id="pTitleBadge"></div></div>
+    <div style="text-align:center;color:var(--muted);font-size:.82rem;margin-bottom:4px" id="pRegion"></div>
+    <div class="modal-section-label">Position</div>
+    <div class="modal-position">
+      <div class="modal-pos-num" id="pPos"></div>
+      <div><div style="font-size:.88rem;font-weight:700;letter-spacing:.03em;">🏆 OVERALL RANK</div><div style="font-size:.78rem;color:var(--muted);margin-top:2px" id="pPts"></div></div>
+    </div>
+    <div class="modal-section-label">Gamemodes</div>
+    <div class="modal-tiers-grid" id="pTiers"></div>
+    <a id="pNameMC" href="#" target="_blank" rel="noopener" class="namemc-link">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7h-2v7zM14 3v2h3.59L7.76 14.83l1.41 1.41L19 5.41V9h2V3h-7z"/></svg>
+      View on NameMC
+    </a>
+  </div>
+</div>
+
+<!-- DISCORD MODAL -->
+<div class="discord-modal" id="discordModal" onclick="closeDiscordIfOutside(event)">
+  <div class="discord-box">
+    <button class="discord-close-btn" onclick="closeDiscordModal()">✕</button>
+    <div class="discord-box-title">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="#5865f2"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.001.022.01.043.024.056a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+      Join a Discord
+    </div>
+    <div class="discord-box-sub">Pick a gamemode server to join</div>
+    <div class="discord-server-list">
+      <a class="discord-server-item" href="#" target="_blank" rel="noopener">
+        <div class="ds-icon">🌐</div><div class="ds-info"><div class="ds-name">NethSmp</div><div class="ds-desc">Netherite SMP PvP community</div></div>
+        <div class="ds-badge">NethSmp</div><div class="ds-arrow">→</div>
+      </a>
+      <a class="discord-server-item" href="#" target="_blank" rel="noopener">
+        <div class="ds-icon">⚔️</div><div class="ds-info"><div class="ds-name">Sword</div><div class="ds-desc">Sword PvP community & rankings</div></div>
+        <div class="ds-badge">Sword</div><div class="ds-arrow">→</div>
+      </a>
+      <a class="discord-server-item" href="#" target="_blank" rel="noopener">
+        <div class="ds-icon">🪓</div><div class="ds-info"><div class="ds-name">Axe</div><div class="ds-desc">Axe PvP community & rankings</div></div>
+        <div class="ds-badge">Axe</div><div class="ds-arrow">→</div>
+      </a>
+      <a class="discord-server-item" href="#" target="_blank" rel="noopener">
+        <div class="ds-icon">💎</div><div class="ds-info"><div class="ds-name">DiaSMP</div><div class="ds-desc">Diamond SMP rankings & community</div></div>
+        <div class="ds-badge">DiaSMP</div><div class="ds-arrow">→</div>
+      </a>
+      <a class="discord-server-item" href="#" target="_blank" rel="noopener">
+        <div class="ds-icon">🛒</div><div class="ds-info"><div class="ds-name">Cart</div><div class="ds-desc">Cart racing community</div></div>
+        <div class="ds-badge">Cart</div><div class="ds-arrow">→</div>
+      </a>
+      <a class="discord-server-item" href="#" target="_blank" rel="noopener">
+        <div class="ds-icon">🔱</div><div class="ds-info"><div class="ds-name">Spearmace</div><div class="ds-desc">Spearmace PvP community</div></div>
+        <div class="ds-badge">Spearmace</div><div class="ds-arrow">→</div>
+      </a>
+      <a class="discord-server-item" href="#" target="_blank" rel="noopener">
+        <div class="ds-icon">🔮</div><div class="ds-info"><div class="ds-name">Craystal</div><div class="ds-desc">Craystal PvP community</div></div>
+        <div class="ds-badge">Craystal</div><div class="ds-arrow">→</div>
+      </a>
+      <a class="discord-server-item" href="#" target="_blank" rel="noopener">
+        <div class="ds-icon">❤️</div><div class="ds-info"><div class="ds-name">UHC</div><div class="ds-desc">Ultra Hardcore community</div></div>
+        <div class="ds-badge">UHC</div><div class="ds-arrow">→</div>
+      </a>
+      <a class="discord-server-item" href="#" target="_blank" rel="noopener">
+        <div class="ds-icon">🔨</div><div class="ds-info"><div class="ds-name">Mace</div><div class="ds-desc">Mace PvP community</div></div>
+        <div class="ds-badge">Mace</div><div class="ds-arrow">→</div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- KEY MODAL -->
+<div class="key-modal" id="keyModal" onclick="closeKeyIfOutside(event)">
+  <div class="key-box">
+    <div class="key-title">🔑 Admin Access</div>
+    <div class="admin-field" style="margin-bottom:14px;">
+      <label>Password</label>
+      <input class="admin-input" type="password" id="keyInput" placeholder="Enter password…" onkeydown="if(event.key==='Enter')checkKey()">
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-gold" onclick="checkKey()">Enter</button>
+      <button class="btn btn-gray" onclick="closeKeyModal()">Cancel</button>
+    </div>
+    <div id="keyErr" style="color:var(--red);font-size:.8rem;margin-top:10px;display:none;">❌ Incorrect password.</div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div class="admin-panel" id="adminPanel" onclick="closeAdminIfOutside(event)">
+  <div class="admin-box">
+    <div class="admin-header">
+      <div class="admin-title">⚙️ Admin Panel</div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="db-status"><div class="db-dot" id="dbDot"></div><span id="dbStatus">Connecting…</span></div>
+        <button class="btn btn-gray" onclick="closeAdmin()">✕ Close</button>
+      </div>
+    </div>
+    <div class="admin-body">
+
+      <!-- ADD PLAYER -->
+      <div style="font-weight:700;font-size:.88rem;color:var(--green);letter-spacing:.04em;text-transform:uppercase;">➕ Add Player</div>
+      <div class="admin-row">
+        <div class="admin-field"><label>Username</label><input class="admin-input" id="addName" placeholder="PlayerName"></div>
+        <div class="admin-field"><label>Gamemode</label>
+          <select class="admin-select" id="addMode">
+            <option value="nethsmp">NethSmp</option>
+            <option value="sword">Sword</option>
+            <option value="axe">Axe</option>
+            <option value="diasmp">DiaSMP</option>
+            <option value="cart">Cart</option>
+            <option value="spearmace">Spearmace</option>
+            <option value="craystal">Craystal</option>
+            <option value="uhc">UHC</option>
+            <option value="mace">Mace</option>
+          </select>
+        </div>
+        <div class="admin-field"><label>Tier</label>
+          <select class="admin-select" id="addTier">
+            <option value="1">Tier 1</option><option value="2">Tier 2</option>
+            <option value="3">Tier 3</option><option value="4">Tier 4</option><option value="5">Tier 5</option>
+          </select>
+        </div>
+        <div class="admin-field"><label>HT / LT</label>
+          <select class="admin-select" id="addHT">
+            <option value="HT">HT – High Tier (highlighted)</option>
+            <option value="LT">LT – Low Tier</option>
+          </select>
+        </div>
+        <div class="admin-field"><label>Region</label>
+          <select class="admin-select" id="addRegion">
+            <option value="NA">NA</option><option value="EU">EU</option><option value="AS">AS</option>
+          </select>
+        </div>
+      </div>
+      <div><button class="btn btn-green" onclick="adminAddPlayer()">➕ Add Player</button></div>
+
+      <div class="admin-divider"></div>
+
+      <!-- REMOVE BY NAME -->
+      <div style="font-weight:700;font-size:.88rem;color:var(--red);letter-spacing:.04em;text-transform:uppercase;">🗑️ Remove Player</div>
+      <div class="admin-row">
+        <div class="admin-field"><label>Username</label><input class="admin-input" id="removeName" placeholder="PlayerName"></div>
+        <div class="admin-field"><label>From Gamemode</label>
+          <select class="admin-select" id="removeMode">
+            <option value="ALL">⚡ All Gamemodes</option>
+            <option value="nethsmp">NethSmp</option>
+            <option value="sword">Sword</option>
+            <option value="axe">Axe</option>
+            <option value="diasmp">DiaSMP</option>
+            <option value="cart">Cart</option>
+            <option value="spearmace">Spearmace</option>
+            <option value="craystal">Craystal</option>
+            <option value="uhc">UHC</option>
+            <option value="mace">Mace</option>
+          </select>
+        </div>
+      </div>
+      <div><button class="btn btn-red" onclick="adminRemoveByName()">🗑️ Remove</button></div>
+
+      <div class="admin-divider"></div>
+
+      <!-- BROWSE -->
+      <div style="font-weight:700;font-size:.88rem;letter-spacing:.04em;text-transform:uppercase;">📋 Browse &amp; Remove Players</div>
+      <select class="admin-select" id="previewMode" onchange="renderAdminPreview()" style="max-width:230px;">
+        <option value="nethsmp">NethSmp</option><option value="sword">Sword</option>
+        <option value="axe">Axe</option><option value="diasmp">DiaSMP</option>
+        <option value="cart">Cart</option><option value="spearmace">Spearmace</option>
+        <option value="craystal">Craystal</option><option value="uhc">UHC</option>
+        <option value="mace">Mace</option>
+      </select>
+      <div class="admin-players-list" id="adminPreviewList"></div>
+    </div>
+  </div>
+</div>
+
+<div class="admin-toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════════════
+const ADMIN_PASS = 'ChangeMe123'; // 🔑 Change this!
+
+const TIER_PTS = {LT5:1,HT5:2,LT4:3,HT4:4,LT3:5,HT3:10,LT2:20,HT2:40,LT1:50,HT1:60};
+
+const GM_ORDER = ['nethsmp','sword','axe','diasmp','cart','spearmace','craystal','uhc','mace'];
+const GM_ICONS = {nethsmp:'🌐',sword:'⚔️',axe:'🪓',diasmp:'💎',cart:'🛒',spearmace:'🔱',craystal:'🔮',uhc:'❤️',mace:'🔨'};
+const GM_NAMES = {nethsmp:'NethSmp',sword:'Sword',axe:'Axe',diasmp:'DiaSMP',cart:'Cart',spearmace:'Spearmace',craystal:'Craystal',uhc:'UHC',mace:'Mace'};
+
+const TITLES = [
+  {min:400,label:'Combat Grandmaster',emoji:'👑',cls:'t-grandmaster'},
+  {min:250,label:'Combat Master',     emoji:'🥇',cls:'t-master'},
+  {min:100,label:'Combat Ace',        emoji:'⚡',cls:'t-ace'},
+  {min:50, label:'Combat Specialist', emoji:'🎯',cls:'t-specialist'},
+  {min:20, label:'Combat Cadet',      emoji:'🛡️',cls:'t-cadet'},
+  {min:10, label:'Combat Novice',     emoji:'⚔️',cls:'t-novice'},
+  {min:0,  label:'Rookie',            emoji:'🌱',cls:'t-rookie'},
+];
+
+function getTitle(pts) {
+  return TITLES.find(t => pts >= t.min) || TITLES[TITLES.length-1];
+}
+
+// ══════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════
+let DATA = {}, allPlayers = [], currentTab = 'overall';
+let dbReady = false;
+
+const skinUrl   = n => `https://mc-heads.net/avatar/${encodeURIComponent(n)}/64`;
+const skinSm    = n => `https://mc-heads.net/avatar/${encodeURIComponent(n)}/32`;
+const nameMCUrl = n => `https://namemc.com/profile/${encodeURIComponent(n)}`;
+function imgErr(el){el.style.display='none';}
+
+// ══════════════════════════════════════════════════════
+// DATA HELPERS
+// ══════════════════════════════════════════════════════
+function computePlayer(name) {
+  let total = 0, tiers = {};
+  for (const [gm, td] of Object.entries(DATA)) {
+    for (const [tk, players] of Object.entries(td)) {
+      const n = tk.replace('t','');
+      const p = players.find(p => p.name.toLowerCase() === name.toLowerCase());
+      if (p) { const k = (p.ht?'HT':'LT')+n; total += TIER_PTS[k]||0; tiers[gm]={tier:n,ht:p.ht,key:k}; }
+    }
+  }
+  return {total, tiers};
+}
+
+function rebuildDATA() {
+  DATA = {};
+  GM_ORDER.forEach(gm => { DATA[gm]={t1:[],t2:[],t3:[],t4:[],t5:[]}; });
+  allPlayers.forEach(p => {
+    const gm = p.gamemode, tk = 't'+p.tier;
+    if (DATA[gm] && DATA[gm][tk] !== undefined)
+      DATA[gm][tk].push({name:p.name, ht:!!p.ht, region:p.region||'NA', db_id:p.id});
+  });
+}
+
+function lsLoad(){try{const r=localStorage.getItem('pvptiers_v1');if(r){const d=JSON.parse(r);if(d&&d.length)return d;}}catch(e){}return null;}
+function lsSave(){try{localStorage.setItem('pvptiers_v1',JSON.stringify(allPlayers));}catch(e){}}
+
+// ══════════════════════════════════════════════════════
+// FIREBASE INIT
+// ══════════════════════════════════════════════════════
+async function initDB() {
+  document.getElementById('mainContent').innerHTML = '<div class="loading"><div class="spinner"></div>&nbsp;Loading players…</div>';
+
+  if (window._FB) {
+    // Try live Firebase listener
+    try {
+      window._FB.listen(docs => {
+        if (docs === null) {
+          // Firebase error – fall back to local
+          loadLocalFallback();
+          return;
+        }
+        allPlayers = docs.map(d => ({
+          id: d.id,
+          name: d.name,
+          gamemode: d.gamemode,
+          tier: parseInt(d.tier),
+          ht: !!d.ht,
+          region: d.region || 'NA'
+        }));
+        dbReady = true;
+        setDBStatus(true, '🔥 Firebase Live');
+        lsSave();
+        rebuildDATA();
+        renderContent();
+      });
+      return;
+    } catch(e) {}
+  }
+  loadLocalFallback();
+}
+
+function loadLocalFallback() {
+  const cached = lsLoad();
+  if (cached && cached.length) {
+    allPlayers = cached; dbReady = true; setDBStatus(true,'💾 Local Cache');
+  } else {
+    allPlayers = getSeedData(); lsSave(); dbReady = true; setDBStatus(false,'⚠️ Demo Data – Add Firebase Config');
+  }
+  rebuildDATA(); renderContent();
+}
+
+function setDBStatus(ok, label) {
+  const dot = document.getElementById('dbDot');
+  const lbl = document.getElementById('dbStatus');
+  if (dot) dot.className = 'db-dot'+(ok?'':' err');
+  if (lbl) lbl.textContent = label||'Ready';
+}
+
+// ══════════════════════════════════════════════════════
+// RENDERING
+// ══════════════════════════════════════════════════════
+function switchTab(tab, el) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('globalSearch').value = '';
+  renderContent();
+}
+
+function toggleLegend() {
+  const el = document.getElementById('ptsLegend');
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+function renderContent() {
+  document.getElementById('mainContent').innerHTML =
+    currentTab === 'overall' ? buildOverall() : buildTierView(currentTab);
+}
+
+function getPlayerRegion(name) {
+  for (const td of Object.values(DATA))
+    for (const pl of Object.values(td)) { const p=pl.find(x=>x.name===name); if(p) return p.region||'NA'; }
+  return 'NA';
+}
+
+function buildOverall() {
+  const names = new Set();
+  for (const td of Object.values(DATA)) for (const pl of Object.values(td)) pl.forEach(p=>names.add(p.name));
+  let ranked = [...names].map(n=>{const{total,tiers}=computePlayer(n);return{name:n,total,tiers};});
+  ranked.sort((a,b)=>b.total-a.total);
+
+  let html = `<div class="view-header">
+    <span class="view-icon">🏆</span>
+    <div><div class="view-title">Overall Rankings</div><div class="view-sub">Ranked by aggregate tier performance across all gamemodes</div></div>
+    <div class="view-count">${ranked.length} Players</div>
+  </div><div class="overall-list">`;
+
+  ranked.forEach((p,i)=>{
+    const rc = i===0?'r1':i===1?'r2':i===2?'r3':'';
+    const top3 = i<3?' top3':'';
+    const region = getPlayerRegion(p.name);
+    const title = getTitle(p.total);
+
+    const badges = GM_ORDER.map(gm=>{
+      if(!p.tiers[gm]) return `<div class="tbadge lt" title="${GM_NAMES[gm]}"><span class="badge-icon">${GM_ICONS[gm]}</span><span class="badge-label">–</span></div>`;
+      const t=p.tiers[gm], cls=t.ht?'ht':'lt', lbl=(t.ht?'HT':'LT')+t.tier;
+      return `<div class="tbadge ${cls}" title="${GM_NAMES[gm]} ${lbl}"><span class="badge-icon">${GM_ICONS[gm]}</span><span class="badge-label">${lbl}</span></div>`;
+    }).join('');
+
+    html += `<div class="overall-row${top3}" onclick="openProfile(${JSON.stringify(p.name)})">
+      <div class="rank-num ${rc}">${i+1}</div>
+      <div class="player-avatar"><img src="${skinUrl(p.name)}" alt="${p.name}" onerror="imgErr(this)"></div>
+      <div class="player-info">
+        <div class="player-name">${p.name}</div>
+        <div class="player-title">
+          <span class="title-tag ${title.cls}">${title.emoji} ${title.label}</span>
+          <span style="color:var(--muted)">${p.total} pts</span>
+        </div>
+      </div>
+      <div class="region-tag ${region}">${region}</div>
+      <div class="tier-badges">${badges}</div>
+    </div>`;
+  });
+  return html + '</div>';
+}
+
+function buildTierView(gm) {
+  const td = DATA[gm]; if(!td) return '<p style="color:var(--muted)">No data.</p>';
+  const total = Object.values(td).reduce((a,b)=>a+b.length,0);
+  const cols = [
+    {k:'t1',l:'Tier 1',c:'t1',i:'🏆'},{k:'t2',l:'Tier 2',c:'t2',i:'🥈'},
+    {k:'t3',l:'Tier 3',c:'t3',i:'🥉'},{k:'t4',l:'Tier 4',c:'t4',i:'⚙️'},
+    {k:'t5',l:'Tier 5',c:'t5',i:'🔰'}
+  ];
+
+  let html = `<div class="view-header">
+    <span class="view-icon">${GM_ICONS[gm]}</span>
+    <div><div class="view-title">${GM_NAMES[gm]}</div><div class="view-sub">🟡 Highlighted = HT (High Tier) &nbsp;|&nbsp; ⚪ Normal = LT (Low Tier) &nbsp;|&nbsp; Best → Worst: HT1 LT1 HT2 LT2 HT3 LT3 HT4 LT4 HT5 LT5</div></div>
+    <div class="view-count">${total} Players</div>
+  </div><div class="tier-grid">`;
+
+  cols.forEach(({k,l,c,i})=>{
+    // Within each tier: show HT first (highlighted), then LT
+    const pls = td[k];
+    const htPlayers = pls.filter(p=>p.ht);
+    const ltPlayers = pls.filter(p=>!p.ht);
+    const ordered = [...htPlayers, ...ltPlayers];
+    const n = k.replace('t','');
+
+    html += `<div class="tier-col"><div class="tier-header ${c}">${i} ${l}</div><div class="tier-players">`;
+    if (!ordered.length) html += `<div style="color:var(--muted);font-size:.78rem;padding:10px;text-align:center;">— Empty —</div>`;
+    ordered.forEach(p=>{
+      const hc = p.ht?'ht-player':'', bc = p.ht?'ht':'lt', bl = p.ht?'HT':'LT';
+      html += `<div class="tier-player ${hc}" onclick="openProfile(${JSON.stringify(p.name)})">
+        <div class="region-dot ${p.region}"></div>
+        <div class="tp-avatar"><img src="${skinSm(p.name)}" alt="${p.name}" onerror="imgErr(this)"></div>
+        <div class="tp-name">${p.name}</div>
+        <div class="tp-badge ${bc}">${bl}${n}</div>
+      </div>`;
+    });
+    html += `</div></div>`;
+  });
+  return html + '</div>';
+}
+
+// ══════════════════════════════════════════════════════
+// PROFILE MODAL
+// ══════════════════════════════════════════════════════
+function openProfile(name) {
+  const {total, tiers} = computePlayer(name);
+  const region = getPlayerRegion(name);
+
+  const names = new Set();
+  for (const td of Object.values(DATA)) for (const pl of Object.values(td)) pl.forEach(p=>names.add(p.name));
+  const ranked = [...names].map(n=>{const{total:t}=computePlayer(n);return{name:n,total:t};}).sort((a,b)=>b.total-a.total);
+  const rank = ranked.findIndex(p=>p.name===name)+1;
+
+  const title = getTitle(total);
+
+  document.getElementById('pAvatarImg').src = skinUrl(name);
+  document.getElementById('pName').textContent = name;
+  document.getElementById('pTitleBadge').innerHTML = `<span>${title.emoji}</span><span class="title-tag ${title.cls}" style="background:none;border:none;padding:0">${title.label}</span>`;
+  document.getElementById('pRegion').textContent = '📍 ' + region;
+  document.getElementById('pPos').textContent = '#'+rank;
+  document.getElementById('pPts').textContent = total + ' total points';
+  document.getElementById('pNameMC').href = nameMCUrl(name);
+
+  let th = '';
+  GM_ORDER.forEach(gm=>{
+    const t = tiers[gm];
+    if (t) {
+      const lbl = (t.ht?'HT':'LT')+t.tier, cls = t.ht?'ht':'lt';
+      th += `<div class="modal-tbadge"><div class="ico">${GM_ICONS[gm]}</div><div class="lbl ${cls}">${lbl}</div><div class="gm-name">${GM_NAMES[gm]}</div></div>`;
+    } else {
+      th += `<div class="modal-tbadge"><div class="ico" style="opacity:.28">${GM_ICONS[gm]}</div><div class="lbl none">–</div><div class="gm-name">${GM_NAMES[gm]}</div></div>`;
+    }
+  });
+  document.getElementById('pTiers').innerHTML = th;
+  document.getElementById('profileModal').classList.add('show');
+}
+function closeProfile(){document.getElementById('profileModal').classList.remove('show');}
+function closeProfileIfOutside(e){if(e.target.id==='profileModal')closeProfile();}
+
+// ══════════════════════════════════════════════════════
+// DISCORD MODAL
+// ══════════════════════════════════════════════════════
+function openDiscordModal(){document.getElementById('discordModal').classList.add('show');}
+function closeDiscordModal(){document.getElementById('discordModal').classList.remove('show');}
+function closeDiscordIfOutside(e){if(e.target.id==='discordModal')closeDiscordModal();}
+
+// ══════════════════════════════════════════════════════
+// ADMIN PANEL
+// ══════════════════════════════════════════════════════
+function openKeyModal(){document.getElementById('keyInput').value='';document.getElementById('keyErr').style.display='none';document.getElementById('keyModal').classList.add('show');setTimeout(()=>document.getElementById('keyInput').focus(),80);}
+function closeKeyModal(){document.getElementById('keyModal').classList.remove('show');}
+function closeKeyIfOutside(e){if(e.target.id==='keyModal')closeKeyModal();}
+function checkKey(){if(document.getElementById('keyInput').value===ADMIN_PASS){closeKeyModal();openAdmin();}else document.getElementById('keyErr').style.display='block';}
+function openAdmin(){document.getElementById('adminPanel').classList.add('show');renderAdminPreview();}
+function closeAdmin(){document.getElementById('adminPanel').classList.remove('show');}
+function closeAdminIfOutside(e){if(e.target.id==='adminPanel')closeAdmin();}
+
+async function adminAddPlayer() {
+  const name   = document.getElementById('addName').value.trim();
+  const gm     = document.getElementById('addMode').value;
+  const tier   = parseInt(document.getElementById('addTier').value);
+  const ht     = document.getElementById('addHT').value === 'HT';
+  const region = document.getElementById('addRegion').value;
+  if (!name) { showToast('Enter a player name!', true); return; }
+
+  const tk = 't'+tier;
+  if (DATA[gm] && DATA[gm][tk] && DATA[gm][tk].find(p=>p.name.toLowerCase()===name.toLowerCase())) {
+    showToast('Already in this tier!', true); return;
+  }
+
+  const row = {name, gamemode:gm, tier, ht, region};
+
+  if (window._FB && dbReady) {
+    const id = await window._FB.add(row);
+    if (id) {
+      showToast(`✅ Added ${name} to ${GM_NAMES[gm]} ${ht?'HT':'LT'}${tier}`);
+      document.getElementById('addName').value = '';
+      return; // Listener will auto-update
+    }
+  }
+  // Fallback local
+  row.id = 'loc_'+Date.now();
+  allPlayers.push(row); lsSave(); rebuildDATA();
+  showToast(`✅ Added ${name} (local only – Firebase not configured)`);
+  document.getElementById('addName').value = '';
+  renderAdminPreview(); renderContent();
+}
+
+async function adminRemoveByName() {
+  const name = document.getElementById('removeName').value.trim();
+  const mode = document.getElementById('removeMode').value;
+  if (!name) { showToast('Enter a player name!', true); return; }
+
+  const gms = mode === 'ALL' ? GM_ORDER : [mode];
+  let removed = 0;
+
+  for (const gm of gms) {
+    const toRemove = allPlayers.filter(p=>p.name.toLowerCase()===name.toLowerCase() && p.gamemode===gm);
+    for (const p of toRemove) {
+      if (window._FB && p.id && !p.id.startsWith('loc_') && !p.id.startsWith('seed_')) {
+        await window._FB.remove(p.id);
+      }
+      removed++;
+    }
+    allPlayers = allPlayers.filter(p=>!(p.name.toLowerCase()===name.toLowerCase() && p.gamemode===gm));
+  }
+
+  if (removed) {
+    lsSave(); rebuildDATA();
+    showToast(`🗑️ Removed ${name}`);
+    document.getElementById('removeName').value = '';
+    renderAdminPreview(); renderContent();
+  } else {
+    showToast(`"${name}" not found!`, true);
+  }
+}
+
+async function removeRowInline(dbId, name, gm) {
+  if (window._FB && dbId && !String(dbId).startsWith('loc_') && !String(dbId).startsWith('seed_')) {
+    await window._FB.remove(dbId);
+  }
+  allPlayers = allPlayers.filter(p=>p.id!==dbId);
+  lsSave(); rebuildDATA();
+  showToast(`🗑️ Removed ${name}`);
+  renderAdminPreview(); renderContent();
+}
+
+function renderAdminPreview() {
+  const gm   = document.getElementById('previewMode').value;
+  const list = document.getElementById('adminPreviewList');
+  let html = '';
+  for (const [tk, players] of Object.entries(DATA[gm]||{})) {
+    const n = tk.replace('t','');
+    players.forEach(p=>{
+      const lbl = (p.ht?'HT':'LT')+n;
+      html += `<div class="admin-player-row">
+        <img src="${skinSm(p.name)}" width="24" height="24" style="border-radius:4px" onerror="this.style.display='none'">
+        <span class="apn">${p.name}</span>
+        <span class="apm">${lbl} · ${p.region}</span>
+        <button class="rm-btn" onclick="removeRowInline(${JSON.stringify(p.db_id)},${JSON.stringify(p.name)},${JSON.stringify(gm)})">🗑️ Remove</button>
+      </div>`;
+    });
+  }
+  list.innerHTML = html || '<div style="color:var(--muted);font-size:.82rem;padding:10px 0;text-align:center;">No players in this gamemode.</div>';
+}
+
+// ══════════════════════════════════════════════════════
+// SEARCH
+// ══════════════════════════════════════════════════════
+function handleGlobalSearch(val) {
+  if (!val.trim()) { renderContent(); return; }
+  const q = val.toLowerCase();
+  const names = new Set();
+  for (const td of Object.values(DATA)) for (const pl of Object.values(td)) pl.forEach(p=>names.add(p.name));
+  const matches = [...names].filter(n=>n.toLowerCase().includes(q));
+  if (!matches.length) {
+    document.getElementById('mainContent').innerHTML = `<p style="color:var(--muted);padding:30px 0;">No players found matching "<strong style="color:var(--text)">${val}</strong>"</p>`;
+    return;
+  }
+  let ranked = matches.map(n=>{const{total,tiers}=computePlayer(n);return{name:n,total,tiers};}).sort((a,b)=>b.total-a.total);
+  let html = `<div class="search-label">Results for "<span>${val}</span>" — ${ranked.length} found</div><div class="overall-list">`;
+  ranked.forEach((p,i)=>{
+    const region = getPlayerRegion(p.name);
+    const title = getTitle(p.total);
+    const badges = GM_ORDER.map(gm=>{
+      if(!p.tiers[gm]) return `<div class="tbadge lt"><span class="badge-icon">${GM_ICONS[gm]}</span><span class="badge-label">–</span></div>`;
+      const t=p.tiers[gm],cls=t.ht?'ht':'lt',lbl=(t.ht?'HT':'LT')+t.tier;
+      return `<div class="tbadge ${cls}"><span class="badge-icon">${GM_ICONS[gm]}</span><span class="badge-label">${lbl}</span></div>`;
+    }).join('');
+    html += `<div class="overall-row" onclick="openProfile(${JSON.stringify(p.name)})">
+      <div class="rank-num">${i+1}</div>
+      <div class="player-avatar"><img src="${skinUrl(p.name)}" alt="${p.name}" onerror="imgErr(this)"></div>
+      <div class="player-info">
+        <div class="player-name">${p.name}</div>
+        <div class="player-title">
+          <span class="title-tag ${title.cls}">${title.emoji} ${title.label}</span>
+          <span style="color:var(--muted)">${p.total} pts</span>
+        </div>
+      </div>
+      <div class="region-tag ${region}">${region}</div>
+      <div class="tier-badges">${badges}</div>
+    </div>`;
+  });
+  document.getElementById('mainContent').innerHTML = html + '</div>';
+}
+
+// ══════════════════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════════════════
+function showToast(msg, err=false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'admin-toast show'+(err?' err':'');
+  setTimeout(()=>t.className='admin-toast', 2800);
+}
+
+// ══════════════════════════════════════════════════════
+// SEED DATA (demo – will be replaced by Firebase)
+// ══════════════════════════════════════════════════════
+function getSeedData() { return [
+  // NethSmp
+  {id:'s1', name:'janekv',    gamemode:'nethsmp', tier:1, ht:true,  region:'EU'},
+  {id:'s2', name:'entit1es',  gamemode:'nethsmp', tier:2, ht:false, region:'NA'},
+  {id:'s3', name:'chqsed',    gamemode:'nethsmp', tier:2, ht:false, region:'NA'},
+  {id:'s4', name:'YungSimsek',gamemode:'nethsmp', tier:3, ht:false, region:'NA'},
+  {id:'s5', name:'MoOa_',     gamemode:'nethsmp', tier:3, ht:false, region:'NA'},
+  {id:'s6', name:'RubyLamb',  gamemode:'nethsmp', tier:4, ht:false, region:'NA'},
+  {id:'s7', name:'_nixtro_',  gamemode:'nethsmp', tier:5, ht:false, region:'NA'},
+  // Sword
+  {id:'s8',  name:'Marlowww',  gamemode:'sword', tier:1, ht:true,  region:'NA'},
+  {id:'s9',  name:'Kylaz',     gamemode:'sword', tier:1, ht:false, region:'NA'},
+  {id:'s10', name:'coldified', gamemode:'sword', tier:1, ht:false, region:'EU'},
+  {id:'s11', name:'Verniq',    gamemode:'sword', tier:2, ht:false, region:'NA'},
+  {id:'s12', name:'Eoxie',     gamemode:'sword', tier:3, ht:false, region:'NA'},
+  {id:'s13', name:'ViperKits', gamemode:'sword', tier:4, ht:false, region:'NA'},
+  {id:'s14', name:'207Cub',    gamemode:'sword', tier:5, ht:false, region:'NA'},
+  // Axe
+  {id:'s15', name:'Swight',    gamemode:'axe', tier:1, ht:true,  region:'NA'},
+  {id:'s16', name:'coldified', gamemode:'axe', tier:1, ht:false, region:'EU'},
+  {id:'s17', name:'BlvckWlf',  gamemode:'axe', tier:2, ht:false, region:'NA'},
+  {id:'s18', name:'Paulinhq',  gamemode:'axe', tier:3, ht:false, region:'NA'},
+  {id:'s19', name:'AxiomSL5',  gamemode:'axe', tier:4, ht:false, region:'NA'},
+  {id:'s20', name:'Fatal1113', gamemode:'axe', tier:5, ht:false, region:'NA'},
+  // DiaSMP
+  {id:'s21', name:'K1RBE',     gamemode:'diasmp', tier:1, ht:true,  region:'NA'},
+  {id:'s22', name:'Camcal',    gamemode:'diasmp', tier:2, ht:false, region:'NA'},
+  {id:'s23', name:'k4etril',   gamemode:'diasmp', tier:3, ht:true,  region:'EU'},
+  {id:'s24', name:'LaggyMonkey',gamemode:'diasmp',tier:4, ht:false, region:'NA'},
+  {id:'s25', name:'soundovo',  gamemode:'diasmp', tier:5, ht:false, region:'NA'},
+  // Cart
+  {id:'s26', name:'Speedrunner99',gamemode:'cart', tier:1, ht:true,  region:'NA'},
+  {id:'s27', name:'CartKing',  gamemode:'cart', tier:1, ht:false, region:'EU'},
+  {id:'s28', name:'RailMaster',gamemode:'cart', tier:2, ht:false, region:'NA'},
+  {id:'s29', name:'SlopeMaster',gamemode:'cart',tier:3, ht:false, region:'NA'},
+  {id:'s30', name:'NewRacer',  gamemode:'cart', tier:5, ht:false, region:'NA'},
+  // Spearmace
+  {id:'s31', name:'Rappture',  gamemode:'spearmace', tier:1, ht:true,  region:'NA'},
+  {id:'s32', name:'Marlowww',  gamemode:'spearmace', tier:1, ht:false, region:'NA'},
+  {id:'s33', name:'BlvckWlf',  gamemode:'spearmace', tier:2, ht:false, region:'NA'},
+  {id:'s34', name:'Yaso___',   gamemode:'spearmace', tier:3, ht:false, region:'NA'},
+  {id:'s35', name:'_Tynan',    gamemode:'spearmace', tier:5, ht:false, region:'NA'},
+  // Craystal
+  {id:'s36', name:'Swight',    gamemode:'craystal', tier:1, ht:true,  region:'NA'},
+  {id:'s37', name:'coldified', gamemode:'craystal', tier:1, ht:false, region:'EU'},
+  {id:'s38', name:'Paulinhq',  gamemode:'craystal', tier:2, ht:false, region:'NA'},
+  {id:'s39', name:'_PuggyWuggy',gamemode:'craystal',tier:3, ht:false, region:'NA'},
+  {id:'s40', name:'jocko051',  gamemode:'craystal', tier:5, ht:false, region:'NA'},
+  // UHC
+  {id:'s41', name:'Swight',    gamemode:'uhc', tier:1, ht:true,  region:'NA'},
+  {id:'s42', name:'coldified', gamemode:'uhc', tier:1, ht:false, region:'EU'},
+  {id:'s43', name:'Draqonate', gamemode:'uhc', tier:2, ht:false, region:'NA'},
+  {id:'s44', name:'Runn1n9',   gamemode:'uhc', tier:3, ht:false, region:'NA'},
+  {id:'s45', name:'xpyw',      gamemode:'uhc', tier:5, ht:false, region:'NA'},
+  // Mace
+  {id:'s46', name:'LanceKing', gamemode:'mace', tier:1, ht:true,  region:'NA'},
+  {id:'s47', name:'SpearGod',  gamemode:'mace', tier:1, ht:false, region:'EU'},
+  {id:'s48', name:'ImpactKing',gamemode:'mace', tier:2, ht:false, region:'NA'},
+  {id:'s49', name:'SpearFlick',gamemode:'mace', tier:3, ht:false, region:'NA'},
+  {id:'s50', name:'PokePoker', gamemode:'mace', tier:5, ht:false, region:'NA'},
+];}
+
+// ══════════════════════════════════════════════════════
+// BOOT
+// ══════════════════════════════════════════════════════
+window.addEventListener('fbReady', () => initDB());
+// Also try immediately in case event already fired
+if (window._FB) initDB(); else setTimeout(()=>{ if(!allPlayers.length) loadLocalFallback(); }, 3000);
+</script>
+</body>
+</html>
