@@ -101,15 +101,21 @@ export default function Page() {
               </div>
               <div>
                 <div className="card-name">CompTiers</div>
-                <div className="card-desc">The competitive Minecraft PvP tier list. Rankings across multiple gamemodes — see where you stand against the best.</div>
+                <div className="card-desc">The competitive Minecraft Java tier list. Rankings across all major gamemodes — see where you stand against the best.</div>
               </div>
               <div className="card-tags">
-                <span className="tag">PvP</span>
-                <span className="tag">Rankings</span>
-                <span className="tag">Java</span>
-                <span className="tag">Bedrock</span>
+                <span className="tag">Minecraft Java</span>
+                <span className="tag">MC</span>
+                <span className="tag">Sword</span>
+                <span className="tag">Axe</span>
+                <span className="tag">UHC</span>
+                <span className="tag">DiaPot</span>
+                <span className="tag">NethPot</span>
+                <span className="tag">SMP</span>
+                <span className="tag">Craystal</span>
+                <span className="tag">Mace</span>
               </div>
-              <a className="card-btn btn-primary" href="/CompTier">
+              <a className="card-btn btn-primary" href="https://comptiersmc.web.app/" target="_blank" rel="noopener noreferrer">
                 Open CompTiers →
               </a>
             </div>
@@ -122,14 +128,17 @@ export default function Page() {
               </div>
               <div>
                 <div className="card-name">NetTiers</div>
-                <div className="card-desc">NetTiers — the Minecraft PvP ranking platform built for the community. Track players across all major gamemodes.</div>
+                <div className="card-desc">NetTiers — new gamemodes and more. The ranking platform built for the community with fresh competitive categories.</div>
               </div>
               <div className="card-tags">
-                <span className="tag">PvP</span>
-                <span className="tag">Tiers</span>
-                <span className="tag">Sword</span>
-                <span className="tag">UHC</span>
-                <span className="tag">Pot</span>
+                <span className="tag">Minecraft Java</span>
+                <span className="tag">MC</span>
+                <span className="tag">SpearMace</span>
+                <span className="tag">DiaSMP</span>
+                <span className="tag">NethSMP</span>
+                <span className="tag">PotSMP</span>
+                <span className="tag">Cart</span>
+                <span className="tag">ShieldlessSMP</span>
               </div>
               <a className="card-btn btn-primary" href="/NetTiers">
                 Open NetTiers →
