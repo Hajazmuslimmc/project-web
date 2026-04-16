@@ -84,7 +84,7 @@ export default function Page() {
         </nav>
 
         <div className="hero">
-          <div className="hero-eyebrow">🎮 Minecraft Gaming Hub</div>
+          <div className="hero-eyebrow">🌐 Everything is Possible</div>
           <h1>The Home of<br /><span>Everything</span></h1>
           <p>Networkak is the hub for competitive Minecraft projects — rankings, mods, tools, and more. All in one place.</p>
         </div>
