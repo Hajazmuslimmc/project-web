@@ -111,6 +111,24 @@ export default function Page() {
             </a>
           </div>
 
+          <div className="nt-card">
+            <div className="nt-card-top">
+              <div className="nt-icon green">🛡️</div>
+              <span className="nt-badge badge-live">● Live</span>
+            </div>
+            <div className="nt-name">AlSafe</div>
+            <div className="nt-desc">The most secure privacy-first browser project on Networkak, with protected search, anti-tracking features, and dedicated downloads at /alsafe.</div>
+            <div className="nt-tags">
+              <span className="nt-tag-item">Privacy</span>
+              <span className="nt-tag-item">Browser</span>
+              <span className="nt-tag-item">Secure Search</span>
+              <span className="nt-tag-item">Downloads</span>
+            </div>
+            <a className="nt-btn nt-btn-primary" href="/alsafe">
+              Open AlSafe →
+            </a>
+          </div>
+
         </div>
 
         <div className="nt-section-label" style={{marginTop:'48px'}}>🔧 Coming Soon</div>
