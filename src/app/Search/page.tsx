@@ -33,7 +33,7 @@ export default function SearchPage() {
     <main className="alsafe-search-page">
       <div className="alsafe-search-shell">
         <div className="alsafe-search-topbar">
-          <a className="alsafe-brand compact" href="/">
+          <a className="alsafe-brand compact" href="/alsafe">
             <span className="alsafe-brand-mark">A</span>
             <span>AlSafe Browser</span>
           </a>
