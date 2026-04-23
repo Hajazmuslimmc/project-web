@@ -1,0 +1,12 @@
+AlSafe Browser for Windows
+Target format: .exe
+
+Current status:
+- The native Windows installer has not been built from this repository yet.
+- The previous website button did nothing because no EXE artifact existed.
+
+Available now:
+- Product page: /alsafe
+- Search engine: /search
+
+To ship a real EXE, the project needs a native desktop packaging pipeline such as Electron Builder or Tauri bundling.

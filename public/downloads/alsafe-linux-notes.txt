@@ -1,0 +1,12 @@
+AlSafe Browser for Linux
+Target format: .AppImage
+
+Current status:
+- The native Linux package has not been built from this repository yet.
+- The previous website button did nothing because no AppImage artifact existed.
+
+Available now:
+- Product page: /alsafe
+- Search engine: /search
+
+To ship a real AppImage, the project needs a native desktop packaging pipeline such as Electron Builder or Tauri bundling.

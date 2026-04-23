@@ -1,0 +1,38 @@
+{
+  "product": "AlSafe Browser",
+  "channel": "prototype",
+  "status": "native installers not built in this repository yet",
+  "available_now": [
+    {
+      "name": "Web search engine",
+      "url": "https://networkak.com/search"
+    },
+    {
+      "name": "AlSafe product page",
+      "url": "https://networkak.com/alsafe"
+    }
+  ],
+  "planned_targets": [
+    {
+      "platform": "macOS",
+      "format": ".dmg",
+      "status": "planned"
+    },
+    {
+      "platform": "Windows",
+      "format": ".exe",
+      "status": "planned"
+    },
+    {
+      "platform": "Linux",
+      "format": ".AppImage",
+      "status": "planned"
+    },
+    {
+      "platform": "Android",
+      "format": ".apk",
+      "status": "planned"
+    }
+  ],
+  "notes": "This codebase currently ships a web prototype and does not include a native packaging pipeline for DMG, EXE, AppImage, or APK outputs."
+}

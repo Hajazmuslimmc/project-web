@@ -1,0 +1,12 @@
+AlSafe Browser for macOS
+Target format: .dmg
+
+Current status:
+- The native macOS installer has not been built from this repository yet.
+- The previous website button did nothing because no DMG artifact existed.
+
+Available now:
+- Product page: /alsafe
+- Search engine: /search
+
+To ship a real DMG, the project needs a native desktop packaging pipeline such as Electron Builder or Tauri bundling.

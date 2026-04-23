@@ -42,19 +42,29 @@ const downloadTargets = [
     platform: 'macOS',
     format: '.dmg',
     architecture: 'Apple Silicon + Intel',
-    status: 'Desktop package target',
+    status: 'Native desktop installer planned',
+    href: '/downloads/alsafe-macos-notes.txt',
   },
   {
     platform: 'Windows',
     format: '.exe',
     architecture: 'Windows 10/11',
-    status: 'Installer target',
+    status: 'Native installer planned',
+    href: '/downloads/alsafe-windows-notes.txt',
   },
   {
     platform: 'Linux',
     format: '.AppImage',
     architecture: 'Portable desktop build',
-    status: 'Universal target',
+    status: 'Portable Linux target planned',
+    href: '/downloads/alsafe-linux-notes.txt',
+  },
+  {
+    platform: 'Android',
+    format: '.apk',
+    architecture: 'Android 10+',
+    status: 'Mobile package target planned',
+    href: '/downloads/alsafe-android-notes.txt',
   },
 ];
 
@@ -73,7 +83,7 @@ export default function AlSafeLanding() {
             <a href="#browser">Browser</a>
             <a href="#downloads">Downloads</a>
             <a href="#accounts">Accounts</a>
-            <Link href="/Search">Search</Link>
+            <Link href="/search">Search</Link>
           </nav>
         </header>
 
@@ -88,7 +98,7 @@ export default function AlSafeLanding() {
             </p>
 
             <div className="alsafe-hero-actions">
-              <Link className="alsafe-primary-btn" href="/Search">
+              <Link className="alsafe-primary-btn" href="/search">
                 Launch Search
               </Link>
               <a className="alsafe-secondary-btn" href="#security">
@@ -114,7 +124,7 @@ export default function AlSafeLanding() {
                 <span />
                 <span />
               </div>
-              <div className="window-url">https://networkak.com/Search</div>
+              <div className="window-url">https://networkak.com/search</div>
               <div className="window-lock">Shielded</div>
             </div>
 
@@ -220,12 +230,31 @@ export default function AlSafeLanding() {
       <section id="downloads" className="alsafe-section">
         <div className="alsafe-section-heading">
           <span className="eyebrow">Downloads</span>
-          <h2>Desktop release targets for every major platform.</h2>
+          <h2>Download targets, build status, and direct search access.</h2>
           <p>
-            AlSafe Browser is now presented with native installer targets for Mac, Windows, and Linux.
-            The release surface is structured around `.dmg`, `.exe`, and `.AppImage` distribution.
+            The old buttons did not download anything because there were no packaged native browser files
+            behind them. This page now exposes real download links for release notes and build status, adds
+            Android `.apk`, and keeps the search engine available directly at `networkak.com/search`.
           </p>
         </div>
+
+        <article className="alsafe-download-explainer">
+          <span className="eyebrow">Current Channel</span>
+          <h2>Web prototype live now</h2>
+          <p>
+            This repository currently ships the AlSafe web experience and search engine. Real `.dmg`, `.exe`,
+            `.AppImage`, and `.apk` installers still require a native packaging pipeline. Until that exists,
+            each download target links to platform notes and the release manifest instead of a fake installer.
+          </p>
+          <div className="alsafe-download-actions">
+            <a className="alsafe-primary-btn" href="/downloads/alsafe-release-manifest.json">
+              Download Release Manifest
+            </a>
+            <Link className="alsafe-secondary-btn" href="/search">
+              Open Search Engine
+            </Link>
+          </div>
+        </article>
 
         <div className="alsafe-download-grid">
           {downloadTargets.map((target) => (
@@ -234,9 +263,9 @@ export default function AlSafeLanding() {
               <h2>{target.format}</h2>
               <p>{target.architecture}</p>
               <p>{target.status}</p>
-              <button type="button" className="alsafe-download-btn">
-                Download for {target.platform}
-              </button>
+              <a className="alsafe-download-btn" href={target.href} download>
+                Download {target.platform} Notes
+              </a>
             </article>
           ))}
         </div>

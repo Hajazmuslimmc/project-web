@@ -3,6 +3,11 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: '/search',
+        destination: '/Search',
+        permanent: false,
+      },
+      {
         source: '/NetTiers',
         destination: 'https://comptiersmc.web.app/',
         permanent: false,

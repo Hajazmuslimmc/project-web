@@ -1,0 +1,12 @@
+AlSafe Browser for Android
+Target format: .apk
+
+Current status:
+- The native Android package has not been built from this repository yet.
+- Android has now been added as an explicit download target in the AlSafe page.
+
+Available now:
+- Product page: /alsafe
+- Search engine: /search
+
+To ship a real APK, the project needs an Android packaging workflow such as Capacitor or a dedicated native wrapper build.
