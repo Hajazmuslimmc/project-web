@@ -1,156 +1,270 @@
-'use client';
+import Link from 'next/link';
+
+const productPillars = [
+  {
+    title: 'Privacy Engine',
+    text: 'Advanced tracker blocking, cookie isolation, HTTPS upgrades, fingerprint resistance, and session containment.',
+  },
+  {
+    title: 'Secure Search',
+    text: 'Visual search results, instant suggestions, category views, and a no-query-logging search experience at /Search.',
+  },
+  {
+    title: 'Browser Control',
+    text: 'Permission management, private windows, bookmarks, history, downloads, profiles, and premium sync architecture.',
+  },
+];
+
+const browserFeatures = [
+  'Tab strip with favicon, title, mute state, and secure session indicators',
+  'Bookmarks, history timeline, and download manager with progress states',
+  'Private browsing with temporary storage isolation and data discard',
+  'Permission center for camera, microphone, clipboard, notifications, and location',
+  'Developer tools panel, extension surface, profile switching, and sync-ready settings',
+  'AlSafe+ tier with premium masking nodes, advanced filters, themes, and cloud sync',
+];
+
+const securityLayers = [
+  'Ad blocker enabled by default with rule-stack updates and cosmetic filtering',
+  'Anti-tracking protection for beacons, fingerprint scripts, third-party cookies, and hidden redirects',
+  'Force-HTTPS upgrades with visible transport status and downgrade warnings',
+  'IP protection design for relay or VPN routing with regional server selection',
+];
+
+const accountFlow = [
+  'Sign up and sign in with JWT or OAuth-style identity providers',
+  'Encrypted sync for bookmarks, browsing preferences, saved sessions, and profile data',
+  'Tier-aware account settings for Free and AlSafe+ experiences',
+];
+
+const downloadTargets = [
+  {
+    platform: 'macOS',
+    format: '.dmg',
+    architecture: 'Apple Silicon + Intel',
+    status: 'Desktop package target',
+  },
+  {
+    platform: 'Windows',
+    format: '.exe',
+    architecture: 'Windows 10/11',
+    status: 'Installer target',
+  },
+  {
+    platform: 'Linux',
+    format: '.AppImage',
+    architecture: 'Portable desktop build',
+    status: 'Universal target',
+  },
+];
 
 export default function Page() {
   return (
-    <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Inter:wght@300;400;500;600&display=swap');
-        *{margin:0;padding:0;box-sizing:border-box;}
-        body{background:#0d0f14;color:#e8eaf0;font-family:'Inter',sans-serif;min-height:100vh;}
-        .nt-nav{display:flex;align-items:center;padding:0 40px;height:64px;background:#13161d;border-bottom:1px solid #2a2f3e;position:sticky;top:0;z-index:100;}
-        .nt-logo{font-family:'Rajdhani',sans-serif;font-size:1.6rem;font-weight:700;color:#f5c842;letter-spacing:3px;}
-        .nt-logo span{color:#fff;}
-        .nt-tag{font-size:.72rem;color:#7a8099;letter-spacing:.08em;margin-top:2px;}
-        .nt-hero{text-align:center;padding:90px 20px 60px;}
-        .nt-eyebrow{display:inline-flex;align-items:center;gap:7px;background:rgba(245,168,35,.12);border:1px solid rgba(245,168,35,.35);color:#f5a623;border-radius:20px;padding:5px 16px;font-size:.78rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:24px;}
-        .nt-hero h1{font-family:'Rajdhani',sans-serif;font-size:clamp(2.4rem,6vw,4rem);font-weight:700;line-height:1.1;margin-bottom:16px;}
-        .nt-hero h1 span{color:#f5c842;}
-        .nt-hero p{color:#7a8099;font-size:1.05rem;max-width:480px;margin:0 auto;line-height:1.7;}
-        .nt-section{max-width:1100px;margin:0 auto;padding:0 24px 80px;}
-        .nt-section-label{font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#7a8099;margin-bottom:20px;display:flex;align-items:center;gap:10px;}
-        .nt-section-label::after{content:'';flex:1;height:1px;background:#2a2f3e;}
-        .nt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px;}
-        .nt-card{background:#13161d;border:1px solid #2a2f3e;border-radius:16px;padding:28px;display:flex;flex-direction:column;gap:16px;transition:all .25s;}
-        .nt-card:hover{border-color:#f5a623;transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,.4);}
-        .nt-card.soon{opacity:.6;}
-        .nt-card.soon:hover{border-color:#2a2f3e;transform:none;box-shadow:none;}
-        .nt-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
-        .nt-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0;}
-        .nt-icon.gold{background:rgba(245,200,66,.15);border:1px solid rgba(245,200,66,.3);}
-        .nt-icon.blue{background:rgba(74,144,217,.15);border:1px solid rgba(74,144,217,.3);}
-        .nt-icon.green{background:rgba(76,175,125,.15);border:1px solid rgba(76,175,125,.3);}
-        .nt-icon.purple{background:rgba(155,109,224,.15);border:1px solid rgba(155,109,224,.3);}
-        .nt-badge{font-size:.68rem;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;}
-        .badge-live{background:rgba(76,175,125,.2);color:#4caf7d;border:1px solid rgba(76,175,125,.4);}
-        .badge-soon{background:rgba(122,128,153,.15);color:#7a8099;border:1px solid #2a2f3e;}
-        .nt-name{font-family:'Rajdhani',sans-serif;font-size:1.4rem;font-weight:700;}
-        .nt-desc{color:#7a8099;font-size:.88rem;line-height:1.6;flex:1;}
-        .nt-tags{display:flex;gap:6px;flex-wrap:wrap;}
-        .nt-tag-item{background:#1a1e28;border:1px solid #2a2f3e;border-radius:6px;padding:3px 9px;font-size:.72rem;color:#7a8099;}
-        .nt-btn{display:block;text-align:center;padding:12px 20px;border-radius:10px;font-size:.88rem;font-weight:600;text-decoration:none;transition:all .2s;border:none;cursor:pointer;font-family:'Inter',sans-serif;}
-        .nt-btn-primary{background:#f5a623;color:#000 !important;}
-        .nt-btn-primary:hover{background:#f5c842;}
-        .nt-btn-disabled{background:#1a1e28;color:#7a8099;border:1px solid #2a2f3e;cursor:not-allowed;}
-        .nt-footer{border-top:1px solid #2a2f3e;padding:28px 40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
-        .nt-footer-logo{font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:700;color:#f5c842;letter-spacing:2px;}
-        .nt-footer-logo span{color:#fff;}
-        .nt-footer p{color:#7a8099;font-size:.8rem;}
-        @media(max-width:600px){.nt-nav{padding:0 20px;}.nt-hero{padding:60px 20px 40px;}.nt-footer{padding:20px;}}
-      `}</style>
+    <main className="alsafe-home">
+      <section className="alsafe-hero-section">
+        <header className="alsafe-topbar">
+          <Link className="alsafe-brand" href="/">
+            <span className="alsafe-brand-mark">A</span>
+            <span>AlSafe Browser</span>
+          </Link>
 
-      <nav className="nt-nav">
-        <div>
-          <div className="nt-logo">NETWORK<span>AK</span></div>
-          <div className="nt-tag">Home of Everything</div>
+          <nav className="alsafe-nav">
+            <a href="#security">Security</a>
+            <a href="#browser">Browser</a>
+            <a href="#downloads">Downloads</a>
+            <a href="#accounts">Accounts</a>
+            <Link href="/Search">Search</Link>
+          </nav>
+        </header>
+
+        <div className="alsafe-hero-grid">
+          <div className="alsafe-hero-copy">
+            <div className="alsafe-chip">Safest Browser in the World</div>
+            <h1>Privacy-first browsing with a visual search engine built for user control.</h1>
+            <p>
+              AlSafe Browser is positioned as a secure browser and search ecosystem for Networkak.com:
+              anti-tracking by default, premium-grade IP masking architecture, private sessions, and a
+              modern interface that treats safety as the main product.
+            </p>
+
+            <div className="alsafe-hero-actions">
+              <Link className="alsafe-primary-btn" href="/Search">
+                Launch Search
+              </Link>
+              <a className="alsafe-secondary-btn" href="#security">
+                Inspect Security Stack
+              </a>
+            </div>
+
+            <div className="alsafe-pillars">
+              {productPillars.map((pillar) => (
+                <article key={pillar.title} className="alsafe-panel">
+                  <span className="eyebrow">Core</span>
+                  <h2>{pillar.title}</h2>
+                  <p>{pillar.text}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+
+          <div className="alsafe-browser-frame">
+            <div className="alsafe-window-bar">
+              <div className="window-actions">
+                <span />
+                <span />
+                <span />
+              </div>
+              <div className="window-url">https://networkak.com/Search</div>
+              <div className="window-lock">Shielded</div>
+            </div>
+
+            <div className="alsafe-tabs">
+              <div className="tab active">A Search</div>
+              <div className="tab">Docs</div>
+              <div className="tab">Private Window</div>
+            </div>
+
+            <div className="alsafe-browser-content">
+              <div className="alsafe-browser-sidebar">
+                <div className="side-card">
+                  <span className="eyebrow">Session</span>
+                  <strong>Private Shield</strong>
+                  <p>Trackers blocked: 148</p>
+                  <p>Cookies isolated: 31</p>
+                  <p>HTTPS upgraded: 19</p>
+                </div>
+                <div className="side-card">
+                  <span className="eyebrow">Network</span>
+                  <strong>IP Masking</strong>
+                  <p>Relay: Seattle Secure 03</p>
+                  <p>Status: Encrypted tunnel ready</p>
+                </div>
+              </div>
+
+              <div className="alsafe-browser-main">
+                <div className="search-demo-bar">
+                  <span>⌕</span>
+                  <span>private browser</span>
+                  <span className="demo-filter">Web</span>
+                </div>
+
+                <div className="preview-grid">
+                  <article className="preview-card large">
+                    <div className="preview-thumb mint" />
+                    <h3>Search result with preview image</h3>
+                    <p>Every result includes a thumbnail, title, description, source domain, and clear secure state.</p>
+                  </article>
+                  <article className="preview-card">
+                    <div className="preview-thumb blue" />
+                    <h3>Smart suggestions</h3>
+                    <p>Autocomplete ranked for privacy topics, browsing utilities, and protected navigation.</p>
+                  </article>
+                  <article className="preview-card">
+                    <div className="preview-thumb gold" />
+                    <h3>Permission control</h3>
+                    <p>Mic, camera, and location access surfaced in one place instead of being buried.</p>
+                  </article>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </nav>
+      </section>
 
-      <div className="nt-hero">
-        <div className="nt-eyebrow">🌐 Everything is Possible</div>
-        <h1>The Home of<br /><span>Everything</span></h1>
-        <p>Networkak is the hub for competitive Minecraft projects — rankings, mods, tools, and more. All in one place.</p>
-      </div>
-
-      <div className="nt-section">
-        <div className="nt-section-label">⚔️ Ranking Systems</div>
-        <div className="nt-grid">
-
-          <div className="nt-card">
-            <div className="nt-card-top">
-              <div className="nt-icon gold">🏆</div>
-              <span className="nt-badge badge-live">● Live</span>
-            </div>
-            <div className="nt-name">CompTiers</div>
-            <div className="nt-desc">The competitive Minecraft Java tier list. Rankings across all major gamemodes — see where you stand against the best.</div>
-            <div className="nt-tags">
-              <span className="nt-tag-item">Minecraft Java</span>
-              <span className="nt-tag-item">MC</span>
-              <span className="nt-tag-item">Sword</span>
-              <span className="nt-tag-item">Axe</span>
-              <span className="nt-tag-item">UHC</span>
-              <span className="nt-tag-item">DiaPot</span>
-              <span className="nt-tag-item">NethPot</span>
-              <span className="nt-tag-item">SMP</span>
-              <span className="nt-tag-item">Craystal</span>
-              <span className="nt-tag-item">Mace</span>
-            </div>
-            <a className="nt-btn nt-btn-primary" href="https://comptiersmc.web.app/" target="_blank" rel="noopener noreferrer">
-              Open CompTiers →
-            </a>
-          </div>
-
-          <div className="nt-card">
-            <div className="nt-card-top">
-              <div className="nt-icon blue">🌐</div>
-              <span className="nt-badge badge-live">● Live</span>
-            </div>
-            <div className="nt-name">NetTiers</div>
-            <div className="nt-desc">NetTiers — new gamemodes and more. The ranking platform built for the community with fresh competitive categories.</div>
-            <div className="nt-tags">
-              <span className="nt-tag-item">Minecraft Java</span>
-              <span className="nt-tag-item">MC</span>
-              <span className="nt-tag-item">SpearMace</span>
-              <span className="nt-tag-item">DiaSMP</span>
-              <span className="nt-tag-item">NethSMP</span>
-              <span className="nt-tag-item">PotSMP</span>
-              <span className="nt-tag-item">Cart</span>
-              <span className="nt-tag-item">ShieldlessSMP</span>
-            </div>
-            <a className="nt-btn nt-btn-primary" href="https://comptiersmc.web.app/" target="_blank" rel="noopener noreferrer">
-              Open NetTiers →
-            </a>
-          </div>
-
+      <section id="security" className="alsafe-section">
+        <div className="alsafe-section-heading">
+          <span className="eyebrow">Security First</span>
+          <h2>Protection is the default runtime, not an optional setting.</h2>
+          <p>
+            A real browser-grade implementation would need Chromium hardening, network proxy/VPN infrastructure,
+            audited storage boundaries, and ongoing filter updates. This product surface is designed around those
+            requirements from the start.
+          </p>
         </div>
 
-        <div className="nt-section-label" style={{marginTop:'48px'}}>🔧 Coming Soon</div>
-        <div className="nt-grid">
-
-          <div className="nt-card soon">
-            <div className="nt-card-top">
-              <div className="nt-icon green">🧩</div>
-              <span className="nt-badge badge-soon">Coming Soon</span>
-            </div>
-            <div className="nt-name">MCMods</div>
-            <div className="nt-desc">A curated collection of Minecraft mods built by the Networkak team. Performance, PvP, and utility mods.</div>
-            <div className="nt-tags">
-              <span className="nt-tag-item">Mods</span>
-              <span className="nt-tag-item">Fabric</span>
-              <span className="nt-tag-item">Forge</span>
-            </div>
-            <button className="nt-btn nt-btn-disabled" disabled>Coming Soon</button>
-          </div>
-
-          <div className="nt-card soon">
-            <div className="nt-card-top">
-              <div className="nt-icon purple">✨</div>
-              <span className="nt-badge badge-soon">Coming Soon</span>
-            </div>
-            <div className="nt-name">More Projects</div>
-            <div className="nt-desc">More Networkak projects are in the works. Stay tuned for new tools, games, and community features.</div>
-            <div className="nt-tags">
-              <span className="nt-tag-item">TBA</span>
-            </div>
-            <button className="nt-btn nt-btn-disabled" disabled>Coming Soon</button>
-          </div>
-
+        <div className="alsafe-feature-grid">
+          {securityLayers.map((item) => (
+            <article key={item} className="alsafe-feature-card">
+              <span className="feature-icon">◆</span>
+              <p>{item}</p>
+            </article>
+          ))}
         </div>
-      </div>
+      </section>
 
-      <footer className="nt-footer">
-        <div className="nt-footer-logo">NETWORK<span>AK</span></div>
-        <p>© 2025 Networkak. All rights reserved.</p>
-      </footer>
-    </>
+      <section id="browser" className="alsafe-section compact">
+        <div className="alsafe-dual-grid">
+          <article className="alsafe-list-panel">
+            <span className="eyebrow">Browser Features</span>
+            <h2>Core browser surface</h2>
+            <ul>
+              {browserFeatures.map((feature) => (
+                <li key={feature}>{feature}</li>
+              ))}
+            </ul>
+          </article>
+
+          <article className="alsafe-list-panel premium">
+            <span className="eyebrow">AlSafe+</span>
+            <h2>Premium tier</h2>
+            <ul>
+              <li>Faster masking routes and premium VPN server pools</li>
+              <li>Advanced ad-block rules and deeper tracker coverage</li>
+              <li>Encrypted cloud sync for settings, bookmarks, and history controls</li>
+              <li>Custom themes, performance presets, and private search enhancements</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section id="downloads" className="alsafe-section">
+        <div className="alsafe-section-heading">
+          <span className="eyebrow">Downloads</span>
+          <h2>Desktop release targets for every major platform.</h2>
+          <p>
+            AlSafe Browser is now presented with native installer targets for Mac, Windows, and Linux.
+            The release surface is structured around `.dmg`, `.exe`, and `.AppImage` distribution.
+          </p>
+        </div>
+
+        <div className="alsafe-download-grid">
+          {downloadTargets.map((target) => (
+            <article key={target.platform} className="alsafe-download-card">
+              <span className="eyebrow">{target.platform}</span>
+              <h2>{target.format}</h2>
+              <p>{target.architecture}</p>
+              <p>{target.status}</p>
+              <button type="button" className="alsafe-download-btn">
+                Download for {target.platform}
+              </button>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section id="accounts" className="alsafe-section compact">
+        <div className="alsafe-dual-grid">
+          <article className="alsafe-list-panel">
+            <span className="eyebrow">Accounts</span>
+            <h2>User identity and sync</h2>
+            <ul>
+              {accountFlow.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </article>
+
+          <article className="alsafe-architecture-panel">
+            <span className="eyebrow">Recommended Stack</span>
+            <h2>Delivery architecture</h2>
+            <p>Frontend: Next.js / React</p>
+            <p>Backend: Node.js / Express</p>
+            <p>Database: PostgreSQL or MongoDB</p>
+            <p>Browser core: Chromium-based hardened distribution</p>
+            <p>Auth: JWT session tokens or OAuth-style providers</p>
+          </article>
+        </div>
+      </section>
+    </main>
   );
 }
