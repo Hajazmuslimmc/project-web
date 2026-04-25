@@ -7,7 +7,12 @@ export default function OwnersOnly() {
 
   useEffect(() => {
     const checkOwner = async () => {
-      const userData = JSON.parse(localStorage.getItem('user'));
+      const userStr = localStorage.getItem('user');
+      if (!userStr) {
+        setUser(null);
+        return;
+      }
+      const userData = JSON.parse(userStr);
       if (userData && userData.rank === 'Owner') {
         setUser(userData);
       } else {
