@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FreeMC</title>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            // Add your Firebase config here
+            apiKey: "your-api-key",
+            authDomain: "your-project.firebaseapp.com",
+            projectId: "your-project",
+            storageBucket: "your-project.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "your-app-id"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        window.login = async () => {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            try {
+                // Since no email, use username as email
+                const email = username + '@freemc.local';
+                await signInWithEmailAndPassword(auth, email, password);
+                alert('Login successful');
+                // Redirect or update UI
+            } catch (error) {
+                alert('Login failed: ' + error.message);
+            }
+        };
+
+        window.signup = async () => {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            try {
+                const email = username + '@freemc.local';
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                await setDoc(doc(db, 'users', username), {
+                    username,
+                    rank: 'User',
+                    ownedCapes: [],
+                    cosmetics: [],
+                    stats: {},
+                    createdAt: new Date()
+                });
+                alert('Signup successful');
+            } catch (error) {
+                alert('Signup failed: ' + error.message);
+            }
+        };
+    </script>
+</head>
+<body>
+    <h1>FreeMC</h1>
+    <input id="username" placeholder="Username" />
+    <input id="password" type="password" placeholder="Password" />
+    <button onclick="login()">Login</button>
+    <button onclick="signup()">Signup</button>
+</body>
+</html>
