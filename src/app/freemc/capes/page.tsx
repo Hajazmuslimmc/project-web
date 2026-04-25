@@ -2,8 +2,17 @@
 
 import { useState, useEffect } from 'react';
 
+interface Cape {
+  id: string;
+  name: string;
+  imageUrl: string;
+  creatorId: string;
+  status: 'approved' | 'pending' | 'rejected';
+  capeNumber?: number;
+}
+
 export default function Capes() {
-  const [capes, setCapes] = useState([]);
+  const [capes, setCapes] = useState<Cape[]>([]);
 
   useEffect(() => {
     const fetchCapes = async () => {
