@@ -1,0 +1,74 @@
+plugins {
+    id 'fabric-loom' version '1.0-SNAPSHOT'
+    id 'maven-publish'
+}
+
+version = project.mod_version
+group = project.maven_group
+
+repositories {
+    mavenCentral()
+    maven {
+        name = "Fabric"
+        url = "https://maven.fabricmc.net/"
+    }
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    // Performance mods
+    modImplementation "maven.modrinth:sodium:mc1.20.1-0.4.10+build.27"
+    modImplementation "maven.modrinth:lithium:mc1.20.1-0.11.2"
+    modImplementation "maven.modrinth:starlight:1.1.1+1.20"
+
+    // HUD Mods
+    modImplementation "maven.modrinth:keystrokes:1.18.0+1.20.1"
+    modImplementation "maven.modrinth:mouse-wheelie:1.12.42+mc1.20.1"
+    modImplementation "maven.modrinth:fps-reducer:2.3"
+
+    // Gameplay Mods
+    modImplementation "maven.modrinth:toggle-sprint:3.0.5+1.20.1"
+    modImplementation "maven.modrinth:crosshair:1.20.1-1.9"
+
+    // Visual Mods
+    modImplementation "maven.modrinth:low-fire:1.3"
+    modImplementation "maven.modrinth:shield-ping:2.0.0+1.20.1"
+
+    // Waypoints System
+    modImplementation "maven.modrinth:xaeros-minimap:24.6.2_Fabric_1.20"
+    modImplementation "maven.modrinth:xaeros-world-map:1.38.4_Fabric_1.20"
+}
+
+processResources {
+    inputs.property "version", project.version
+
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = "UTF-8"
+    it.options.release.set(17)
+}
+
+java {
+    withSourcesJar()
+
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+jar {
+    from("LICENSE") {
+        rename { "${it}_${project.archivesBaseName}" }
+    }
+}
