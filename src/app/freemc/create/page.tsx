@@ -32,7 +32,7 @@ export default function CreateCape() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!file || !name) return;
+    if (!file || !name || !user) return;
 
     const formData = new FormData();
     formData.append('file', file);
